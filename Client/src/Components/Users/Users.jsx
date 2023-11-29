@@ -80,7 +80,7 @@ export default function Users() {
                       </div>
                       <div className="col-6">
                         <div className="input-data">
-                          <label htmlFor="name" className='form-label'> الإسم </label>
+                          <label htmlFor="name" className='form-label'> الاسم </label>
                           <input type="text" className='form-control' required name="name" id="name" onChange={getInputValue} />
                         </div>
                       </div>
@@ -131,11 +131,10 @@ export default function Users() {
           <thead>
             <tr>
               <th>ملاحظات</th>
-              <th>كلمة السر</th>
               <th>سعر الساعة</th>
               <th>رقم الهاتف</th>
               <th>الوظيفة</th>
-              <th>الإسم</th>
+              <th>الاسم</th>
               <th>#</th>
             </tr>
           </thead>

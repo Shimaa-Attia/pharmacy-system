@@ -10,11 +10,16 @@
 i{
     cursor: pointer;
 }
-
+.sidebar ul li span , .sidebar ul li i {
+    color: black ;
+}
 .sidebar ul li:hover {
     background-color: #0D6EFD;
-    color: white !important ;
+  
     border-radius: 5px; 
+}
+.sidebar ul li:hover span , .sidebar ul li:hover i {
+    color: white;
 }
 .sparator{
  
