@@ -9,6 +9,11 @@ class CustomField extends Model
 {
     use HasFactory;
     protected $table = "custom_fields";
+    protected $fillable = [
+        'name',
+        "value",
+        "customer_id"
+        ];
     public function customer(){
         return $this->belongsTo(Customer::class,'customer_id');
     }

@@ -28,14 +28,27 @@ Route::get('users',[UserController::class,'all']);
 Route::get('users/show/{id}',[UserController::class,'show']);
 
 //select all customers
-Route::get('customers',[CustomerController::class,'all']);
+Route::group(['prefix'=>'customers','as'=>'customers.'],function(){
+    Route::get('/',[CustomerController::class,'all']);
+Route::get('/show/{id}',[CustomerController::class,'show']);
+
+    Route::post('/',[CustomerController::class,'store']);
+
+    Route::put('/{id}',[CustomerController::class,'update']);
+
+   // Route::delete('/{id}',[CustomerController::class,'delete']);
+
+
+
+});
+
 //select one customer
 Route::get('customers/show/{id}',[CustomerController::class,'show']);
 
+Route::post('/users',[UserController::class,'create']);
 
 Route::middleware('auth:api')->group(function(){
 //create user
-Route::post('/users',[UserController::class,'create']);
 //logout
 Route::post('/logout',[UserController::class,'logout']);
 //update user
