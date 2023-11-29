@@ -16,28 +16,28 @@ export default function Sidebar() {
                     <div className="nav nav-pills text-end flex-column">
                         <ul className='nav flex-column py-2 '>
                             <li className='nav-item   py-2 '>
-                                <NavLink className='text-black '  to='/'  >
+                                <NavLink to='/'  >
                                     <span className='px-5'> <strong>الرئيسية</strong></span>
                                     <i className="bi bi-motherboard pe-2 "></i>
                                 </NavLink>
                             </li>
                             <li className='nav-item  py-2' >
-                                <Link to='delivery'  className=' text-black' >
-                                    <span className='px-5'> <strong>الطيارين</strong></span>
+                                <NavLink to='delivery'   >
+                                    <span className='px-5'> <strong> الطيارين</strong></span>
                                     <i className="bi bi-cart3 pe-2 "></i>
-                                </Link>
+                                </NavLink>
                             </li>
                             <li className={`nav-item  py-2`}>
-                                <a >
+                                <NavLink to='clients' >
                                     <span className='px-5'> <strong>العملاء</strong></span>
                                     <i className="bi bi-people-fill pe-2 "></i>
-                                </a>
+                                </NavLink>
                             </li>
                         </ul>
                         <div className={`${styles.sparator} `}></div>
                         <ul className='nav flex-column py-2 ' >
                             <li className='nav-item  py-2' >
-                                <Link className='  text-black' to='users' >
+                                <Link  to='users' >
                                     <span className='px-5' > <strong>المستخدمون</strong> </span>
                                     <i className="bi bi-people-fill pe-2 "></i>
                                 </Link>
