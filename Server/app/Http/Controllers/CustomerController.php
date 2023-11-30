@@ -42,13 +42,11 @@ class CustomerController extends Controller
            ,409]);
         }
 
-        //dd($request->all());
-        //create
-
         DB::transaction(function () use($request) {
             $customer = Customer::create([
                 "code" => $request->code,
                 "name" => $request->name,
+                "notes"=>$request->note
             ]);
 
             foreach($request->phones as $phone){
@@ -73,66 +71,116 @@ class CustomerController extends Controller
         });
         return response()->json([
                 "message"=>"تم إضافة عميل",
-           ] ,201 );
+           ] ,200 );
 
    }
 
    public function update(Request $request, $id){
-    $customer =  customer::find($id);
-    if($customer == null){
-       return response()->json([
-           "message"=>"هذا العميل غير موجود",404
-       ]);
-    }
-    return response()->json([
-        "message"=>$customer->customFields
-    ]);
-    dd($customer->customFields());
-    $validator =  Validator::make($request->all(),[
-        'name' => 'required',
-        'code' => 'required|unique:customers,code,'.$customer->id,
-        "phones.*"=>'required|min:11|max:11',   //|unique:custom_fields,value,'.$customer->customFields()->id
-        "addresses.*"=>'required|min:5',
-
-      ]);
-    if($validator->fails()){
-       return response()->json([
-         "msg"=>$validator->errors()
-       ,409]);
-    }
-
-    // dd($request->all());
-
-    DB::transaction(function () use($request) {
-        $customer = Customer::create([
-            "code" => $request->code,
-            "name" => $request->name,
+        $customer =  customer::find($id);
+        if($customer == null){
+        return response()->json([
+            "message"=>"هذا العميل غير موجود",404
         ]);
-
-        foreach($request->phones as $phone){
-            CustomField::create([
-                "name"=>"phone",
-                "value"=> $phone,
-                "customer_id" => $customer->id
-            ]);
-
         }
-        // foreach($request->addresses as $address){
-        //     CustomField::create([
-        //         "name"=>"address",
-        //         "value"=> $address,
-        //         "customer_id" => $customer->id
-        //     ]);
-
-        // }
 
 
+        $validator =  Validator::make($request->all(),[
+            'name' => 'required',
+            'code' => 'required|unique:customers,code,'.$customer->id,
+            "phones.*"=>'required|min:11|max:11|unique:custom_fields,value,'.$customer->id.',customer_id',
+            "addresses.*"=>'required|min:5',
 
-    });
+        ]);
+        if($validator->fails()){
+        return response()->json([
+            "msg"=>$validator->errors()
+        ,409]);
+        }
+
+        DB::transaction(function () use($request ,$id) {
+            $customer =  customer::find($id);
+                $customer->update([
+                    "code" => $request->code,
+                    "name" => $request->name,
+                    "notes"=>$request->notes
+                ]);
 
 
-}
+            CustomField::where('customer_id',$id)->delete();
+            foreach($request->phones as $phone){
 
+                CustomField::create([
+                    "name"=>"phone",
+                    "value"=> $phone,
+                    "customer_id" => $customer->id
+                ]);
+
+            }
+            foreach($request->addresses as $address){
+                CustomField::create([
+                    "name"=>"address",
+                    "value"=> $address,
+                    "customer_id" => $customer->id
+                ]);
+
+            }
+
+        });
+
+        return response()->json([
+            "message"=>"تم تحديث بيانات العميل",
+        ] ,200 );
+
+
+    }
+
+    public function destroy($id)
+    {
+        $customer=Customer::find($id);
+        if($customer == null){
+        return response()->json([
+            "message"=>"هذا العميل غير موجود",404
+        ]);
+    }
+        $customer->delete();
+        return response()->json([
+        "message"=>"تم أرشفة العميل",200]);
+    }
+
+
+    public function archive(){
+
+        $customers = Customer::onlyTrashed()->get();
+        return response()->json([
+        'customers' => $customers,
+    ]  );
+    }
+
+    public function restore($id){
+        $customer=Customer::onlyTrashed()->find($id);
+        if($customer == null){
+        return response()->json([
+            "message"=>"هذا العميل غير موجود بالأرشيف",404
+        ]);
+    }
+        $customer->restore();
+        return response()->json([
+        "message"=>"تم إستعادة العميل",
+        "customer"=>$customer,
+        200]);
+    }
+
+    public function deleteArchive($id){
+        $customer=Customer::onlyTrashed()->find($id);
+        if($customer == null){
+        return response()->json([
+            "message"=>" هذا العميل غير موجود بالأرشيف",404
+        ]);
+    }
+        $customer->forceDelete();
+        return response()->json([
+        "message"=>"تم الحذف",200]);
+    }
 
 
 

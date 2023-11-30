@@ -25,7 +25,7 @@ export default function Users() {
   let SubmitFromData = async (e) => {
     e.preventDefault();
     alert('hello')
-    // let { data } = await axios.post(``, users);
+    // let { data } = await axios.post(`/api/users`, users);
     // console.log(data);
     // if (data.message == 'success') {
 

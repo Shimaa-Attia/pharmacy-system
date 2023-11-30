@@ -135,6 +135,7 @@ class UserController extends Controller
                "message"=>"هذا المستخدم غير موجود",404
            ]);
         }
+        //regex:/(01)(0|1|2|5){8}/
       //validation
       $validator =  Validator::make($request->all(),[
         'name' => 'required|max:255',
