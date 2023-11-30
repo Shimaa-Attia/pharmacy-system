@@ -50,6 +50,8 @@ Route::group(['prefix'=>'customers','as'=>'customers.'],function(){
     Route::get('/',[CustomerController::class,'all']);
     //select one customer
     Route::get('/show/{id}',[CustomerController::class,'show']);
+    //select customer contact info
+    Route::get('/contact/{id}',[CustomerController::class,'contactInfo']);
     //create customer
     Route::post('/',[CustomerController::class,'store']);
     //update customer
@@ -62,15 +64,15 @@ Route::group(['prefix'=>'customers','as'=>'customers.'],function(){
 
 });
 Route::group(['prefix'=>'orders','as'=>'orders.'],function(){
-    //select all customers
+    //select all orders
     Route::get('/',[OrdersController::class,'all']);
-    //select one customer
+    //select one order
     Route::get('/show/{id}',[OrdersController::class,'show']);
-    //create customer
+    //create order
     Route::post('/',[OrdersController::class,'store']);
-    //update customer
+    //update order
     Route::put('/{id}',[OrdersController::class,'update']);
-    //customer soft delete
+    //order soft delete
     Route::delete('/delete/{id}',[OrdersController::class,'destroy']);
     Route::get('/archive',[OrdersController::class,'archive']);
     Route::post('/restore/{id}',[OrdersController::class,'restore']);
