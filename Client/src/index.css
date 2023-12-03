@@ -21,6 +21,11 @@ background-color: rgb(245, 240, 240);
   -moz-osx-font-smoothing: grayscale;
   
   text-align: right;
+  
+  
+}
+form {
+  direction: rtl;
 }
 
 code {

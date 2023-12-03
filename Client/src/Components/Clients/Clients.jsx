@@ -11,7 +11,6 @@ export default function Clients() {
   });
 
   let getInputValuee = (event) => {
-
     let myClients = { ...clients };
     myClients[event.target.name] = event.target.value;
     setClients(myClients);
@@ -30,7 +29,7 @@ export default function Clients() {
   let addMore = (type) => {
     if (type == 'phone') {
       setPhoneRow++;
-      let phoneNumbers =  Array.from({length:phoneRow},(_,index)=>'row')
+      let phoneNumbers=  Array.from({length:phoneRow},(_,index)=>'row')
     }
   }
 
