@@ -4,9 +4,8 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\DB;
 
-class CustomerReource extends JsonResource
+class OrderResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,19 +14,17 @@ class CustomerReource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $contacts = DB::table('custom_fields')
-                ->select('id','name','value')
-                ->where('customer_id', '=', $this->id)
-                ->get();
-
-
 
         return [
             'id'=>$this->id,
-            'name'=>$this->name,
-            // 'contactInfo'=>$this->customFields,
-            'contactInfo'=>$contacts,
+            'cost'=>$this->cost,
+            'total_ammount'=>$this->totalAmmount,
+            'customer'=>$this->customer,
+            'customer_phone'=>$this->customer_phone,
+            'customer_address'=>$this->customer_address,
+            'delivery_man'=>$this->user,
             'notes'=>$this->notes,
+            'created_at'=>$this->created_at
         ];
     }
 }

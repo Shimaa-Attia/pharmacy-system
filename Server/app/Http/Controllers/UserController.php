@@ -17,7 +17,7 @@ class UserController extends Controller
     {
         $validator =  Validator::make($request->all(),[
             'name' => 'required|max:255',
-            'phone' => 'required|unique:users,phone|regex:/(01)[0-9]{9}/|min:11|max:11',
+            'phone' => 'required|unique:users,phone|regex:/^01[0125][0-9]{8}$/',
             'password' => 'required|confirmed',
             'role' =>'required|in:طيار,مشرف,صيدلي',
             'code' => 'required|unique:users,code',
@@ -28,10 +28,12 @@ class UserController extends Controller
 
         if($validator->fails()){
                 return response()->json([
-                        "message"=>$validator->errors()
+                        "message"=>"validation error",
+                        "error"=>$validator->errors()
                       ],409);
-              }
-         $hashedPassword = bcrypt($request->password);
+        }
+
+        $hashedPassword = bcrypt($request->password);
          $user =User::create([
                "name"=>$request->name,
                "phone"=>$request->phone,
@@ -45,17 +47,17 @@ class UserController extends Controller
 
         $token = $user->createToken('API Token')->accessToken;
         return response()->json([
-                "message"=>"you registerd successfully",
+                "message"=>"تم اضافة المستخدم",
                 'user' => $user,
                 'token' => $token
-           ] ,201 );
+           ],200 );
 
     }
 
     public function login(Request $request)
     {
         $data = $request->validate([
-            'phone' => 'required|regex:/(01)[0-9]{9}/',
+            'phone' => 'required|regex:/^01[0125][0-9]{8}$/',
             'password' => 'required'
         ]);
 
@@ -69,29 +71,11 @@ class UserController extends Controller
                 "message"=>"تم تسجيل دخولك بنجاح",
                 'user' => auth()->user(),
                 'token' => $token
-           ] ,201 );
+           ] ,200 );
 
     }
 
     public function logout(){
-
-
-        // if (Auth::check()) {
-        // /** @var \App\Models\User $user **/  $user = Auth::user();
-
-
-        //     $user->AauthAcessToken()->delete();
-
-        // }
-        // // /** @var \App\Models\User $user **/  $user = Auth::user();
-
-        // return response()->json([
-        //     //  'user' =>$user['name'],
-        //     'status'    => 1,
-        //     'message'   => 'User Logout',
-
-        // ], 200);
-
 
         if(Auth::guard('api')->check()){
          /** @var \App\Models\User $user **/  $user = Auth::guard('api')->user();
@@ -103,7 +87,7 @@ class UserController extends Controller
                     ->update(['revoked' => true]);
             $accessToken->revoke();
 
-            return Response(['data' => 'Unauthorized','message' => 'User logout successfully.'],200);
+            return Response(['data' => 'Unauthorized','message' => 'تم تسجيل خروجك بنجاح'],200);
         }
         return Response(['data' => 'Unauthorized'],401);
     }
@@ -119,8 +103,8 @@ class UserController extends Controller
         $user =  User::find($id);
         if($user == null){
              return response()->json([
-                 "message"=>"هذا المستخدم غير موجود",404
-             ]);
+                 "message"=>"هذا المستخدم غير موجود"
+             ],404);
          }
          return new UserResouce($user);
        }
@@ -132,13 +116,13 @@ class UserController extends Controller
         $user =  User::find($id);
         if($user == null){
            return response()->json([
-               "message"=>"هذا المستخدم غير موجود",404
-           ]);
+               "message"=>"هذا المستخدم غير موجود"
+           ],404);
         }
       //validation
       $validator =  Validator::make($request->all(),[
         'name' => 'required|max:255',
-        'phone' => "required|regex:/(01)[0-9]{9}/|min:11|max:11|unique:users,phone,$user->id",
+        'phone' => "required|regex:/^01[0125][0-9]{8}$/|unique:users,phone,$user->id",
         'role' =>'required|in:طيار,مشرف,صيدلي',
         'code' => 'required|unique:users,code,'.$user->id,
         'hourRate' => 'numeric',
@@ -164,7 +148,7 @@ class UserController extends Controller
      //response
     return response()->json([
        "message"=>"تم تعديل بيانات المستخدم بنجاح","new data "=>$user
-      ,201]);
+      ],200);
 
 
   }
@@ -174,12 +158,13 @@ class UserController extends Controller
       $user=User::find($id);
       if($user == null){
         return response()->json([
-            "message"=>"هذا المستخدم غير موجود",404
-        ]);
+            "message"=>"هذا المستخدم غير موجود"
+        ],404);
      }
       $user->delete();
       return response()->json([
-        "message"=>"تم أرشفة المستخدم",200]);
+        "message"=>"تم أرشفة المستخدم"
+        ],200);
    }
 
 
@@ -195,26 +180,27 @@ class UserController extends Controller
       $user=User::onlyTrashed()->find($id);
       if($user == null){
         return response()->json([
-            "message"=>"هذا المستخدم غير موجود بالأرشيف",404
-        ]);
+            "message"=>"هذا المستخدم غير موجود بالأرشيف"
+        ],404);
      }
       $user->restore();
       return response()->json([
         "message"=>"تم إستعادة المستخدم",
-        "user"=>$user,
-        200]);
+        "user"=>$user
+        ] ,200);
   }
 
   public function deleteArchive($id){
       $user=User::onlyTrashed()->find($id);
       if($user == null){
         return response()->json([
-            "message"=>" هذا المستخدم غير موجود بالأرشيف",404
-        ]);
+            "message"=>" هذا المستخدم غير موجود بالأرشيف"
+        ],404);
      }
       $user->forceDelete();
       return response()->json([
-        "message"=>"تم الحذف",200]);
+        "message"=>"تم الحذف"
+    ],200);
   }
 
 }
