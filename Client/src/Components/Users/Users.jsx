@@ -7,7 +7,6 @@ import AddUser from './AddUser';
 
 
 export default function Users() {
-  let navigate = useNavigate();
   let [users, setUsers] = useState({
     id: 0,
     name: '',
@@ -19,36 +18,9 @@ export default function Users() {
     notes: '',
   });
 
-<<<<<<< HEAD
   let getUserDate = async () => {
     let { data } = await axios.get(`http://pharma-erp.atomicsoft-eg.com/api/users`);
     setUsers(data.data);
-=======
-  let getInputValue = (event) => {
-    let myUsers = { ...users }; //deep copy
-    myUsers[event.target.name] = event.target.value;
-    setUsers(myUsers);
-    console.log(myUsers);
-  }
-  let [errorMsg, setErrorMsg] = useState('');
-  let SubmitFromData = async (e) => {
-    e.preventDefault();
-    alert('hello')
-    // let { data } = await axios.post(`/api/users`, users);
-    // console.log(data);
-    // if (data.message == 'success') {
-
-    // }
-    // else {
-    // setErrorMsg(data.message);
-
-    // }
-  }
-
-
-  let showUserDate = () => {
-
->>>>>>> aefeddd6995a270c5d301896269d5c9eb103f650
 
   }
   useEffect(() => { getUserDate() }, []);
@@ -115,4 +87,4 @@ export default function Users() {
       {showUsers()}
     </>
   )
-}
+} 

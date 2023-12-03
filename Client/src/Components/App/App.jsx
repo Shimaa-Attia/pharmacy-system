@@ -39,16 +39,16 @@ function App() {
       path: '/', element: <MasterLayout userData={userData} setUserData={setUserData} />,
       children:
         [
-          { path:'home', element: <ProtectedRoute userData={userData} ><Home/></ProtectedRoute> },
-          { path: 'delivery', element: <ProtectedRoute userData={userData} > <Delivery/></ProtectedRoute> },
-          { path: 'clients', element: <ProtectedRoute userData={userData} > <Clients/></ProtectedRoute> },
-          { path: 'settings', element: <ProtectedRoute userData={userData} > <Settings/></ProtectedRoute> },
-          { path: 'users', element: <ProtectedRoute userData={userData} > <Users/></ProtectedRoute> },
-          { path: 'add', element: <ProtectedRoute userData={userData} ><AddUser/></ProtectedRoute> },
-          { index:true, element: <ProtectedRoute userData={userData} ><Login saveUserData={saveUserData}/></ProtectedRoute>  },
-          { path: 'delete', element:<ProtectedRoute userData={userData} ><DeleteUser/></ProtectedRoute> },
-          { path: 'edite', element: <ProtectedRoute userData={userData}><EditeUser/></ProtectedRoute> },
-          { path: 'details', element: <ProtectedRoute userData={userData}><UserDetails/></ProtectedRoute>},
+          { path:'home', element: <Home/> },
+          { path: 'delivery', element:  <Delivery/> },
+          { path: 'clients', element:  <Clients/> },
+          { path: 'settings', element:  <Settings/> },
+          { path: 'users', element:  <Users/> },
+          { path: 'add', element: <AddUser/> },
+          { index:true, element: <Login saveUserData={saveUserData}/>  },
+          { path: 'delete', element:<DeleteUser/> },
+          { path: 'edite', element: <EditeUser/> },
+          { path: 'details', element: <UserDetails/>},
           { path: '*', element: <NotFound /> }
 
         ]
