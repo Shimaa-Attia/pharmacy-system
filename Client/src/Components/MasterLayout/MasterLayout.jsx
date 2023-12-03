@@ -6,6 +6,7 @@ import Sidebar from '../Sidebar/Sidebar'
 import Login from '../Login/Login';
 import Users from '../Users/Users';
 import Settings from '../Settings/Settings';
+import {ToastContainer} from "react-toastify";
 
 
 export default function MasterLayout({userData ,setUserData }) {
@@ -20,7 +21,6 @@ export default function MasterLayout({userData ,setUserData }) {
 
   return (
     <>
-     
      {userData ?
        <div className=" g-0 row">
        <div className="col-10">
@@ -34,11 +34,10 @@ export default function MasterLayout({userData ,setUserData }) {
      </div> : 
      <div className="">
       <Outlet/>
-     </div> 
+     </div>
     }
-
      <Settings logout={logOut} ></Settings>
-      
+      <ToastContainer/>
     </>
   )
 }

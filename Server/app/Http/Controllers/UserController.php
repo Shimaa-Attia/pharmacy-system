@@ -18,7 +18,7 @@ class UserController extends Controller
         $validator =  Validator::make($request->all(),[
             'name' => 'required|max:255',
             'phone' => 'required|unique:users,phone|regex:/^01[0125][0-9]{8}$/',
-            'password' => 'required|confirmed',
+            'password' => 'required|confirmed|min:6',
             'role' =>'required|in:طيار,مشرف,صيدلي',
             'code' => 'required|unique:users,code',
             'hourRate' => 'numeric',
@@ -45,11 +45,10 @@ class UserController extends Controller
                "salary"=>$request->salary
              ]);
 
-        $token = $user->createToken('API Token')->accessToken;
+
         return response()->json([
                 "message"=>"تم اضافة المستخدم",
                 'user' => $user,
-                'token' => $token
            ],200 );
 
     }
@@ -61,9 +60,11 @@ class UserController extends Controller
             'password' => 'required'
         ]);
 
-        if (!auth()->attempt($data)) {
+
+        if (!auth()->attempt($request->only('phone', 'password'))) {
             return response(['message' => 'البيانات غير صحيحة، حاول مرة أخرى']);
         }
+
         /** @var \App\Models\User $user **/  $user = Auth::user();
         $token = $user->createToken('API Token')->accessToken;
 
@@ -91,8 +92,6 @@ class UserController extends Controller
         }
         return Response(['data' => 'Unauthorized'],401);
     }
-
-
 
     public function all(){
         $users = User::all();

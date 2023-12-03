@@ -32,7 +32,7 @@ export default function Login({ saveUserData }) {
   }
 
   let sendLoginDataToApi = async () => {
-    await axios.post(`http://pharma-erp.atomicsoft-eg.com/api/login`, users).then((res) => {
+    await axios.post(`http://127.0.0.1:8000/api/login`, users).then((res) => {
       localStorage.setItem('userToken', res.data.token);
       saveUserData();
       setIsLoading(false);
