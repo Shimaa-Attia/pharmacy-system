@@ -32,7 +32,7 @@ Route::get('users/show/{id}',[UserController::class,'show']);
 Route::post('/users',[UserController::class,'create']);
 
 
-Route::middleware('auth:api')->group(function(){
+// Route::middleware('auth:api')->group(function(){
     //logout
     Route::post('/logout',[UserController::class,'logout']);
     Route::group(['prefix'=>'users','as'=>'users.'],function(){
@@ -82,5 +82,5 @@ Route::middleware('auth:api')->group(function(){
 
     });
 
-});
+//});
 
