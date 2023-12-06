@@ -2,8 +2,9 @@ import React from 'react'
 import { Navigate } from 'react-router-dom'
 
 export default function ProtectedRoute(props) {
+   
     
-    // if (props.userData === null) {
+    // if (props.userData !== null) {
     //     return <Navigate to ='/' />
     // }
     // else {
@@ -12,6 +13,7 @@ export default function ProtectedRoute(props) {
 
     return (
         <>
+        <h1>Protected Route</h1>
            
         </>
     )

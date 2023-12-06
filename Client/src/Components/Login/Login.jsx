@@ -2,15 +2,12 @@ import axios from 'axios';
 import Joi from 'joi';
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 
 export default function Login({ saveUserData }) {
   let navigate = useNavigate();
-  let [loginSuccess, setLoginSuccess] = useState('');
-  let [errorMsg, setErrorMsg] = useState('');
-  let [errorList, setErrorList] = useState([]);
   let [isLoading, setIsLoading] = useState(false);
-
   let [users, setUsers] = useState({
     phone: '',
     password: '',
@@ -20,7 +17,7 @@ export default function Login({ saveUserData }) {
     let myUsers = { ...users }; //deep copy
     myUsers[event.target.name] = event.target.value;
     setUsers(myUsers)
-  }
+  };
 
   let validateLoginFrom = () => {
     const schema = Joi.object({
@@ -29,44 +26,54 @@ export default function Login({ saveUserData }) {
 
     });
     return schema.validate(users, { abortEarly: false });
-  }
+  };
 
   let sendLoginDataToApi = async () => {
-    await axios.post(`http://127.0.0.1:8000/api/login`, users).then((res) => {
-      localStorage.setItem('userToken', res.data.token);
+    let { data } = await axios.post(`http://pharma-erp.atomicsoft-eg.com/api/login`, users);
+    if (data.message == 'تم تسجيل دخولك بنجاح') {
+      setIsLoading(false);
+      localStorage.setItem('userToken', data.token);
       saveUserData();
-      setIsLoading(false);
-      setLoginSuccess(res.data.message);
-      console.log(loginSuccess);
-      console.log(res.data.message + 'hello');
+      toast.success(data.message, {
+        position: 'top-center',
+
+      });
       navigate('home');
-
-    }).catch((errors) => {
-      console.log(errors);
+    } else {
       setIsLoading(false);
-      setErrorMsg(errors.response.data.message);
-      console.log(errorMsg);
+      try {
+        toast.error(data.message, {
+          position: 'bottom-center'
+        });
+      } catch (error) {
+        toast.error("حدث خطأ ما عند تسجيل الدخول");
+      }
 
-    });
-  }
+    };
+  };
+
 
   let submitLoginForm = (e) => {
     setIsLoading(true);
     e.preventDefault();
     let validation = validateLoginFrom();
-    if (validation.error) {
-      setIsLoading(false);
-      setErrorList(validation.error.details);
-
-    } else {
+    if (!validation.error) {
       sendLoginDataToApi();
     }
-  }
+    else {
+      setIsLoading(false);
+      try {
+        validation.error.details.map((err) => {
+          toast.error(err.message);
+        })
+      } catch (e) {
+        toast.error("حدث خطأ ما عند تسجيل الدخول");
+      }
+    }
+  };
   return (
     <>
       <div className="container m-auto   pt-5 ">
-        {errorList.map((err, index) => <div key={index} className='alert alert-danger' >{err.message}</div>)}
-
         <div className="logo text-center py-3">
           <img src="" alt="logo" className='w-100' />
         </div>
