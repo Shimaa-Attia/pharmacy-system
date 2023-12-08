@@ -27,6 +27,10 @@ background-color: rgb(245, 240, 240);
 form {
   direction: rtl;
 }
+.card {
+  direction: rtl;
+
+}
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',

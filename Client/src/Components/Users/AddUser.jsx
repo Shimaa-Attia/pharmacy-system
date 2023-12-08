@@ -1,15 +1,15 @@
 import axios from 'axios';
 import Joi from 'joi';
 import React, {useEffect, useState} from 'react'
-import {json, NavLink, useNavigate} from 'react-router-dom';
+import {NavLink, useNavigate} from 'react-router-dom';
 import {toast} from 'react-toastify';
 
 
 export default function AddUser() {
     let navigate = useNavigate();
-
     let [isLoading, setIsLoading] = useState(false);
-    let [users, setUsers] = useState({
+
+    let initUsers = {
         name: '',
         role: '',
         phone: '',
@@ -19,19 +19,22 @@ export default function AddUser() {
         code: '',
         hourRate: '',
         notes: '',
-    });
+    }
+
+    let [users, setUsers] = useState(initUsers);
     let getInputValue = (event) => {
         let myUsers = {...users}; //deep copy
         myUsers[event.target.name] = event.target.value;
         setUsers(myUsers);
-    }
+    };
     let sendUserDataToApi = async () => {
-
-            await axios.post(`http://127.0.0.1:8000/api/users`, users).then((res) => {
-                toast.success(res.data.message);
+            await axios.post(`http://pharma-erp.atomicsoft-eg.com/api/users`, users).then((res) => {
+                toast.success(res.data.message , {
+                    position:'top-center'
+                });
+                setUsers(initUsers);
                 setIsLoading(false);
-                navigate('../users');
-
+                
             }).catch((errors) => {
                 setIsLoading(false);
                 const errorList = errors?.response?.data?.error;
@@ -45,13 +48,9 @@ export default function AddUser() {
                     toast.error("حدث خطأ ما");
                 }
             });
+    };
 
-
-
-
-    }
-
-    let validateUserFrom = () => {
+    let validateUserForm = () => {
         const schema = Joi.object({
             name: Joi.string().min(3).max(20).required(),
             code: Joi.string().required(),
@@ -67,10 +66,10 @@ export default function AddUser() {
         return schema.validate(users, {abortEarly: false});
 
     }
-    let SubmitUserForm = (e) => {
+    let submitUserForm = (e) => {
         setIsLoading(true);
         e.preventDefault();
-        let validation = validateUserFrom();
+        let validation = validateUserForm();
         if (!validation.error) {
             sendUserDataToApi();
         } else {
@@ -82,18 +81,17 @@ export default function AddUser() {
             } catch (e) {
                 toast.error("حدث خطأ ما");
             }
-
         }
-    }
+    };
 
     return (
         <>
-            <h3 className='alert alert-primary text-center mx-5 my-2  fw-bold'>إضافة عميل جديد</h3>
+            <h3 className='alert alert-primary text-center mx-5 my-2  fw-bold'>إضافة مستخدم جديد</h3>
             <div className="mx-5 p-3 rounded rounded-3 bg-white">
-                <form onSubmit={SubmitUserForm}>
+                <form onSubmit={submitUserForm}>
                     <div className="row gy-3">
                         <div className="col-md-4">
-                            <label htmlFor="code" className='form-label'>كود العميل</label>
+                            <label htmlFor="code" className='form-label'>كود المستخدم</label>
                             <input type="text" className='form-control' name="code" id="code" onChange={getInputValue}/>
                         </div>
                         <div className="col-md-4">
@@ -145,7 +143,7 @@ export default function AddUser() {
                             </button>
                         </div>
                         <div className="col-md-3">
-                            <NavLink to='../users' className='btn  btn-secondary form-control fs-5'>رجوع</NavLink>
+                            <NavLink to='/users' className='btn  btn-secondary form-control fs-5'>رجوع</NavLink>
 
                         </div>
                     </div>
