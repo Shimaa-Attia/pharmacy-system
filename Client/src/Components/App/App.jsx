@@ -12,7 +12,6 @@ import DeleteUser from '../Users/DeleteUser';
 import EditeUser from '../Users/EditeUser';
 import UserDetails from '../Users/UserDetails';
 import { useEffect, useState } from 'react';
-import { jwtDecode } from 'jwt-decode';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 import Logout from '../Logout/Logout';
 import AddClient from '../Clients/AddClient';
@@ -23,54 +22,59 @@ import AddOrder from '../Orders/AddOrder';
 import DeleteOrder from '../Orders/DeleteOrder';
 import EditeOrder from '../Orders/EditeOrder';
 import OrderDetails from '../Orders/OrderDetails';
+import { jwtDecode } from 'jwt-decode';
+import { ToastContainer } from 'react-toastify';
+import DeleteClient from '../Clients/DeleteClient'
+
 
 
 
 
 function App() {
- 
-//for handle Reload
-  useEffect(()=>{
-    if(localStorage.getItem('userToken') !== null){
+
+  // for handle Reload
+  useEffect(() => {
+    if (localStorage.getItem('userToken') !== null) {
       saveUserData();
     }
-  },[]);
-  const [userData, setUserData] = useState(null);
+  }, []);
 
+  let [userData, setUserData] = useState(null);
   let saveUserData = () => {
     let encodedToken = localStorage.getItem('userToken');
-    setUserData(encodedToken)
-    let decodedToken = jwtDecode(encodedToken);
-    setUserData(decodedToken);
+    setUserData(encodedToken);
+    // console.log(userData);
+    // let decodedToken = jwtDecode(encodedToken);
+    // setUserData(decodedToken);
+    // console.log(userData);
 
   };
 
-
-
   let routes = createBrowserRouter([
-    {
-      path: '/', element: < MasterLayout userData={userData} setUserData={setUserData} />,
+    
+      { index: true, element: <Login saveUserData={saveUserData} /> },
+     { path: '/', element: < MasterLayout userData={userData}  />,
       children:
         [
-          { index:true, element:  <Login saveUserData={saveUserData}/> },
-          { path:'home', element:<Home/>  },
-          { path: 'orders', element:  <Orders/>  },
-          {path:'orders/add' ,element:<AddOrder/>},
-          {path:'orders/delete/:id', element:<DeleteOrder/>},
-          {path:'orders/edite/:id' , element:<EditeOrder/>},
-          {path:'orders/details/:id' ,element:<OrderDetails/>},
-          { path: 'clients', element:  <Clients/>  },
-          {path:'clients/add' , element: <AddClient/>},
-          {path: 'clients/delete/:id' ,element: <DeleteUser/>},
-          {path:'clients/edite/:id' , element: <EditeClient/>},
-          {path:'clients/details/:id' ,element: <ClientDetails/>},
-          { path: 'settings', element:  <Settings />  },
-          { path: 'users', element:  <Users/> },
-          { path: 'users/add', element:   <AddUser/>  },
-          { path: 'users/delete/:id', element:   <DeleteUser/>  },
-          { path: 'users/edite/:id', element:   <EditeUser/>  },
-          { path: 'users/details/:id', element:   <UserDetails/> },
-          {path:'logout' , element: <Logout/>},
+       
+          { path: 'home', element: <ProtectedRoute ><Home/></ProtectedRoute> },
+          { path: 'orders', element:<ProtectedRoute><Orders /> </ProtectedRoute>  },
+          { path: 'orders/add', element: <ProtectedRoute><AddOrder/> </ProtectedRoute> },
+          { path: 'orders/delete/:id', element: <ProtectedRoute><DeleteOrder/> </ProtectedRoute>  },
+          { path: 'orders/edite/:id', element: <ProtectedRoute><EditeOrder /> </ProtectedRoute>  },
+          { path: 'orders/details/:id', element: <ProtectedRoute><OrderDetails /> </ProtectedRoute>  },
+          { path: 'clients', element:<ProtectedRoute><Clients /> </ProtectedRoute>  },
+          { path: 'clients/add', element:<ProtectedRoute><AddClient /> </ProtectedRoute>  },
+          { path: 'clients/delete/:id', element: <ProtectedRoute><DeleteClient /> </ProtectedRoute>  },
+          { path: 'clients/edite/:id', element: <ProtectedRoute><EditeClient /> </ProtectedRoute> },
+          { path: 'clients/details/:id', element:<ProtectedRoute><ClientDetails /> </ProtectedRoute>  },
+          { path: 'settings', element: <ProtectedRoute><Settings setUserData={setUserData}/>  </ProtectedRoute>  },
+          { path: 'users', element:<ProtectedRoute><Users/> </ProtectedRoute>   },
+          { path: 'users/add', element: <ProtectedRoute><AddUser /> </ProtectedRoute>  },
+          { path: 'users/delete/:id', element: <ProtectedRoute><DeleteUser/> </ProtectedRoute>  },
+          { path: 'users/edite/:id', element: <ProtectedRoute><EditeUser /> </ProtectedRoute>   },
+          { path: 'users/details/:id', element: <ProtectedRoute><UserDetails /> </ProtectedRoute>  },
+          { path: 'logout', element: <Logout /> },
           { path: '*', element: <NotFound /> }
 
         ]
@@ -80,6 +84,10 @@ function App() {
     <>
 
       <RouterProvider router={routes} />
+      <ToastContainer
+        position='top-left'
+        autoClose={5000}
+      />
 
     </>
   );

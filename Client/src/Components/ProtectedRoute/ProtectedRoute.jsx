@@ -1,19 +1,21 @@
 import React from 'react'
-import { Navigate } from 'react-router-dom'
+import { Navigate, useNavigate } from 'react-router-dom'
+
 
 export default function ProtectedRoute(props) {
+
+    if (!localStorage.getItem('userToken')) {
+        return <Navigate to='/' />
+
+    }
+    else {
    
-    
-    // if (props.userData !== null) {
-    //     return <Navigate to ='/' />
-    // }
-    // else {
-    //     return props.children;
-    // }
+        return props.children;
+    }
 
     return (
         <>
-        <h1>Protected Route</h1>
+       
            
         </>
     )

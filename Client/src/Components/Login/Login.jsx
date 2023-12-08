@@ -2,10 +2,11 @@ import axios from 'axios';
 import Joi from 'joi';
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 
 
-export default function Login({ saveUserData }) {
+export default function Login({saveUserData }) {
+
   let navigate = useNavigate();
   let [isLoading, setIsLoading] = useState(false);
   let [users, setUsers] = useState({
@@ -21,7 +22,10 @@ export default function Login({ saveUserData }) {
 
   let validateLoginFrom = () => {
     const schema = Joi.object({
-      phone: Joi.string().required().pattern(/^01[0125][0-9]{8}$/),
+      phone: Joi.string().required().pattern(/^01[0125][0-9]{8}$/).messages({ 
+        "string.pattern.base": `رقم الهاتف غير صحيح`,
+        "any.required" :`"" phone required`,
+      }),
       password: Joi.string().required(),
 
     });
@@ -52,7 +56,6 @@ export default function Login({ saveUserData }) {
     };
   };
 
-
   let submitLoginForm = (e) => {
     setIsLoading(true);
     e.preventDefault();
@@ -73,6 +76,7 @@ export default function Login({ saveUserData }) {
   };
   return (
     <>
+   
       <div className="container m-auto   pt-5 ">
         <div className="logo text-center py-3">
           <img src="" alt="logo" className='w-100' />
@@ -96,8 +100,8 @@ export default function Login({ saveUserData }) {
           </form>
         </div>
 
-
       </div>
+    
     </>
   )
 }

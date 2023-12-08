@@ -16,9 +16,16 @@ export default function AddClient() {
         addresses: [],
         notes: ''
     });
+    let [phones, setPhones] = useState([]);
+    let getPhoneValue = (event) => {
+        let myPhones = { ...phones };
+       
+      
+    }
     let getInputValue = (event) => {
         let myClients = { ...clients }; //deep copy
         myClients[event.target.name] = event.target.value;
+        console.log(myClients.phones);
         setClients(myClients);
     };
     let sendClientDataToApi = async () => {
@@ -49,36 +56,36 @@ export default function AddClient() {
             }
         });
     };
-    let validateClientForm = () => {
-        const schema = Joi.object({
-            name: Joi.string().min(3).max(20).required(),
-            code: Joi.string().required(),
-            phones: Joi.string().required().pattern(/^01[0125][0-9]{8}$/),
-            addresses: Joi.string().min(5).max(50).required(),
-            notes: Joi.string().empty(''),
+    // let validateClientForm = () => {
+    //     const schema = Joi.object({
+    //         name: Joi.string().min(3).max(20).required(),
+    //         code: Joi.string().required(),
+    //         phones: Joi.string().required().pattern(/^01[0125][0-9]{8}$/),
+    //         addresses: Joi.string().min(5).max(50).required(),
+    //         notes: Joi.string().empty(''),
 
-        });
-        return schema.validate(clients, { abortEarly: false });
+    //     });
+    //     return schema.validate(clients, { abortEarly: false });
 
-    }
+    // }
 
     let submitClientForm = (e) => {
         setIsLoading(true);
         e.preventDefault();
-        let validation = validateClientForm();
-        if (!validation.error) {
-            sendClientDataToApi();
-        } else {
-            setIsLoading(false);
-            try {
-                validation.error.details.map((err) => {
-                    toast.error(err.message);
-                })
-            } catch (e) {
-                toast.error("حدث خطأ ما");
-                console.log('validate from');
-            }
-        }
+        // let validation = validateClientForm();
+        // if (!validation.error) {
+        //     sendClientDataToApi();
+        // } else {
+        //     setIsLoading(false);
+        //     try {
+        //         validation.error.details.map((err) => {
+        //             toast.error(err.message);
+        //         })
+        //     } catch (e) {
+        //         toast.error("حدث خطأ ما");
+        //         console.log('validate from');
+        //     }
+        // }
     };
     return (
         <>
@@ -98,8 +105,8 @@ export default function AddClient() {
                         </div>
                         <div className="col-md-6">
                             <label htmlFor="phones" className='form-label'> رقم هاتف</label>
-                            <input type="tel" className='form-control' name="phones" id="phones"
-                                onChange={getInputValue} />
+                            <input type="tel" className='form-control'  name="phones" id="phones"
+                                onChange={getPhoneValue} />
                         </div>
                         <div className="col-md-6">
                             <label htmlFor="phones" className='form-label'> رقم هاتف</label>

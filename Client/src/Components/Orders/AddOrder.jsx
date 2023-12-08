@@ -7,6 +7,8 @@ import {toast} from 'react-toastify';
 
 export default function AddOrder() {
   let [isLoading, setIsLoading] = useState(false);
+  let [users , setUsers] = useState([]);
+  let [client , setClients] = useState([]);
   let [orders , setOrders] = useState({
     user_id:'',
     customer_address:'',
@@ -17,11 +19,19 @@ export default function AddOrder() {
     notes:'',
 
   });
+  let getUserData = async () => {
+    let { data } = await axios.get(`http://pharma-erp.atomicsoft-eg.com/api/users`);
+    setUsers(data.data);
+    console.log(users);
+  };
+  useEffect(() => { getUserData() }, []);
+
   let getInputValue = (event) => {
     let myOrders = {...orders}; //deep copy
     myOrders[event.target.name] = event.target.value;
     setOrders(myOrders);
 };
+
   return (
     <>
       <h3 className='alert alert-primary text-center mx-5 my-2  fw-bold'>إضافة أوردر </h3>
@@ -30,20 +40,20 @@ export default function AddOrder() {
                     <div className="row gy-3">
                         <div className="col-md-4">
                             <label htmlFor="code" className='form-label'>كود الطيار أو الاسم</label>
-                            <input type="text" className='form-control' name="code" id="user_id" onChange={getInputValue}/>
                             <select name="role" defaultValue={0} className='form-control' id="role"
                                     onChange={getInputValue}>
                                 <option value={0} hidden disabled>اختار</option>
-                                <option value="مشرف">مشرف</option>
-                                <option value="صيدلي">صيدلي</option>
-                                <option value="طيار">طيار</option>
+                                {users.map((user)=><option key={user.id} value={user.id} >{user.code} {user.name}</option>)}
                             </select>
                         </div>
                         <div className="col-md-4">
-                            <label htmlFor="customer_id" className='form-label'>كود العميل أو الاسم</label>
-                            <input type="text" className='form-control' name="client_name" id="customer_id" onChange={getInputValue}/>
+                            <label htmlFor="code" className='form-label'>كود العميل أو الاسم</label>
+                            <select name="role" defaultValue={0} className='form-control' id="role"
+                                    onChange={getInputValue}>
+                                <option value={0} hidden disabled>اختار</option>
+                                {users.map((user)=><option key={user.id} value={user.id} >{user.code} {user.name}</option>)}
+                            </select>
                         </div>
-                       
                         <div className="col-md-4">
                             <label htmlFor="phone" className='form-label'>رقم الهاتف</label>
                             <input type="tel" className='form-control' name="phone" id="phone"
