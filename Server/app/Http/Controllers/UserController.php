@@ -202,4 +202,28 @@ class UserController extends Controller
     ],200);
   }
 
+//   public function get_tagged($tag = "", Request $request)
+  public function checkAuth()
+{
+    // if (Auth::guard('api')->check()) {
+    //     // Here you have access to $request->user() method that
+    //     // contains the model of the currently authenticated user.
+    //     //
+    //     // Note that this method should only work if you call it
+    //     // after an Auth::check(), because the user is set in the
+    //     // request object by the auth component after a successful
+    //     // authentication check/retrival
+    //     return response()->json($request->user());
+    // }
+
+    // alternative method
+    if (($user = Auth::user()) !== null) {
+        // Here you have your authenticated user model
+        return response()->json($user);
+    }
+
+    // return general data
+    return response('Unauthenticated user');
+}
+
 }

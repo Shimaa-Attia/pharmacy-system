@@ -17,10 +17,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+// Route::middleware('auth:api')->get('/user', function (Request $request) {
+//     return $request->user();
 
-});
+// });
 
 //login
 Route::post('/login',[UserController::class,'login']);
@@ -30,6 +30,8 @@ Route::get('users',[UserController::class,'all']);
 Route::get('users/show/{id}',[UserController::class,'show']);
 //create user(register)
 Route::post('/users',[UserController::class,'create']);
+//checke auth
+Route::get("/users/auth", [UserController::class,'checkAuth']);
 
 
 Route::middleware('auth:api')->group(function(){
