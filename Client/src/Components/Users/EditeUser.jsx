@@ -65,6 +65,7 @@ export default function EditeUser() {
   };
   let validateEditedFrom = () => {
     const schema = Joi.object({
+      id:Joi.number().required(),
       name: Joi.string().min(3).max(20).required(),
       code: Joi.string().required(),
       role: Joi.string().required(),

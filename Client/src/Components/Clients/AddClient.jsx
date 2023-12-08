@@ -1,9 +1,9 @@
 import React from 'react'
 import axios from 'axios';
 import Joi from 'joi';
-import { useEffect, useState } from 'react'
-import { NavLink, useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import {useEffect, useState} from 'react'
+import {NavLink, useNavigate} from 'react-router-dom';
+import {toast} from 'react-toastify';
 
 export default function AddClient() {
     let accessToken = localStorage.getItem('userToken');
@@ -16,16 +16,29 @@ export default function AddClient() {
         addresses: [],
         notes: ''
     });
-    let [phones, setPhones] = useState([]);
+    let [phones, setPhones] = useState({
+        anas:""
+    });
     let getPhoneValue = (event) => {
-        let myPhones = { ...phones };
-       
-      
+        let myPhones = {...phones};
+
+
     }
+
     let getInputValue = (event) => {
-        let myClients = { ...clients }; //deep copy
-        myClients[event.target.name] = event.target.value;
-        console.log(myClients.phones);
+        let myClients = {...clients}; //deep copy
+
+        if (event.target.name === "phone1") {
+
+            setPhones({
+                anas: '12121'
+            })
+
+        } else {
+            myClients[event.target.name] = event.target.value
+        }
+
+        console.log(phones)
         setClients(myClients);
     };
     let sendClientDataToApi = async () => {
@@ -91,43 +104,43 @@ export default function AddClient() {
         <>
             <h3 className='alert alert-primary text-center mx-5 my-2  fw-bold'>إضافة عميل جديد</h3>
             <div className="mx-5 p-3 rounded rounded-3 bg-white">
-                <form onSubmit={submitClientForm} >
+                <form onSubmit={submitClientForm}>
                     <div className="row gy-3">
                         <div className="col-md-6">
                             <label htmlFor="code" className='form-label'>كود العميل</label>
                             <input type="text" className='form-control' name="code" id="code"
-                                onChange={getInputValue} />
+                                   onChange={getInputValue}/>
                         </div>
                         <div className="col-md-6">
                             <label htmlFor="name" className='form-label'>الاسم</label>
                             <input type="text" className='form-control' name="name" id="name"
-                                onChange={getInputValue} />
+                                   onChange={getInputValue}/>
                         </div>
                         <div className="col-md-6">
-                            <label htmlFor="phones" className='form-label'> رقم هاتف</label>
-                            <input type="tel" className='form-control'  name="phones" id="phones"
-                                onChange={getPhoneValue} />
+                            <label htmlFor="phone1" className='form-label'> رقم هاتف</label>
+                            <input type="tel" className='form-control' name="phone1" id="phones"
+                                   onChange={getPhoneValue}/>
                         </div>
                         <div className="col-md-6">
-                            <label htmlFor="phones" className='form-label'> رقم هاتف</label>
-                            <input type="tel" className='form-control' name="phones" id="phones"
-                                onChange={getInputValue} />
-                        </div>
-                        <div className="col-md-6">
-                            <label htmlFor="addresses" className='form-label'> العنوان</label>
-                            <input type="text" className='form-control' name="addresses" id="addresses"
-                                onChange={getInputValue} />
+                            <label htmlFor="phone2" className='form-label'> رقم هاتف 2 </label>
+                            <input type="tel" className='form-control' name="phone2" id="phones"
+                                   onChange={getInputValue}/>
                         </div>
                         <div className="col-md-6">
                             <label htmlFor="addresses" className='form-label'> العنوان</label>
                             <input type="text" className='form-control' name="addresses" id="addresses"
-                                onChange={getInputValue} />
+                                   onChange={getInputValue}/>
+                        </div>
+                        <div className="col-md-6">
+                            <label htmlFor="addresses" className='form-label'> العنوان</label>
+                            <input type="text" className='form-control' name="addresses" id="addresses"
+                                   onChange={getInputValue}/>
                         </div>
 
                         <div className="col-md-12">
                             <label htmlFor="notes" className='form-label'>ملاحظات</label>
                             <textarea name="notes" id="notes" className='form-control'
-                                onChange={getInputValue} />
+                                      onChange={getInputValue}/>
                         </div>
                         <div className="col-md-3">
                             <button type='submit' className='btn btn-primary form-control fs-5'>

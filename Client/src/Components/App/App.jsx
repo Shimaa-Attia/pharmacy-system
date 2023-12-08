@@ -26,12 +26,7 @@ import { jwtDecode } from 'jwt-decode';
 import { ToastContainer } from 'react-toastify';
 import DeleteClient from '../Clients/DeleteClient'
 
-
-
-
-
 function App() {
-
   // for handle Reload
   useEffect(() => {
     if (localStorage.getItem('userToken') !== null) {
@@ -56,7 +51,6 @@ function App() {
      { path: '/', element: < MasterLayout userData={userData}  />,
       children:
         [
-       
           { path: 'home', element: <ProtectedRoute ><Home/></ProtectedRoute> },
           { path: 'orders', element:<ProtectedRoute><Orders /> </ProtectedRoute>  },
           { path: 'orders/add', element: <ProtectedRoute><AddOrder/> </ProtectedRoute> },
@@ -92,6 +86,5 @@ function App() {
     </>
   );
 }
-
 
 export default App;
