@@ -17,26 +17,25 @@ export default function AddClient() {
         notes: ''
     });
     let [phones, setPhones] = useState({
-        anas:""
+        phone1:"",
+        phone2:"",
     });
     let getPhoneValue = (event) => {
         let myPhones = {...phones};
 
+        setPhones({
+            ...phones,
+            [event.target.name]: event.target.value
+        })
 
+        console.log(phones)
     }
 
     let getInputValue = (event) => {
         let myClients = {...clients}; //deep copy
 
-        if (event.target.name === "phone1") {
 
-            setPhones({
-                anas: '12121'
-            })
-
-        } else {
-            myClients[event.target.name] = event.target.value
-        }
+        myClients[event.target.name] = event.target.value
 
         console.log(phones)
         setClients(myClients);
@@ -124,7 +123,7 @@ export default function AddClient() {
                         <div className="col-md-6">
                             <label htmlFor="phone2" className='form-label'> رقم هاتف 2 </label>
                             <input type="tel" className='form-control' name="phone2" id="phones"
-                                   onChange={getInputValue}/>
+                                   onChange={getPhoneValue}/>
                         </div>
                         <div className="col-md-6">
                             <label htmlFor="addresses" className='form-label'> العنوان</label>
