@@ -24,15 +24,16 @@
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.offline{
+  background-color: rgb(62, 122, 234);
+  color: white;
+  box-shadow: 10px 10px 10px #ccc;
+  padding: 30px ;
+  position: fixed;
+  border-radius: 20px;
+  top:100px;
+  left: 50px;
+  z-index: 9999;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
+
