@@ -28,12 +28,7 @@ import DeleteClient from '../Clients/DeleteClient';
 import { Offline, Online } from 'react-detect-offline';
 
 
-
-
-
-
 function App() {
-
   // for handle Reload
   useEffect(() => {
     if (localStorage.getItem('userToken') !== null) {
@@ -58,7 +53,6 @@ function App() {
      { path: '/', element: < MasterLayout userData={userData}  />,
       children:
         [
-       
           { path: 'home', element: <ProtectedRoute ><Home/></ProtectedRoute> },
           { path: 'orders', element:<ProtectedRoute><Orders /> </ProtectedRoute>  },
           { path: 'orders/add', element: <ProtectedRoute><AddOrder/> </ProtectedRoute> },
@@ -97,6 +91,5 @@ function App() {
     </>
   );
 }
-
 
 export default App;

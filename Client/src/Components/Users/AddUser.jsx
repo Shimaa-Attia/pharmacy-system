@@ -8,7 +8,8 @@ import {toast} from 'react-toastify';
 export default function AddUser() {
     let navigate = useNavigate();
     let [isLoading, setIsLoading] = useState(false);
-    let [users, setUsers] = useState({
+
+    let initUsers = {
         name: '',
         role: '',
         phone: '',
@@ -18,7 +19,9 @@ export default function AddUser() {
         code: '',
         hourRate: '',
         notes: '',
-    });
+    }
+
+    let [users, setUsers] = useState(initUsers);
     let getInputValue = (event) => {
         let myUsers = {...users}; //deep copy
         myUsers[event.target.name] = event.target.value;
@@ -29,6 +32,7 @@ export default function AddUser() {
                 toast.success(res.data.message , {
                     position:'top-center'
                 });
+                setUsers(initUsers);
                 setIsLoading(false);
                 
             }).catch((errors) => {
