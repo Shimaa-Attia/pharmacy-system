@@ -12,7 +12,7 @@ export default function DeleteClient() {
 
     let getClient = async () => {
         try {
-            let { data } = await axios.get(`http://pharma-erp.atomicsoft-eg.com/api/customers/show/${id}`,{
+            let { data } = await axios.get(`http://127.0.0.1:8000/api/customers/show/${id}`,{
                 headers: {
                     "Authorization": `Bearer ${accessToken}`
                 } 
@@ -26,7 +26,7 @@ export default function DeleteClient() {
     useEffect(() => { getClient() }, []);
     let deleteClient = async () => {
         try {
-            axios.delete(`http://pharma-erp.atomicsoft-eg.com/api/customers/delete/%7${id}`, {
+            axios.delete(`http://127.0.0.1:8000/api/customers/delete/%7${id}`, {
                 headers: {
                     "Authorization": `Bearer ${accessToken}`
                 }

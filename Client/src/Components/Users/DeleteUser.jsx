@@ -16,7 +16,7 @@ export default function DeleteUser() {
     let [users, setUsers] = useState([]);
     let getUser = async () => {
         try {
-            let { data } = await axios.get(`http://pharma-erp.atomicsoft-eg.com/api/users/show/${id}`);
+            let { data } = await axios.get(`http://127.0.0.1:8000/api/users/show/${id}`);
             setUsers(data.data);
 
         } catch (error) {
@@ -28,7 +28,7 @@ export default function DeleteUser() {
     useEffect(() => { getUser() }, []);
     let deleteUser = async () => {
         try {
-            axios.delete(`http://pharma-erp.atomicsoft-eg.com/api/users/delete/${id}`, {
+            axios.delete(`http://127.0.0.1:8000/api/users/delete/${id}`, {
                 headers: {
                     "Authorization": `Bearer ${accessToken}`
                 }

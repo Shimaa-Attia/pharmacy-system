@@ -39,7 +39,7 @@ class UserController extends Controller
         $hashedPassword = bcrypt($request->password);
 
         $checkUser = User::where("code","=", $request->code)
-            ->OrWhere("phone","=", $request->phone);
+            ->where("phone","=", $request->phone);
 
         if ($checkUser->where('deleted_at', null)->exists()) {
             return response()->json([
@@ -49,7 +49,7 @@ class UserController extends Controller
 
         $checkUser = $checkUser->withTrashed()
             ->first();
-         dd($checkUser);
+
         if ($checkUser) {
 
             try {

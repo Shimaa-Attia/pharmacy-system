@@ -9,7 +9,7 @@ export default function Users() {
 
   let getUserData = async () => {
     try {
-      let { data } = await axios.get(`http://pharma-erp.atomicsoft-eg.com/api/users`);
+      let { data } = await axios.get(`http://127.0.0.1:8000/api/users`);
       setUsers(data.data);
       
     } catch (error) {

@@ -28,7 +28,7 @@ export default function AddUser() {
         setUsers(myUsers);
     };
     let sendUserDataToApi = async () => {
-            await axios.post(`http://pharma-erp.atomicsoft-eg.com/api/users`, users).then((res) => {
+            await axios.post(`http://127.0.0.1:8000/api/users`, users).then((res) => {
                 toast.success(res.data.message , {
                     position:'top-center'
                 });

@@ -7,7 +7,7 @@ export default function Orders() {
 
   let [orders , setOrders] = useState([]);
   let getOrderData = async () => {
-    let { data } = await axios.get(`http://pharma-erp.atomicsoft-eg.com/api/orders`,{
+    let { data } = await axios.get(`http://127.0.0.1:8000/api/orders`,{
       headers: {
         "Authorization": `Bearer ${accessToken}`
     }
