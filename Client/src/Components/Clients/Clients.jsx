@@ -6,17 +6,20 @@ export default function Clients() {
   let accessToken = localStorage.getItem('userToken');
   let [clients, setClients] = useState([]);
 
+let [contactInfo , setContactInfo] = useState([]);
   let getClientDate = async () => {
     let { data } = await axios.get(`http://pharma-erp.atomicsoft-eg.com/api/customers` , {
       headers: {
         "Authorization": `Bearer ${accessToken}`
     }
     });
-    console.log(data);
+    console.log(data.data);
     setClients(data.data);
+    setContactInfo(data.data.contactInfo)
+    console.log(contactInfo.name);
   };
   
-  // useEffect(() => { getClientDate() }, []);
+  useEffect(() => { getClientDate() }, []);
 
   let showClients = () => {
     if (clients.length > 0) {
@@ -47,8 +50,11 @@ export default function Clients() {
                     <i className='bi bi-list-ul text-bg-success mx-1 p-1 rounded'></i>
                   </NavLink>
                 </td>
+              
                 <td>{client.address}</td>
-                <td>{client.phone}</td>
+                <td>{client.phones}</td>
+              
+                <td></td>
                 <td>{client.name}</td>
                 <td>{client.code}</td>
                 <td>{client.id}</td>

@@ -47,7 +47,7 @@ export default function EditeUser() {
         position: 'top-center'
       });
       setIsLoading(false);
-      // navigate('../users');
+      navigate('../users');
 
     }).catch((errors) => {
       setIsLoading(false);
