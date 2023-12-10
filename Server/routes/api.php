@@ -30,11 +30,13 @@ Route::get('users',[UserController::class,'all']);
 Route::get('users/show/{id}',[UserController::class,'show']);
 //create user(register)
 Route::post('/users',[UserController::class,'create']);
-//checke auth
-Route::get("/users/auth", [UserController::class,'checkAuth']);
+
+
 
 
 Route::middleware(['auth:api'])->group(function(){
+    //checke auth
+    Route::get("/users/auth", [UserController::class,'checkAuth']);
     //logout
     Route::post('/logout',[UserController::class,'logout']);
     Route::group(['prefix'=>'users','as'=>'users.'],function(){

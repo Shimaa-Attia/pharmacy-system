@@ -264,14 +264,7 @@ class UserController extends Controller
     public function checkAuth(Request $request){
 
         if (Auth::guard('api')->check()) {
-            // Here you have access to $request->user() method that
-            // contains the model of the currently authenticated user.
-            //
-            // Note that this method should only work if you call it
-            // after an Auth::check(), because the user is set in the
-            // request object by the auth component after a successful
-            // authentication check/retrival
-            // dd(Auth::guard('api')->user());
+
             return response()->json(Auth::guard('api')->user());
         }
             return response('Unauthenticated user');
