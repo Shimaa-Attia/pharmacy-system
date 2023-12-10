@@ -24,7 +24,9 @@ import EditeOrder from '../Orders/EditeOrder';
 import OrderDetails from '../Orders/OrderDetails';
 import { jwtDecode } from 'jwt-decode';
 import { ToastContainer } from 'react-toastify';
-import DeleteClient from '../Clients/DeleteClient'
+import DeleteClient from '../Clients/DeleteClient';
+import { Offline, Online } from 'react-detect-offline';
+
 
 function App() {
   // for handle Reload
@@ -76,6 +78,9 @@ function App() {
   ])
   return (
     <>
+
+    <Offline> <div className='offline'>You Are Offline , Contect to the Internet.</div> </Offline>
+
 
       <RouterProvider router={routes} />
       <ToastContainer

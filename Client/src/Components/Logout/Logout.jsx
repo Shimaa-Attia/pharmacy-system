@@ -19,16 +19,17 @@ export default function Logout({ userData, setUserData }) {
     toast.success(res.data.message, {
       position: 'top-center'
     });
-
-
     navigate('/');
 
   };
 
   return (
     <>
+    <div className='w-25 my-5'>
 
       <button className='btn btn-success' onClick={logout} >تسجيل الخروج</button>
+    </div>
+
     </>
   )
 }

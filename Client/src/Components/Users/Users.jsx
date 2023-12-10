@@ -1,13 +1,24 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import Table from 'react-bootstrap/Table';
 
 export default function Users() {
   let [users, setUsers] = useState([]);
 
   let getUserData = async () => {
-    let { data } = await axios.get(`http://pharma-erp.atomicsoft-eg.com/api/users`);
-    setUsers(data.data);
+    try {
+      let { data } = await axios.get(`http://pharma-erp.atomicsoft-eg.com/api/users`);
+      setUsers(data.data);
+      
+    } catch (error) {
+      toast.error('حدث خطأ ما' ,{
+        position:'top-right'
+      })
+      
+    }
+   
   };
   useEffect(() => { getUserData() }, []);
   
@@ -15,11 +26,10 @@ export default function Users() {
     if (users.length > 0) {
       return (
         <div className="shadow rounded rounded-4 bg-white mx-3 p-3 ">
-          <table className='table table-bordered table-hover text-center '>
+          <Table responsive='sm' className='table table-bordered table-hover text-center '>
             <thead>
               <tr>
                 <th>خيارات</th>
-
                 <th>رقم الهاتف</th>
                 <th>الوظيفة</th>
                 <th>الاسم</th>
@@ -49,7 +59,7 @@ export default function Users() {
               )}
             </tbody>
 
-          </table>
+          </Table>
         </div>
       )
     } else {

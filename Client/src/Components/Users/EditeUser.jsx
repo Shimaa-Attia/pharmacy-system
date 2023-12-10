@@ -47,7 +47,7 @@ export default function EditeUser() {
         position: 'top-center'
       });
       setIsLoading(false);
-      // navigate('../users');
+      navigate('../users');
 
     }).catch((errors) => {
       setIsLoading(false);
@@ -137,12 +137,12 @@ export default function EditeUser() {
             <div className="col-md-4">
               <label htmlFor="salary" className='form-label'>الراتب</label>
               <input type="number" className='form-control' name="salary" id="salary"
-                onChange={getInputValue} value={users.salary} />
+                onChange={getInputValue} value={users?.salary} />
             </div>
             <div className="col-md-12">
               <label htmlFor="notes" className='form-label'>ملاحظات</label>
               <textarea name="notes" id="notes" className='form-control'
-                onChange={getInputValue} value={users.notes} />
+                onChange={getInputValue} value={users?.notes} />
             </div>
             <div className="col-md-3">
               <button type='submit' className='btn btn-primary form-control fs-5'>

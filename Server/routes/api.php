@@ -34,7 +34,7 @@ Route::post('/users',[UserController::class,'create']);
 Route::get("/users/auth", [UserController::class,'checkAuth']);
 
 
-Route::middleware('auth:api')->group(function(){
+Route::middleware(['auth:api'])->group(function(){
     //logout
     Route::post('/logout',[UserController::class,'logout']);
     Route::group(['prefix'=>'users','as'=>'users.'],function(){
