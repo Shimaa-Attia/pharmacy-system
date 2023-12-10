@@ -38,8 +38,8 @@ class UserController extends Controller
 
         $hashedPassword = bcrypt($request->password);
 
-        $checkUser = User::where("phone", $request->phone)
-            ->OrWhere('code', $request->code);
+        $checkUser = User::where("code","=", $request->code)
+            ->OrWhere("phone","=", $request->phone);
 
         if ($checkUser->where('deleted_at', null)->exists()) {
             return response()->json([
@@ -49,7 +49,7 @@ class UserController extends Controller
 
         $checkUser = $checkUser->withTrashed()
             ->first();
-
+         dd($checkUser);
         if ($checkUser) {
 
             try {
@@ -97,12 +97,15 @@ class UserController extends Controller
 
     public function login(Request $request)
     {
+        // return response()->json([
+        //     'msg'=>"method is correct",
+        // ]);
         $data = $request->validate([
             'phone' => 'required|regex:/^01[0125][0-9]{8}$/',
             'password' => 'required|min:6'
         ]);
 
-
+        // dd($data);
         if (!auth()->attempt($request->only('phone', 'password'))) {
             return response(['message' => 'البيانات غير صحيحة، حاول مرة أخرى']);
         }
@@ -172,7 +175,8 @@ class UserController extends Controller
             'role' => 'required|in:طيار,مشرف,صيدلي',
             'code' => 'required|unique:users,code,' . $user->id,
             'hourRate' => 'numeric',
-            'salary' => 'required|numeric',
+            'salary' => 'numeric',
+            'password' => 'min:6',
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -257,28 +261,21 @@ class UserController extends Controller
         ], 200);
     }
 
-//   public function get_tagged($tag = "", Request $request)
-  public function checkAuth()
-{
-    // if (Auth::guard('api')->check()) {
-    //     // Here you have access to $request->user() method that
-    //     // contains the model of the currently authenticated user.
-    //     //
-    //     // Note that this method should only work if you call it
-    //     // after an Auth::check(), because the user is set in the
-    //     // request object by the auth component after a successful
-    //     // authentication check/retrival
-    //     return response()->json($request->user());
-    // }
+    public function checkAuth(Request $request){
 
-    // alternative method
-    if (($user = Auth::user()) !== null) {
-        // Here you have your authenticated user model
-        return response()->json($user);
+        if (Auth::guard('api')->check()) {
+            // Here you have access to $request->user() method that
+            // contains the model of the currently authenticated user.
+            //
+            // Note that this method should only work if you call it
+            // after an Auth::check(), because the user is set in the
+            // request object by the auth component after a successful
+            // authentication check/retrival
+            // dd(Auth::guard('api')->user());
+            return response()->json(Auth::guard('api')->user());
+        }
+            return response('Unauthenticated user');
+
     }
-
-    // return general data
-    return response('Unauthenticated user');
-}
 
 }

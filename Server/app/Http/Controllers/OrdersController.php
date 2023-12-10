@@ -85,7 +85,7 @@ class OrdersController extends Controller
                ],409);
        }
       //update
-    
+
       $order->update([
         "cost"=>$request->cost,
          "totalAmmount"=>$request->totalAmmount,

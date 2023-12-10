@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\CustomerReource;
 use App\Models\CustomField;
+use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Validator;
 
 class CustomerController extends Controller
@@ -27,32 +29,33 @@ class CustomerController extends Controller
          return new CustomerReource($customer);
     }
 
-public function contactInfo($id){
+    public function contactInfo($id){
 
-    $phones = DB::table('custom_fields')
-                ->select('id','value')
-                ->where('name', '=', 'phone')
-                ->where('customer_id', '=', $id)
-                ->get();
+        $phones = DB::table('custom_fields')
+                    ->select('id','value')
+                    ->where('name', '=', 'phone')
+                    ->where('customer_id', '=', $id)
+                    ->get();
 
-    $adresses = DB::table('custom_fields')
-                ->select('id','value')
-                ->where('name', '=', 'address')
-                ->where('customer_id', '=', $id)
-                ->get();
+        $adresses = DB::table('custom_fields')
+                    ->select('id','value')
+                    ->where('name', '=', 'address')
+                    ->where('customer_id', '=', $id)
+                    ->get();
 
-    return response()->json([
-            "phones"=>$phones,
-             "addresses"=>$adresses
-             ]);
-}
+        return response()->json([
+                "phones"=>$phones,
+                "addresses"=>$adresses
+                ]);
+    }
+
 
     public function store(Request $request){
 
         $validator =  Validator::make($request->all(),[
             'name' => 'required',
-            'code' => 'required|unique:customers,code',
-            "phones.*"=>'required|regex:/^01[0125][0-9]{8}$/|unique:custom_fields,value',
+            'code' => 'required',  //|unique:customers,code
+            "phones.*"=>'required|regex:/^01[0125][0-9]{8}$/',//|unique:custom_fields,value
             "addresses.*"=>'required|min:5',
 
           ]);
@@ -61,6 +64,103 @@ public function contactInfo($id){
              "msg"=>$validator->errors()
            ],409);
         }
+
+
+        // $checkUser = User::where("phone", $request->phone);
+
+                $checkCustomer = Customer::where("code", $request->code)
+                ->orWhere(function (Builder $query) {
+                    foreach ($request->phones as $phone){
+                    $query->join('custom_fields', 'customers.id', '=', 'custom_fields.customer_id')
+                        ->where('value', $phone);
+                    }
+               });
+
+                if ($checkCustomer->where('deleted_at', null)->exists()) {
+                    return response()->json([
+                        "message" => "هذا العميل مسجل بالفعل",
+                    ]);
+                }
+
+
+        //  $num=0;
+        // foreach($request->phones as $phone){
+
+        //   $checCustomerPones = Customer::join('custom_fields', 'custom_fields.customer_id', '=', 'customers.id')
+        //   ->where('custom_fields.value', $phone);
+        //   if ($checCustomerPones->where('deleted_at', null)->exists()) {
+        //   $message [] =" the phones.$num has already been taken";
+        //   $num++;
+
+        //   }
+        // }
+        // if(!empty($message)){
+        // return response()->json([
+        //     "message"=>$message,
+        //  ]);
+        // }
+
+
+
+
+        $checkCustomer = $checkCustomer->withTrashed()
+            ->first();
+            dd($checkCustomer);
+
+        // $checCustomerPones = $checCustomerPones->withTrashed()
+        //     ->first();
+
+        if ($checkCustomer) {
+
+            try {
+                $this->restore($checkCustomer->id);
+            } catch (Exception $e) {
+                return response()->json([
+                    "message" => "هناك مشكلة في الإضافة",
+
+                ]);
+            }
+
+            try {
+                $this->update($request, $checkCustomer->id);
+            } catch (Exception $e) {
+                return response()->json([
+                    "message" => "هناك مشكلة في الإضافة",
+                ]);
+            }
+
+            return response()->json([
+                "message" => "تم اضافة العميل قديم",
+                'customer' => $checkCustomer,
+            ], 200);
+
+        // } elseif ($checCustomerPones) {
+
+        // try {
+        //     $this->restore($checCustomerPones->id);
+        // } catch (Exception $e) {
+        //     return response()->json([
+        //         "message" => "هناك مشكلة في الإضافة",
+
+        //     ]);
+        // }
+
+        // try {
+        //     $this->update($request, $checCustomerPones->id);
+        // } catch (Exception $e) {
+        //     return response()->json([
+        //         "message" => "هناك مشكلة في الإضافة",
+        //     ]);
+        // }
+
+        return response()->json([
+            "message" => "تم استرجاع عميل سابق",
+            'customer' => $checkCustomer,
+        ], 200);
+
+    }
+
+
 
         DB::transaction(function () use($request) {
             $customer = Customer::create([
