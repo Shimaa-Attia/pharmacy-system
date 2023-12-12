@@ -2,11 +2,9 @@ import React from 'react';
 import { Outlet, useNavigate } from 'react-router-dom'
 import Navbar from '../Navbar/Navbar'
 import Sidebar from '../Sidebar/Sidebar'
-import Login from '../Login/Login';
-import Users from '../Users/Users';
-import Settings from '../Settings/Settings';
+
 import { ToastContainer } from "react-toastify";
-import Logout from '../Logout/Logout';
+
 
 
 export default function MasterLayout({userData , setUserData}) {

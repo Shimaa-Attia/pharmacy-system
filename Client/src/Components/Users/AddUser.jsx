@@ -32,7 +32,7 @@ export default function AddUser() {
         setUsers(myUsers);
     };
     let sendUserDataToApi = async () => {
-        await axios.post(`http://pharma-erp.atomicsoft-eg.com/api/users`, users).then((res) => {
+        await axios.post(`http://127.0.0.1:8000/api/users`, users).then((res) => {
             toast.success(res.data.message, {
                 position: 'top-center'
             });
@@ -62,7 +62,7 @@ export default function AddUser() {
             phone: Joi.string().required().pattern(/^01[0125][0-9]{8}$/).message('رقم الهاتف غير صالح'),
             password: Joi.string().required(),
             password_confirmation: Joi.ref('password'),
-            hourRate: Joi.number().required(),
+            hourRate: Joi.number().empty(''),
             salary: Joi.number().empty(''),
             notes: Joi.string().empty(''),
 
@@ -117,9 +117,9 @@ export default function AddUser() {
                             <select name="role" defaultValue={0} className='form-control' id="role"
                                 onChange={getInputValue}>
                                 <option value={0} hidden disabled>اختار</option>
-                                <option value="مشرف">مشرف</option>
-                                <option value="صيدلي">صيدلي</option>
-                                <option value="طيار">طيار</option>
+                                <option value="admin">مشرف</option>
+                                <option value="doctor">صيدلي</option>
+                                <option value="delivery">طيار</option>
                             </select>
                         </div>
                         <div className="col-md-4">

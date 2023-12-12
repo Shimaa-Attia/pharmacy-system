@@ -7,14 +7,21 @@ import {toast} from 'react-toastify';
 import {Form, Formik} from "formik";
 
 export default function AddClient() {
-    let formElement = document.querySelectorAll('div input');
-    let textarea = document.querySelector('div textarea');
     let accessToken = localStorage.getItem('userToken');
     let [isLoading, setIsLoading] = useState(false);
 
+    let  initialValues = {
+        code: '',
+        name: '',
+        phones: [],
+        addresses: [],
+        notes: ''
+    }
+    let [clientData, setClientData] = useState( {...initialValues});
+
     let sendClientDataToApi = async (values) => {
 
-        await axios.post(`http://pharma-erp.atomicsoft-eg.com/api/customers`, values, {
+        await axios.post(`http://127.0.0.1:8000/api/customers`, values, {
             headers: {
                 "Authorization": `Bearer ${accessToken}`
             }
@@ -44,7 +51,7 @@ export default function AddClient() {
     };
     let validateClientForm = (values) => {
         const schema = Joi.object({
-            name: Joi.string().min(3).max(20).required(),
+            name: Joi.string().min(3).required(),
             code: Joi.string().required(),
             phones: Joi.required(),
             addresses: Joi.required(),
@@ -61,10 +68,13 @@ export default function AddClient() {
         let validation = validateClientForm(values);
         if (!validation.error) {
             sendClientDataToApi(values).finally(()=>{
-                formElement.forEach((el) => {
-                    el.value = '';
-                });
-                textarea.value = '';
+                values= {
+                    code: '',
+                    name: '',
+                    phones: [],
+                    addresses: [],
+                    notes: ''
+                }
             });
          
         } else {
@@ -89,15 +99,10 @@ export default function AddClient() {
             <div className="mx-5 p-3 rounded rounded-3 bg-white">
 
                 <Formik initialValues={
-                    {
-                        code: '',
-                        name: '',
-                        phones: [],
-                        addresses: [],
-                        notes: ''
-                    }
-                } onSubmit={(values) => {
+                    clientData
+                } onSubmit={(values, actions) => {
                     submitClientForm(values)
+
                 }}>
                     {
                         formik => {

@@ -27,20 +27,29 @@ export default function AddOrder() {
     });
 
     let getUserData = async () => {
-        let { data } = await axios.get(`http://pharma-erp.atomicsoft-eg.com/api/users`);
-        setUsers(data.data);
+        let { data } = await axios.get(`http://127.0.0.1:8000/api/users`);
+
+        data.data.map((user) => {
+            if (user.role === 'delivery') {
+                return setUsers([...users, user]);
+            }
+        })
 
     };
     useEffect(() => {
         getUserData()
     }, []);
 
+
+
     let getClientData = async () => {
-        let { data } = await axios.get(`http://pharma-erp.atomicsoft-eg.com/api/customers`, {
+        let { data } = await axios.get(`http://127.0.0.1:8000/api/customers`, {
             headers: {
                 "Authorization": `Bearer ${accessToken}`
             }
         });
+
+
         setClients([...data.data]);
     };
 
@@ -48,14 +57,28 @@ export default function AddOrder() {
         getClientData()
     }, []);
 
-    // let [contacts, setContacts] = useState([]);
+    let [contacts, setContacts] = useState([]);
 
-    // let getContactValue = async () => {
-    //     let { data } = await axios.get(`http://pharma-erp.atomicsoft-eg.com/api/customeres/contact/${id}`, {
-    //         headers: {
-    //             "Authorization": `Bearer ${accessToken}`
-    //         }
-    //     });
+    useEffect(() => {
+        if (orders.customer_id === '') {
+            return;
+        }else {
+            getContactValue(orders.customer_id);
+        }
+
+    }, [orders.customer_id]);
+    let getContactValue = async (id) => {
+        let { data } = await axios.get(`http://127.0.0.1:8000/api/customers/contact/${id}`, {
+            headers: {
+                "Authorization": `Bearer ${accessToken}`
+            }
+        });
+
+        setContacts(data)
+
+        console.log(contacts);
+
+    }
 
     // }
     // useEffect(() => { getContactValue() }, []);
@@ -63,11 +86,15 @@ export default function AddOrder() {
         let myOrders = { ...orders }; //deep copy
         myOrders[event.target.name] = event.target.value;
         setOrders(myOrders);
-        console.log(event.target.value);
+
     };
 
     let sendOrderDataToApi = async () => {
-        await axios.post(`http://pharma-erp.atomicsoft-eg.com/api/orders`, orders).then((res) => {
+        await axios.post(`http://127.0.0.1:8000/api/orders`, orders,{
+            headers: {
+                "Authorization": `Bearer ${accessToken}`
+            }
+        }).then((res) => {
             toast.success(res.data.message, {
                 position: 'top-center'
             });
@@ -96,7 +123,7 @@ export default function AddOrder() {
             customer_id: Joi.number().required(),
             totalAmmount: Joi.number(),
             cost: Joi.number(),
-            notes: Joi.string(),
+            notes: Joi.string().empty(''),
         });
         return schema.validate(orders, { abortEarly: false });
     };
@@ -158,7 +185,7 @@ export default function AddOrder() {
                             <select name="customer_phone" defaultValue={0} className='form-control mySelect' id="customer_phone"
                                 onChange={getInputValue}>
                                 <option value={0} hidden disabled>اختار</option>
-
+                                {contacts?.phones ? contacts?.phones.map((phone) => <option key={phone.id} value={phone.id} > {phone.value}</option>) : null}
                             </select>
                         </div>
                         <div className="col-md-4">
@@ -166,6 +193,7 @@ export default function AddOrder() {
                             <select name="customer_address" defaultValue={0} className='form-control mySelect' id="customer_address"
                                 onChange={getInputValue}>
                                 <option value={0} hidden disabled>اختار</option>
+                                {contacts?.addresses ? contacts?.addresses.map((address) => <option key={address.id} value={address.id} > {address.value}</option>) : null}
 
                             </select>
                         </div>

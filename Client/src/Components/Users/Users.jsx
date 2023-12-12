@@ -9,7 +9,7 @@ export default function Users() {
 
   // let getUserData = async () => {
   //   try {
-  //     let { data } = await axios.get(`http://pharma-erp.atomicsoft-eg.com/api/users`);
+  //     let { data } = await axios.get(`http://127.0.0.1:8000/api/users`);
   //     setUsers(data.data);
 
   //   } catch (error) {
@@ -29,12 +29,12 @@ export default function Users() {
   let getUserData = async () => {
     let searchResult;
     if (searchText !== undefined && searchText.trim().length > 0) {
-      searchResult = await axios.get(`http://pharma-erp.atomicsoft-eg.com/api/users?q=${searchText.trim()}`);
+      searchResult = await axios.get(`http://127.0.0.1:8000/api/users?q=${searchText.trim()}`);
 
       console.log('Hi from Search only')
 
     } else {
-      searchResult = await axios.get(`http://pharma-erp.atomicsoft-eg.com/api/users`);
+      searchResult = await axios.get(`http://127.0.0.1:8000/api/users`);
       console.log('Hi from No Search ')
 
     }
