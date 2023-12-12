@@ -13,7 +13,7 @@ export default function ClientDetails() {
 
   let getClientDetails = async () => {
     try {
-      let { data } = await axios.get(`http://127.0.0.1:8000/api/customers/show/${id}`, {
+      let { data } = await axios.get(`http://pharma-erp.atomicsoft-eg.com/api/customers/show/${id}`, {
         headers: {
           "Authorization": `Bearer ${accessToken}`
         }

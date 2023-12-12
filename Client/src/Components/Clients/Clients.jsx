@@ -8,7 +8,7 @@ export default function Clients() {
 
 
     let getClientData = async () => {
-        let { data } = await axios.get(`http://127.0.0.1:8000/api/customers`, {
+        let { data } = await axios.get(`http://pharma-erp.atomicsoft-eg.com/api/customers`, {
             headers: {
                 "Authorization": `Bearer ${accessToken}`
             }

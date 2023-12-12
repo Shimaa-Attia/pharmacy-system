@@ -8,7 +8,7 @@ export default function Orders() {
   let [users , setUsers] = useState([]);
 
   // let getUserData = async () => {
-  //   let { data } = await axios.get(`http://127.0.0.1:8000/api/users`);
+  //   let { data } = await axios.get(`http://pharma-erp.atomicsoft-eg.com/api/users`);
   //   setUsers(data.data);
    
   // };
@@ -17,7 +17,7 @@ export default function Orders() {
   //   }, []);
 
   let getOrderData = async () => {
-    let { data } = await axios.get(`http://127.0.0.1:8000/api/orders`,{
+    let { data } = await axios.get(`http://pharma-erp.atomicsoft-eg.com/api/orders`,{
       headers: {
         "Authorization": `Bearer ${accessToken}`
     }
