@@ -4,10 +4,20 @@ import { NavLink, useNavigate } from 'react-router-dom';
 
 export default function Orders() {
   let accessToken = localStorage.getItem('userToken');
-
   let [orders , setOrders] = useState([]);
+  let [users , setUsers] = useState([]);
+
+  // let getUserData = async () => {
+  //   let { data } = await axios.get(`http://pharma-erp.atomicsoft-eg.com/api/users`);
+  //   setUsers(data.data);
+   
+  // };
+  // useEffect(() => {
+  //    getUserData() 
+  //   }, []);
+
   let getOrderData = async () => {
-    let { data } = await axios.get(`http://127.0.0.1:8000/api/orders`,{
+    let { data } = await axios.get(`http://pharma-erp.atomicsoft-eg.com/api/orders`,{
       headers: {
         "Authorization": `Bearer ${accessToken}`
     }
@@ -16,6 +26,7 @@ export default function Orders() {
     setOrders(data.data);
   };
   useEffect(() => { getOrderData() }, []);
+
   let showOrders = () => {
     if (orders.length > 0) {
       return (
@@ -25,14 +36,14 @@ export default function Orders() {
               <tr>
                 <th>خيارات</th>
                 <th>كود العميل</th>
-                <th>رقم الهاتف</th>
-                <th>الاسم</th>
+                <th>هاتف الطيار</th>
+                <th>اسم الطيار</th>
                 <th>كود الطيار</th>
-                <th>id</th>
+                <th>رقم</th>
               </tr>
             </thead>
             <tbody>
-              {orders.map((order) => <tr key={order.id}>
+              {orders.map((order , index) => <tr key={order.id}>
                 <td>
                   <NavLink to={`/orders/delete/${order.id}`} >
                   <i className='bi bi-trash text-bg-danger p-1 mx-1 rounded'></i>
@@ -48,7 +59,7 @@ export default function Orders() {
                 <td>{order.role}</td>
                 <td>{order.name}</td>
                 <td>{order.code}</td>
-                <td>{order.id}</td>  
+                <td>{++index}</td>  
               </tr>
               )}
             </tbody>
@@ -58,8 +69,8 @@ export default function Orders() {
       )
     } else {
       return (
-      <div className=' d-flex justify-content-center min-vh-100  align-items-center' >
-        <i className='fa fa-spinner fa-spin fa-5x'></i>
+      <div className=' d-flex justify-content-center  height-calc-70 align-items-center' >
+        <i className='fa fa-spinner fa-spin  fa-5x'></i>
       </div>)
 
     }

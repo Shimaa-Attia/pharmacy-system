@@ -1,11 +1,15 @@
 import axios from 'axios';
 import Joi from 'joi';
-import React, {useEffect, useState} from 'react'
-import {NavLink, useNavigate} from 'react-router-dom';
-import {toast} from 'react-toastify';
+import React, { useEffect, useState } from 'react'
+import { NavLink, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 
 export default function AddUser() {
+    let formElement = document.querySelectorAll('form input');
+    let textarea = document.querySelector('form textarea');
+
+ 
     let navigate = useNavigate();
     let [isLoading, setIsLoading] = useState(false);
 
@@ -19,35 +23,35 @@ export default function AddUser() {
         code: '',
         hourRate: '',
         notes: '',
-    }
+    };
 
     let [users, setUsers] = useState(initUsers);
     let getInputValue = (event) => {
-        let myUsers = {...users}; //deep copy
+        let myUsers = { ...users }; //deep copy
         myUsers[event.target.name] = event.target.value;
         setUsers(myUsers);
     };
     let sendUserDataToApi = async () => {
-            await axios.post(`http://127.0.0.1:8000/api/users`, users).then((res) => {
-                toast.success(res.data.message , {
-                    position:'top-center'
-                });
-                setUsers(initUsers);
-                setIsLoading(false);
-                
-            }).catch((errors) => {
-                setIsLoading(false);
-                const errorList = errors?.response?.data?.error;
-                if (errorList !== undefined) {
-                    Object.keys(errorList).map((err) => {
-                        errorList[err].map((err) => {
-                            toast.error(err);
-                        })
-                    });
-                }else {
-                    toast.error("حدث خطأ ما");
-                }
+        await axios.post(`http://pharma-erp.atomicsoft-eg.com/api/users`, users).then((res) => {
+            toast.success(res.data.message, {
+                position: 'top-center'
             });
+            setUsers(initUsers);
+            setIsLoading(false);
+
+        }).catch((errors) => {
+            setIsLoading(false);
+            const errorList = errors?.response?.data?.error;
+            if (errorList !== undefined) {
+                Object.keys(errorList).map((err) => {
+                    errorList[err].map((err) => {
+                        toast.error(err);
+                    })
+                });
+            } else {
+                toast.error("حدث خطأ ما");
+            }
+        });
     };
 
     let validateUserForm = () => {
@@ -63,15 +67,25 @@ export default function AddUser() {
             notes: Joi.string().empty(''),
 
         });
-        return schema.validate(users, {abortEarly: false});
-
-    }
+        return schema.validate(users, { abortEarly: false });
+    };
     let submitUserForm = (e) => {
         setIsLoading(true);
         e.preventDefault();
         let validation = validateUserForm();
         if (!validation.error) {
-            sendUserDataToApi();
+        
+            sendUserDataToApi().finally(() => {
+
+                formElement.forEach((el) => {
+                    el.value = '';
+                });
+                textarea.value = '';
+                document.getElementById("role").selectedIndex= "0";
+              
+            });
+
+
         } else {
             setIsLoading(false);
             try {
@@ -92,16 +106,16 @@ export default function AddUser() {
                     <div className="row gy-3">
                         <div className="col-md-4">
                             <label htmlFor="code" className='form-label'>كود المستخدم</label>
-                            <input type="text" className='form-control' name="code" id="code" onChange={getInputValue}/>
+                            <input type="text" className='form-control' name="code" id="code" onChange={getInputValue} />
                         </div>
                         <div className="col-md-4">
                             <label htmlFor="name" className='form-label'>الاسم</label>
-                            <input type="text" className='form-control' name="name" id="name" onChange={getInputValue}/>
+                            <input type="text" className='form-control' name="name" id="name" onChange={getInputValue} />
                         </div>
                         <div className="col-md-4">
                             <label htmlFor="role" className='form-label'>الوظيفة</label>
                             <select name="role" defaultValue={0} className='form-control' id="role"
-                                    onChange={getInputValue}>
+                                onChange={getInputValue}>
                                 <option value={0} hidden disabled>اختار</option>
                                 <option value="مشرف">مشرف</option>
                                 <option value="صيدلي">صيدلي</option>
@@ -111,31 +125,31 @@ export default function AddUser() {
                         <div className="col-md-4">
                             <label htmlFor="phone" className='form-label'>رقم الهاتف</label>
                             <input type="tel" className='form-control' name="phone" id="phone"
-                                   onChange={getInputValue}/>
+                                onChange={getInputValue} />
                         </div>
                         <div className="col-md-4">
                             <label htmlFor="hourRate" className='form-label'>سعر الساعة </label>
                             <input type="number" className='form-control' name="hourRate" id="hourRate"
-                                   onChange={getInputValue}/>
+                                onChange={getInputValue} />
                         </div>
                         <div className="col-md-4">
                             <label htmlFor="salary" className='form-label'>الراتب</label>
                             <input type="number" className='form-control' name="salary" id="salary"
-                                   onChange={getInputValue}/>
+                                onChange={getInputValue} />
                         </div>
                         <div className="col-md-4">
                             <label htmlFor="password" className='form-label'>كلمة السر</label>
                             <input type="password" className='form-control' name="password" id="password"
-                                   onChange={getInputValue}/>
+                                onChange={getInputValue} />
                         </div>
                         <div className="col-md-4">
                             <label htmlFor="password_confirmation" className='form-label'>تأكيد كلمة السر</label>
                             <input type="password" className='form-control' name="password_confirmation"
-                                   id="password_confirmation" onChange={getInputValue}/>
+                                id="password_confirmation" onChange={getInputValue} />
                         </div>
                         <div className="col-md-12">
                             <label htmlFor="notes" className='form-label'>ملاحظات</label>
-                            <textarea name="notes" id="notes" className='form-control' onChange={getInputValue}/>
+                            <textarea name="notes" id="notes" className='form-control' onChange={getInputValue} />
                         </div>
                         <div className="col-md-3">
                             <button type='submit' className='btn btn-primary form-control fs-5'>

@@ -7,20 +7,19 @@ import {toast} from 'react-toastify';
 import {Form, Formik} from "formik";
 
 export default function AddClient() {
+    let formElement = document.querySelectorAll('div input');
+    let textarea = document.querySelector('div textarea');
     let accessToken = localStorage.getItem('userToken');
-
-
     let [isLoading, setIsLoading] = useState(false);
-
 
     let sendClientDataToApi = async (values) => {
 
-        await axios.post(`http://127.0.0.1:8000/api/customers`, values, {
+        await axios.post(`http://pharma-erp.atomicsoft-eg.com/api/customers`, values, {
             headers: {
                 "Authorization": `Bearer ${accessToken}`
             }
         }).then((res) => {
-            console.log(res.data.message);
+          
             toast.success(res.data.message, {
                 position: 'top-center'
             });
@@ -39,7 +38,7 @@ export default function AddClient() {
                 });
             } else {
                 toast.error("حدث خطأ ما");
-                console.log('send to api');
+              
             }
         });
     };
@@ -47,7 +46,6 @@ export default function AddClient() {
         const schema = Joi.object({
             name: Joi.string().min(3).max(20).required(),
             code: Joi.string().required(),
-
             phones: Joi.required(),
             addresses: Joi.required(),
             notes: Joi.string().empty(''),
@@ -56,30 +54,33 @@ export default function AddClient() {
 
         return schema.validate(values, {abortEarly: false});
 
-    }
-
+    };
 
     let submitClientForm = (values) => {
         setIsLoading(true);
-
-
         let validation = validateClientForm(values);
         if (!validation.error) {
-            sendClientDataToApi(values)
+            sendClientDataToApi(values).finally(()=>{
+                formElement.forEach((el) => {
+                    el.value = '';
+                });
+                textarea.value = '';
+            });
+         
         } else {
-
+            setIsLoading(false);
             try {
                 validation.error.details.map((err) => {
                     toast.error(err.message);
                 })
             } catch (e) {
                 toast.error("حدث خطأ ما");
-                console.log('validate from');
+               
             }
         }
 
         setIsLoading(false);
-    }
+    };
 
 
     return (
@@ -145,7 +146,8 @@ export default function AddClient() {
                                     <div className="col-md-12">
                                         <label htmlFor="notes" className='form-label'>ملاحظات</label>
                                         <textarea name="notes" id="notes" className='form-control'
-                                                  onChange={formik.handleChange}
+                                        
+                                            onChange={formik.handleChange}
                                         />
                                     </div>
                                     <div className="col-md-3">

@@ -27,7 +27,7 @@ export default function EditeUser() {
 
   let getUser = async () => {
     try {
-      let { data } = await axios.get(`http://127.0.0.1:8000/api/users/show/${id}`);
+      let { data } = await axios.get(`http://pharma-erp.atomicsoft-eg.com/api/users/show/${id}`);
       setUsers(data.data);
 
     } catch (error) {
@@ -38,7 +38,7 @@ export default function EditeUser() {
 
 
   let sendEditedDataToApi = async () => {
-    await axios.put(`http://127.0.0.1:8000/api/users/${id}`, users, {
+    await axios.put(`http://pharma-erp.atomicsoft-eg.com/api/users/${id}`, users, {
       headers: {
         "Authorization": `Bearer ${accessToken}`
       }
@@ -100,24 +100,24 @@ export default function EditeUser() {
 
   return (
     <>
-      <h4 className='alert alert-primary mx-5 my-2 text-center' >تعديل بيانات ({users.name})</h4>
+      <h4 className='alert alert-primary mx-5 my-2 text-center' >تعديل بيانات ({users?.name})</h4>
       <div className="mx-5 p-3 rounded rounded-3 bg-white">
         <form onSubmit={editeUserSubmit} >
           <div className="row gy-3">
             <div className="col-md-4">
               <label htmlFor="code" className='form-label'>كود المستخدم</label>
               <input type="text" className='form-control' name="code" id="code"
-                onChange={getInputValue} value={users.code} />
+                onChange={getInputValue} value={users?.code} />
             </div>
             <div className="col-md-4">
               <label htmlFor="name" className='form-label'>الاسم</label>
               <input type="text" className='form-control' name="name" id="name"
-                onChange={getInputValue} value={users.name} />
+                onChange={getInputValue} value={users?.name} />
             </div>
             <div className="col-md-4">
               <label htmlFor="role" className='form-label'>الوظيفة</label>
               <select name="role" className='form-control' id="role"
-                onChange={getInputValue} value={users.role} >
+                onChange={getInputValue} value={users?.role} >
                 <option value={0} hidden disabled>اختار</option>
                 <option value="مشرف">مشرف</option>
                 <option value="صيدلي">صيدلي</option>
@@ -127,12 +127,12 @@ export default function EditeUser() {
             <div className="col-md-4">
               <label htmlFor="phone" className='form-label'>رقم الهاتف</label>
               <input type="tel" className='form-control' name="phone" id="phone"
-                onChange={getInputValue} value={users.phone} />
+                onChange={getInputValue} value={users?.phone} />
             </div>
             <div className="col-md-4">
               <label htmlFor="hourRate" className='form-label'>سعر الساعة </label>
               <input type="number" className='form-control' name="hourRate" id="hourRate"
-                onChange={getInputValue} value={users.hourRate} />
+                onChange={getInputValue} value={users?.hourRate} />
             </div>
             <div className="col-md-4">
               <label htmlFor="salary" className='form-label'>الراتب</label>

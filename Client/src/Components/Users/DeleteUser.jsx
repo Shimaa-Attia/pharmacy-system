@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
-import Login from '../Login/Login';
+
 import { toast } from 'react-toastify';
 
 
@@ -9,14 +9,12 @@ export default function DeleteUser() {
 
     let { id } = useParams();
     let navigate = useNavigate();
-
     let accessToken = localStorage.getItem('userToken');
 
-    // console.log(`Bearer ${accessToken}`);
     let [users, setUsers] = useState([]);
     let getUser = async () => {
         try {
-            let { data } = await axios.get(`http://127.0.0.1:8000/api/users/show/${id}`);
+            let { data } = await axios.get(`http://pharma-erp.atomicsoft-eg.com/api/users/show/${id}`);
             setUsers(data.data);
 
         } catch (error) {
@@ -28,7 +26,7 @@ export default function DeleteUser() {
     useEffect(() => { getUser() }, []);
     let deleteUser = async () => {
         try {
-            axios.delete(`http://127.0.0.1:8000/api/users/delete/${id}`, {
+            axios.delete(`http://pharma-erp.atomicsoft-eg.com/api/users/delete/${id}`, {
                 headers: {
                     "Authorization": `Bearer ${accessToken}`
                 }
@@ -51,7 +49,7 @@ export default function DeleteUser() {
             <div className="card m-auto w-50 p-3">
                 <div className="card-body  ">
                     <h4 className="card-title  "> الاسم : {users.name}</h4>
-                    <h5 className='my-3'> كود العميل : {users.code}</h5>
+                    <h5 className='my-3'> كود المستخدم : {users.code}</h5>
                     <h5 className='my-3'> الوظيفة : {users.role}</h5>
                     <h5> رقم الهاتف : {users.phone}</h5>
 
