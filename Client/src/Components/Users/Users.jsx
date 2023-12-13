@@ -5,11 +5,12 @@ import { toast } from 'react-toastify';
 import Table from 'react-bootstrap/Table';
 
 export default function Users() {
+  let accessToken = localStorage.getItem('userToken');
   let [users, setUsers] = useState([]);
 
   // let getUserData = async () => {
   //   try {
-  //     let { data } = await axios.get(`http://pharma-erp.atomicsoft-eg.com/api/users`);
+  //     let { data } = await axios.get(`http://127.0.0.1:8000/api/users`);
   //     setUsers(data.data);
 
   //   } catch (error) {
@@ -29,16 +30,21 @@ export default function Users() {
   let getUserData = async () => {
     let searchResult;
     if (searchText !== undefined && searchText.trim().length > 0) {
-      searchResult = await axios.get(`http://pharma-erp.atomicsoft-eg.com/api/users?q=${searchText.trim()}`);
-
-      console.log('Hi from Search only')
+      searchResult = await axios.get(`http://127.0.0.1:8000/api/users/search/${searchText.trim()}`, {
+        headers: {
+          "Authorization": `Bearer ${accessToken}`
+        }
+      });
+      setUsers(searchResult.data);
+      console.log('Hi from Search ')
 
     } else {
-      searchResult = await axios.get(`http://pharma-erp.atomicsoft-eg.com/api/users`);
-      console.log('Hi from No Search ')
-
-    }
+    searchResult = await axios.get(`http://127.0.0.1:8000/api/users`);
+    console.log('Hi from No Search ');
     setUsers(searchResult.data.data);
+  }
+  
+
   }
   useEffect(() => { getUserData() }, [searchText]);
 

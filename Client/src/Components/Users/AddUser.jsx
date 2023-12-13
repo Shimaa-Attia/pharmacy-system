@@ -32,14 +32,20 @@ export default function AddUser() {
         setUsers(myUsers);
     };
     let sendUserDataToApi = async () => {
-        await axios.post(`http://pharma-erp.atomicsoft-eg.com/api/users`, users).then((res) => {
+        await axios.post(`http://127.0.0.1:8000/api/users`, users).then((res) => {
             toast.success(res.data.message, {
                 position: 'top-center'
             });
             setUsers(initUsers);
             setIsLoading(false);
+            formElement.forEach((el) => {
+                el.value = '';
+            });
+            textarea.value = '';
+            document.getElementById("role").selectedIndex= "0";
 
         }).catch((errors) => {
+            console.log(errors);
             setIsLoading(false);
             const errorList = errors?.response?.data?.error;
             if (errorList !== undefined) {
@@ -75,17 +81,7 @@ export default function AddUser() {
         let validation = validateUserForm();
         if (!validation.error) {
         
-            sendUserDataToApi().finally(() => {
-
-                formElement.forEach((el) => {
-                    el.value = '';
-                });
-                textarea.value = '';
-                document.getElementById("role").selectedIndex= "0";
-              
-            });
-
-
+            sendUserDataToApi();
         } else {
             setIsLoading(false);
             try {

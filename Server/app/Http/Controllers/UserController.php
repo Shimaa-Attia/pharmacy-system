@@ -105,7 +105,7 @@ class UserController extends Controller
             'password' => 'required|min:6'
         ]);
 
-        // dd($data);
+        // dd($request);
         if (!auth()->attempt($request->only('phone', 'password'))) {
             return response(['message' => 'البيانات غير صحيحة، حاول مرة أخرى']);
         }

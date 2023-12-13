@@ -3,19 +3,19 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-export default function Logout({ userData, setUserData }) {
+export default function Logout({setUserData }) {
 
 
   let accessToken = localStorage.getItem('userToken');
   let navigate = useNavigate();
   let logout = async () => {
-    let res = await axios.post(`http://pharma-erp.atomicsoft-eg.com/api/logout`, {}, {
+    let res = await axios.post(`http://127.0.0.1:8000/api/logout`, {}, {
       headers: {
         "Authorization": `Bearer ${accessToken}`
       }
     });
     localStorage.removeItem('userToken');
-    // setUserData(null);
+    setUserData(null);
     toast.success(res.data.message, {
       position: 'top-center'
     });
