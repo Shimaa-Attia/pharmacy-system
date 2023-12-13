@@ -105,20 +105,20 @@ class UserController extends Controller
             'password' => 'required|min:6'
         ]);
 
-        // dd($data);
-        if (!auth()->attempt($request->only('phone', 'password'))) {
-            return response(['message' => 'البيانات غير صحيحة، حاول مرة أخرى']);
-        }
+        dd($data);
+        // if (!auth()->attempt($request->only('phone', 'password'))) {
+        //     return response(['message' => 'البيانات غير صحيحة، حاول مرة أخرى']);
+        // }
 
-        /** @var \App\Models\User $user * */
-        $user = Auth::user();
-        $token = $user->createToken('API Token')->accessToken;
+        // /** @var \App\Models\User $user * */
+        // $user = Auth::user();
+        // $token = $user->createToken('API Token')->accessToken;
 
-        return response()->json([
-            "message" => "تم تسجيل دخولك بنجاح",
-            'user' => auth()->user(),
-            'token' => $token
-        ], 200);
+        // return response()->json([
+        //     "message" => "تم تسجيل دخولك بنجاح",
+        //     'user' => auth()->user(),
+        //     'token' => $token
+        // ], 200);
 
     }
 
@@ -271,8 +271,12 @@ class UserController extends Controller
 
     }
 
-    public function search($name){
-        return User::where('name','like',"%$name%")->get();
+    public function search($key){
+        return User::where('name','like',"%$key%")
+        ->OrWhere('code','like',"%$key%")
+        ->OrWhere('phone','like',"%$key%")
+        ->OrWhere('role','like',"%$key%")
+        ->get();
     }
 
 }

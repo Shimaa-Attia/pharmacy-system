@@ -47,8 +47,8 @@ Route::middleware(['auth:api'])->group(function(){
         Route::get('/archive',[UserController::class,'archive']);
         Route::post('/restore/{id}',[UserController::class,'restore']);
         Route::delete('/deleteArchive/{id}',[UserController::class,'deleteArchive']);
-        //search
-        Route::get('/search/{name}',[UserController::class,'search']);
+        //search user
+        Route::get('/search/{key}',[UserController::class,'search']);
 
 
     });
@@ -70,6 +70,8 @@ Route::middleware(['auth:api'])->group(function(){
         Route::get('/archive',[CustomerController::class,'archive']);
         Route::post('/restore/{id}',[CustomerController::class,'restore']);
         Route::delete('/deleteArchive/{id}',[CustomerController::class,'deleteArchive']);
+        //search customer
+         Route::get('/search/{key}',[CustomerController::class,'search']);
 
     });
     Route::group(['prefix'=>'orders','as'=>'orders.'],function(){
@@ -86,6 +88,8 @@ Route::middleware(['auth:api'])->group(function(){
         Route::get('/archive',[OrdersController::class,'archive']);
         Route::post('/restore/{id}',[OrdersController::class,'restore']);
         Route::delete('/deleteArchive/{id}',[OrdersController::class,'deleteArchive']);
+         //search orders
+         Route::get('/search/{key}',[OrdersController::class,'search']);
 
     });
 

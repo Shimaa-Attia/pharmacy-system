@@ -156,4 +156,17 @@ class OrdersController extends Controller
         "message"=>"تم الحذف"],200);
     }
 
+    public function search($key){
+        return Order::where('cost','like',"%$key%")
+        ->orWhereHas('customer',function($query) use ($key){
+            $query->where('name','like',"%$key%")
+            ->OrWhere('code','like',"%$key%");
+        })
+        ->orWhereHas('user',function($query) use ($key){
+            $query->where('name','like',"%$key%")
+            ->OrWhere('code','like',"%$key%");
+        })
+        ->get();
+    }
+
 }
