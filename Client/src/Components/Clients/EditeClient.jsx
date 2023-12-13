@@ -14,7 +14,7 @@ export default function EditeClient() {
   let [contactInfo, setContactInfo] = useState([]);
   let getClient = async () => {
     try {
-      let { data } = await axios.get(`http://pharma-erp.atomicsoft-eg.com/api/customers/show/${id}`, {
+      let { data } = await axios.get(`http://127.0.0.1:8000/api/customers/show/${id}`, {
         headers: {
           "Authorization": `Bearer ${accessToken}`
         }
@@ -34,23 +34,10 @@ export default function EditeClient() {
     getClient()
   }, []);
   
-// let getContactValue =()=>{
-//   console.log('hello');
-// contactInfo.map((info)=>{
-//   console.log(info);
-//   if(info.name ==='phone'){
- 
-//   }
-
-// })
-// };
-// useEffect(() => {
-//   getContactValue()
-// }, []);
 
 
   let sendEditedDataToApi = async (values) => {
-    await axios.put(`http://pharma-erp.atomicsoft-eg.com/api/customers/${id}`, values, {
+    await axios.put(`http://127.0.0.1:8000/api/customers/${id}`, values, {
       headers: {
         "Authorization": `Bearer ${accessToken}`
       }
@@ -112,7 +99,9 @@ export default function EditeClient() {
       <h3 className='alert alert-primary text-center mx-5 my-2  fw-bold'> تعديل بيانات ({clients?.name}) </h3>
       <div className="mx-5 p-3 rounded rounded-3 bg-white">
 
-        <Formik initialValues={
+        <Formik
+      
+        initialValues={
           {
             code: '',
             name: '',

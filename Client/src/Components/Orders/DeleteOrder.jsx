@@ -11,7 +11,7 @@ export default function DeleteOrder() {
   let [orders, setOrders] = useState([]);
   let getOrder = async () => {
     try {
-      let { data } = await axios.get(`http://pharma-erp.atomicsoft-eg.com/api/orders/show/${id}`);
+      let { data } = await axios.get(`http://127.0.0.1:8000/api/orders/show/${id}`);
       setOrders(data.data);
 
     } catch (error) {
@@ -23,7 +23,7 @@ export default function DeleteOrder() {
   }, [])
   let DeleteOrder = async () => {
     try {
-      axios.delete(`http://pharma-erp.atomicsoft-eg.com/api/orders/delete/${id}`, {
+      axios.delete(`http://127.0.0.1:8000/api/orders/delete/${id}`, {
         headers: {
           "Authorization": `Bearer ${accessToken}`
         }
@@ -53,7 +53,6 @@ export default function DeleteOrder() {
               <h3 className='h2' > كود العميل : {orders.code} </h3>
             </div>
           </div>
-
 
           {orders.notes ?
             <div className=' col-md-12  ' >

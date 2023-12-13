@@ -97,28 +97,26 @@ class UserController extends Controller
 
     public function login(Request $request)
     {
-        // return response()->json([
-        //     'msg'=>"method is correct",
-        // ]);
+
         $data = $request->validate([
             'phone' => 'required|regex:/^01[0125][0-9]{8}$/',
             'password' => 'required|min:6'
         ]);
 
-        dd($data);
-        // if (!auth()->attempt($request->only('phone', 'password'))) {
-        //     return response(['message' => 'البيانات غير صحيحة، حاول مرة أخرى']);
-        // }
+        if (!auth()->attempt($request->only('phone', 'password'))) {
+            return response(['message' => 'البيانات غير صحيحة، حاول مرة أخرى']);
+        }
 
-        // /** @var \App\Models\User $user * */
-        // $user = Auth::user();
-        // $token = $user->createToken('API Token')->accessToken;
 
-        // return response()->json([
-        //     "message" => "تم تسجيل دخولك بنجاح",
-        //     'user' => auth()->user(),
-        //     'token' => $token
-        // ], 200);
+        /** @var \App\Models\User $user * */
+        $user = Auth::user();
+        $token = $user->createToken('API Token')->accessToken;
+
+        return response()->json([
+            "message" => "تم تسجيل دخولك بنجاح",
+            'user' => auth()->user(),
+            'token' => $token
+        ], 200);
 
     }
 
