@@ -22,7 +22,7 @@ class UserController extends Controller
             'name' => 'required|max:255',
             'phone' => 'required|regex:/^01[0125][0-9]{8}$/',
             'password' => 'required|confirmed|min:6',
-            'role' => 'required|in:طيار,مشرف,صيدلي',
+            'role' => 'required|in:doctor,delivery,admin',
             'code' => 'required',
             'hourRate' => 'numeric',
             'salary' => 'numeric',
@@ -39,7 +39,7 @@ class UserController extends Controller
         $hashedPassword = bcrypt($request->password);
 
         $checkUser = User::where("code","=", $request->code)
-            ->where("phone","=", $request->phone);
+            ->Where("phone","=", $request->phone);
 
         if ($checkUser->where('deleted_at', null)->exists()) {
             return response()->json([
@@ -49,7 +49,7 @@ class UserController extends Controller
 
         $checkUser = $checkUser->withTrashed()
             ->first();
-
+        //  dd($checkUser);
         if ($checkUser) {
 
             try {
@@ -172,7 +172,7 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:255',
             'phone' => "required|regex:/^01[0125][0-9]{8}$/|unique:users,phone,$user->id",
-            'role' => 'required|in:طيار,مشرف,صيدلي',
+            'role' => 'required|in:doctor,delivery,admin',
             'code' => 'required|unique:users,code,' . $user->id,
             'hourRate' => 'numeric',
             'salary' => 'numeric',
@@ -269,6 +269,10 @@ class UserController extends Controller
         }
             return response('Unauthenticated user');
 
+    }
+
+    public function search($name){
+        return User::where('name','like',"%$name%")->get();
     }
 
 }

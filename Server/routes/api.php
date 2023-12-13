@@ -47,6 +47,9 @@ Route::middleware(['auth:api'])->group(function(){
         Route::get('/archive',[UserController::class,'archive']);
         Route::post('/restore/{id}',[UserController::class,'restore']);
         Route::delete('/deleteArchive/{id}',[UserController::class,'deleteArchive']);
+        //search
+        Route::get('/search/{name}',[UserController::class,'search']);
+
 
     });
 
