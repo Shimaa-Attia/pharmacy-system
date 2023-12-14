@@ -16,7 +16,7 @@ export default function Clients() {
     let getClientData = async () => {
         let searchResult;
         if (searchText !== undefined && searchText.trim().length > 0) {
-            searchResult = await axios.get(`http://127.0.0.1:8000/api/customers/search/${searchText.trim()}`,{
+            searchResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers/search/${searchText.trim()}`,{
                 headers: {
                     "Authorization": `Bearer ${accessToken}`
                 }
@@ -26,7 +26,7 @@ export default function Clients() {
             console.log(clients.length);
             // console.log(searchResult.data);
         }else{
-            searchResult = await axios.get(`http://127.0.0.1:8000/api/customers`,{
+            searchResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers`,{
                 headers: {
                     "Authorization": `Bearer ${accessToken}`
                 }

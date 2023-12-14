@@ -9,7 +9,7 @@ export default function Navbar({ userData ,setUserData }) {
   let accessToken = localStorage.getItem('userToken');
   let navigate = useNavigate();
   let logout = async () => {
-    let res = await axios.post(`http://127.0.0.1:8000/api/logout`, {}, {
+    let res = await axios.post(`${process.env.REACT_APP_API_URL}/api/logout`, {}, {
       headers: {
         "Authorization": `Bearer ${accessToken}`
       }

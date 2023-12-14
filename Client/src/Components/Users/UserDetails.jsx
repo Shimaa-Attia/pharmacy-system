@@ -11,7 +11,7 @@ export default function UserDetails() {
 
   let getUserDetails = async () => {
     try {
-      let { data } = await axios.get(`http://127.0.0.1:8000/api/users/show/${id}`);
+      let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/show/${id}`);
       setUsers(data.data);
 
     } catch (error) {

@@ -9,7 +9,7 @@ export default function Orders() {
   let [users, setUsers] = useState([]);
 
   let getUserData = async () => {
-    let { data } = await axios.get(`http://127.0.0.1:8000/api/users`);
+    let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users`);
     data.data.map((user) => {
       return setUsers(user);
 
@@ -27,7 +27,7 @@ export default function Orders() {
   let getOrderData = async () => {
     let searchResult;
     if (searchText !== undefined && searchText.trim().length > 0) {
-      searchResult = await axios.get(`http://127.0.0.1:8000/api/orders/search/${searchText.trim()}`, {
+      searchResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/search/${searchText.trim()}`, {
         headers: {
           "Authorization": `Bearer ${accessToken}`
         }
@@ -37,7 +37,7 @@ export default function Orders() {
       setOrders(searchResult.data);
 
     } else {
-      searchResult = await axios.get(`http://127.0.0.1:8000/api/orders`, {
+      searchResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders`, {
         headers: {
           "Authorization": `Bearer ${accessToken}`
         }

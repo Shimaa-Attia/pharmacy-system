@@ -11,7 +11,7 @@ export default function DeleteOrder() {
   let [orders, setOrders] = useState([]);
   let getOrder = async () => {
     try {
-      let { data } = await axios.get(`http://127.0.0.1:8000/api/orders/show/${id}`);
+      let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/show/${id}`);
       setOrders(data.data);
 
     } catch (error) {
@@ -23,7 +23,7 @@ export default function DeleteOrder() {
   }, [])
   let DeleteOrder = async () => {
     try {
-      axios.delete(`http://127.0.0.1:8000/api/orders/delete/${id}`, {
+      axios.delete(`${process.env.REACT_APP_API_URL}/api/orders/delete/${id}`, {
         headers: {
           "Authorization": `Bearer ${accessToken}`
         }

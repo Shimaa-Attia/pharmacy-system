@@ -28,7 +28,7 @@ export default function EditeOrder() {
   });
 
   let getUserData = async () => {
-    let { data } = await axios.get(`http://127.0.0.1:8000/api/users`);
+    let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users`);
     setUsers(data.data)
 
     // data.data.map((user) => {
@@ -42,7 +42,7 @@ export default function EditeOrder() {
   }, []);
 
   let getClientData = async () => {
-    let { data } = await axios.get(`http://127.0.0.1:8000/api/customers`, {
+    let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers`, {
       headers: {
         "Authorization": `Bearer ${accessToken}`
       }
@@ -65,7 +65,7 @@ export default function EditeOrder() {
 
   }, [orders.customer_id]);
   let getContactValue = async (id) => {
-    let { data } = await axios.get(`http://127.0.0.1:8000/api/customers/contact/${id}`, {
+    let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers/contact/${id}`, {
       headers: {
         "Authorization": `Bearer ${accessToken}`
       }
@@ -80,7 +80,7 @@ export default function EditeOrder() {
 
   };
   let sendEditedDataToApi = async () => {
-    await axios.put(`http://127.0.0.1:8000/api/orders/${id}`, orders, {
+    await axios.put(`${process.env.REACT_APP_API_URL}/api/orders/${id}`, orders, {
       headers: {
         "Authorization": `Bearer ${accessToken}`
       }

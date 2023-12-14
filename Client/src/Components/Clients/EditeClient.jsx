@@ -14,7 +14,7 @@ export default function EditeClient() {
   let [contactInfo, setContactInfo] = useState([]);
   let getClient = async () => {
     try {
-      let { data } = await axios.get(`http://127.0.0.1:8000/api/customers/show/${id}`, {
+      let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers/show/${id}`, {
         headers: {
           "Authorization": `Bearer ${accessToken}`
         }
@@ -37,7 +37,7 @@ export default function EditeClient() {
 
 
   let sendEditedDataToApi = async (values) => {
-    await axios.put(`http://127.0.0.1:8000/api/customers/${id}`, values, {
+    await axios.put(`${process.env.REACT_APP_API_URL}/api/customers/${id}`, values, {
       headers: {
         "Authorization": `Bearer ${accessToken}`
       }

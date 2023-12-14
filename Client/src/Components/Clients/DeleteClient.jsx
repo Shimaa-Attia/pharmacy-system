@@ -13,7 +13,7 @@ export default function DeleteClient() {
 
     let getClient = async () => {
         try {
-            let { data } = await axios.get(`http://127.0.0.1:8000/api/customers/show/${id}`, {
+            let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers/show/${id}`, {
                 headers: {
                     "Authorization": `Bearer ${accessToken}`
                 }
@@ -31,7 +31,7 @@ export default function DeleteClient() {
     useEffect(() => { getClient() }, []);
     let deleteClient = async () => {
         try {
-            axios.delete(`http://127.0.0.1:8000/api/customers/delete/${id}`, {
+            axios.delete(`${process.env.REACT_APP_API_URL}/api/customers/delete/${id}`, {
                 headers: {
                     "Authorization": `Bearer ${accessToken}`
                 }

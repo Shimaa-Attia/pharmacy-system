@@ -27,7 +27,7 @@ export default function EditeUser() {
 
   let getUser = async () => {
     try {
-      let { data } = await axios.get(`http://127.0.0.1:8000/api/users/show/${id}`);
+      let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/show/${id}`);
       setUsers(data.data);
 
     } catch (error) {
@@ -38,7 +38,7 @@ export default function EditeUser() {
 
 
   let sendEditedDataToApi = async () => {
-    await axios.put(`http://127.0.0.1:8000/api/users/${id}`, users, {
+    await axios.put(`${process.env.REACT_APP_API_URL}/api/users/${id}`, users, {
       headers: {
         "Authorization": `Bearer ${accessToken}`
       }

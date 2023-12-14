@@ -5,6 +5,9 @@ import { toast } from 'react-toastify';
 import Table from 'react-bootstrap/Table';
 
 export default function Users() {
+  
+  
+
   let accessToken = localStorage.getItem('userToken');
   let [users, setUsers] = useState([]);
 
@@ -18,7 +21,7 @@ export default function Users() {
   let getUserData = async () => {
     let searchResult;
     if (searchText !== undefined && searchText.trim().length > 0) {
-      searchResult = await axios.get(`http://127.0.0.1:8000/api/users/search/${searchText.trim()}`, {
+      searchResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/search/${searchText.trim()}`, {
         headers: {
           "Authorization": `Bearer ${accessToken}`
         }
@@ -28,7 +31,7 @@ export default function Users() {
 
 
     } else {
-      searchResult = await axios.get(`http://127.0.0.1:8000/api/users`);
+      searchResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/users`);
       console.log('Hi from No Search ');
       setUsers(searchResult.data.data);
     }

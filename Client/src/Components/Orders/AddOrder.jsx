@@ -28,7 +28,7 @@ export default function AddOrder() {
     });
 
     let getUserData = async () => {
-        let { data } = await axios.get(`http://127.0.0.1:8000/api/users`);
+        let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users`);
  
         data.data.map((user ) => {
             if (user.role === 'delivery') {
@@ -44,7 +44,7 @@ export default function AddOrder() {
     }, []);
 
     let getClientData = async () => {
-        let { data } = await axios.get(`http://127.0.0.1:8000/api/customers`, {
+        let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers`, {
             headers: {
                 "Authorization": `Bearer ${accessToken}`
             }
@@ -67,7 +67,7 @@ export default function AddOrder() {
 
     }, [orders.customer_id]);
     let getContactValue = async (id) => {
-        let { data } = await axios.get(`http://127.0.0.1:8000/api/customers/contact/${id}`, {
+        let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers/contact/${id}`, {
             headers: {
                 "Authorization": `Bearer ${accessToken}`
             }
@@ -84,7 +84,7 @@ export default function AddOrder() {
     };
 
     let sendOrderDataToApi = async () => {
-        await axios.post(`http://127.0.0.1:8000/api/orders`, orders, {
+        await axios.post(`${process.env.REACT_APP_API_URL}/api/orders`, orders, {
             headers: {
                 "Authorization": `Bearer ${accessToken}`
             }
