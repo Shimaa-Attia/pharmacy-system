@@ -1,4 +1,4 @@
-import { Navigate, RouterProvider, createBrowserRouter, useNavigate } from 'react-router-dom';
+import { RouterProvider, createBrowserRouter, useNavigate } from 'react-router-dom';
 import '../../../src/App.css';
 import MasterLayout from '../MasterLayout/MasterLayout';
 import NotFound from '../NotFound/NotFound';
@@ -13,7 +13,6 @@ import EditeUser from '../Users/EditeUser';
 import UserDetails from '../Users/UserDetails';
 import { useEffect, useState } from 'react';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
-import Logout from '../Logout/Logout';
 import AddClient from '../Clients/AddClient';
 import EditeClient from '../Clients/EditeClient';
 import ClientDetails from '../Clients/ClientDetails';
@@ -50,7 +49,7 @@ function App() {
   let routes = createBrowserRouter([
     
       { index: true, element: <Login saveUserData={saveUserData} /> },
-     { path: '/', element: < MasterLayout userData={userData}  />,
+     { path: '/', element: < MasterLayout userData={userData}  setUserData={setUserData}  />,
       children:
         [
           { path: 'home', element: <ProtectedRoute ><Home/></ProtectedRoute> },
@@ -64,13 +63,12 @@ function App() {
           { path: 'clients/delete/:id', element: <ProtectedRoute><DeleteClient /> </ProtectedRoute>  },
           { path: 'clients/edite/:id', element: <ProtectedRoute><EditeClient /> </ProtectedRoute> },
           { path: 'clients/details/:id', element:<ProtectedRoute><ClientDetails /> </ProtectedRoute>  },
-          { path: 'settings', element: <ProtectedRoute><Settings setUserData={setUserData}/>  </ProtectedRoute>  },
+          { path: 'settings', element: <ProtectedRoute><Settings/>  </ProtectedRoute>  },
           { path: 'users', element:<ProtectedRoute><Users/> </ProtectedRoute>   },
           { path: 'users/add', element: <ProtectedRoute><AddUser /> </ProtectedRoute>  },
           { path: 'users/delete/:id', element: <ProtectedRoute><DeleteUser/> </ProtectedRoute>  },
           { path: 'users/edite/:id', element: <ProtectedRoute><EditeUser /> </ProtectedRoute>   },
           { path: 'users/details/:id', element: <ProtectedRoute><UserDetails /> </ProtectedRoute>  },
-          { path: 'logout', element: <Logout /> },
           { path: '*', element: <NotFound /> }
 
         ]

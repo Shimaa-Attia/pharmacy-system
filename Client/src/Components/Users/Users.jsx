@@ -8,19 +8,7 @@ export default function Users() {
   let accessToken = localStorage.getItem('userToken');
   let [users, setUsers] = useState([]);
 
-  // let getUserData = async () => {
-  //   try {
-  //     let { data } = await axios.get(`http://127.0.0.1:8000/api/users`);
-  //     setUsers(data.data);
 
-  //   } catch (error) {
-  //     toast.error('حدث خطأ ما' ,{
-  //       position:'top-right'
-  //     })
-
-  //   }
-
-  // };
   let [searchText, setSearchText] = useState('');
   function handleSearchChange(event) {
     setSearchText(event.target.value)
@@ -38,12 +26,13 @@ export default function Users() {
       setUsers(searchResult.data);
       console.log('Hi from Search ')
 
+
     } else {
-    searchResult = await axios.get(`http://127.0.0.1:8000/api/users`);
-    console.log('Hi from No Search ');
-    setUsers(searchResult.data.data);
-  }
-  
+      searchResult = await axios.get(`http://127.0.0.1:8000/api/users`);
+      console.log('Hi from No Search ');
+      setUsers(searchResult.data.data);
+    }
+
 
   }
   useEffect(() => { getUserData() }, [searchText]);
@@ -51,10 +40,10 @@ export default function Users() {
   let showUsers = () => {
     if (users.length > 0) {
       return (
-        <div className="shadow rounded rounded-4 bg-white mx-3 p-3 ">
-          <Table responsive='sm' className='table table-bordered table-hover text-center '>
-            <thead >
-              <tr className='bg-primary'>
+        <div className="shadow rounded rounded-4 bg-white mx-3 p-3 border  ">
+          <Table responsive='sm' className='table table-bordered  table-hover text-center '>
+            <thead className='table-primary' >
+              <tr >
                 <th  >خيارات</th>
                 <th>رقم الهاتف</th>
                 <th>الوظيفة</th>
@@ -89,9 +78,12 @@ export default function Users() {
         </div>
       )
     } else {
+
       return (
         <div className=' d-flex justify-content-center height-calc-70 align-items-center' >
           <i className='fa fa-spinner fa-spin fa-5x'></i>
+      
+
         </div>)
 
     }
@@ -105,7 +97,7 @@ export default function Users() {
           <NavLink to='/users/add' className='btn btn-primary' >إضافة مستخدم</NavLink>
         </div>
         <div className="col-md-4">
-          <input type="text" className='form-control text-end ' placeholder=' ...بحث عن مستخدم ' onChange={handleSearchChange} />
+          <input type="text" className='form-control text-end ' placeholder=' ...بحث عن مستخدم   ' onChange={handleSearchChange} />
         </div>
       </div>
       {showUsers()}

@@ -9,19 +9,22 @@ export default function Clients() {
 
     let [searchText, setSearchText] = useState('');
     function handleSearchChange(event) {
-        setSearchText(event.target.value)
+        setSearchText(event.target.value);
 
     };
 
     let getClientData = async () => {
         let searchResult;
         if (searchText !== undefined && searchText.trim().length > 0) {
-            searchResult = await axios.get(`http://127.0.0.1:8000/api/customers?q=${searchText.trim()}`,{
+            searchResult = await axios.get(`http://127.0.0.1:8000/api/customers/search/${searchText.trim()}`,{
                 headers: {
                     "Authorization": `Bearer ${accessToken}`
                 }
             });
             console.log('Hi from Search ')
+            setClients(searchResult.data);
+            console.log(clients.length);
+            // console.log(searchResult.data);
         }else{
             searchResult = await axios.get(`http://127.0.0.1:8000/api/customers`,{
                 headers: {
@@ -29,11 +32,13 @@ export default function Clients() {
                 }
             });
             console.log('Hi from No Search ')
+           
+          
+            setClients(searchResult.data.data);
+            
+            
         }
-        setClients(searchResult.data.data);
     };
-
-
     useEffect(() => {
         getClientData()
     }, [searchText]);
@@ -42,8 +47,8 @@ export default function Clients() {
         if (clients.length > 0) {
             return (
                 <div className="shadow rounded rounded-4 bg-white mx-3 p-3 ">
-                    <Table responsive='sm' className='table table-bordered table-hover text-center '>
-                        <thead>
+                    <Table responsive='sm' className='table table-bordered table-hover text-center   '>
+                        <thead  className='table-primary'>
                             <tr>
                                 <th>خيارات</th>
                                 <th>ملاحظات</th>
@@ -58,7 +63,7 @@ export default function Clients() {
                             {clients.map((client, index) => <tr key={client.id}>
                                 <td>
                                     <NavLink to={`/clients/delete/${client.id}`}>
-                                        <i className='bi bi-trash text-bg-danger p-1 mx-1 rounded'></i>
+                                        <i className='bi bi-trash text-bg-danger p-1 mx-1  rounded'></i>
                                     </NavLink>
                                     <NavLink to={`/clients/edite/${client.id}`}>
                                         <i className='bi bi-pencil-square text-bg-primary mx-1 p-1 rounded'></i>

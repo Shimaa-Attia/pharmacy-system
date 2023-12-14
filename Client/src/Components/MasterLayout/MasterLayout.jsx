@@ -15,10 +15,10 @@ export default function MasterLayout({userData , setUserData}) {
     
         <div className=" g-0 row">
           <div className="col-10">
-            <Navbar userData={userData} />
+            <Navbar userData={userData} setUserData={setUserData} />
             <Outlet/>
           </div>
-          <div className='col-2 position-fixed top-0 end-0 bottom-0  ' >
+          <div className='col-auto' >
             <Sidebar userData={userData} />
           </div>
         </div> 

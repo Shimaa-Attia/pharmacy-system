@@ -27,13 +27,14 @@ export default function Orders() {
   let getOrderData = async () => {
     let searchResult;
     if (searchText !== undefined && searchText.trim().length > 0) {
-      searchResult = await axios.get(`http://127.0.0.1:8000/api/orders?q=${searchText.trim()}`, {
+      searchResult = await axios.get(`http://127.0.0.1:8000/api/orders/search/${searchText.trim()}`, {
         headers: {
           "Authorization": `Bearer ${accessToken}`
         }
       });
 
       console.log('Hi from Search ')
+      setOrders(searchResult.data);
 
     } else {
       searchResult = await axios.get(`http://127.0.0.1:8000/api/orders`, {
@@ -42,9 +43,10 @@ export default function Orders() {
         }
       });
       console.log('Hi from No Search ')
+      setOrders(searchResult.data.data);
 
     }
-    setOrders(searchResult.data.data);
+
 
   };
   useEffect(() => { getOrderData() }, [searchText]);
@@ -54,7 +56,7 @@ export default function Orders() {
       return (
         <div className="shadow rounded rounded-4 bg-white mx-3 p-3 ">
           <Table responsive='sm' className='table table-bordered table-hover text-center '>
-            <thead>
+            <thead  className='table-primary'>
               <tr>
                 <th>خيارات</th>
                 <th>هاتف العميل</th>
