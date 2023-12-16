@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { Table } from 'react-bootstrap';
+import { Helmet } from 'react-helmet';
 import { NavLink, useNavigate } from 'react-router-dom';
 
 export default function Orders() {
@@ -103,7 +104,10 @@ export default function Orders() {
 
   return (
     <>
-
+   <Helmet>
+        <meta charSet="utf-8" />
+        <title>Orders</title>
+      </Helmet>
       <div className=" my-3 text-center row mx-2  ">
         <div className="col-md-6">
           <NavLink to='/orders/add' className='btn btn-primary' >إضافة أوردر</NavLink>

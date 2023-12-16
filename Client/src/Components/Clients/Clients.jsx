@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { Table } from 'react-bootstrap';
+import { Helmet } from 'react-helmet';
 import { NavLink, useNavigate } from 'react-router-dom';
 
 export default function Clients() {
@@ -16,27 +17,28 @@ export default function Clients() {
     let getClientData = async () => {
         let searchResult;
         if (searchText !== undefined && searchText.trim().length > 0) {
-            searchResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers/search/${searchText.trim()}`,{
+            searchResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers/search/${searchText.trim()}`, {
                 headers: {
                     "Authorization": `Bearer ${accessToken}`
                 }
             });
             console.log('Hi from Search ')
             setClients(searchResult.data);
+            console.log(searchResult);
             console.log(clients.length);
             // console.log(searchResult.data);
-        }else{
-            searchResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers`,{
+        } else {
+            searchResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers`, {
                 headers: {
                     "Authorization": `Bearer ${accessToken}`
                 }
             });
             console.log('Hi from No Search ')
-           
-          
+
+
             setClients(searchResult.data.data);
-            
-            
+
+
         }
     };
     useEffect(() => {
@@ -48,7 +50,7 @@ export default function Clients() {
             return (
                 <div className="shadow rounded rounded-4 bg-white mx-3 p-3 ">
                     <Table responsive='sm' className='table table-bordered table-hover text-center   '>
-                        <thead  className='table-primary'>
+                        <thead className='table-primary'>
                             <tr>
                                 <th>خيارات</th>
                                 <th>ملاحظات</th>
@@ -107,7 +109,12 @@ export default function Clients() {
     };
 
     return (
+
         <>
+            <Helmet>
+                <meta charSet="utf-8" />
+                <title>Clients</title>
+            </Helmet>
             <div className=" my-3 text-center row mx-2  ">
                 <div className="col-md-6">
                     <NavLink to='/clients/add' className='btn btn-primary'>إضافة عميل</NavLink>

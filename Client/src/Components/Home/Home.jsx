@@ -1,11 +1,17 @@
 import React from 'react'
+import { Helmet } from 'react-helmet'
+ 
 
 export default function Home() {
   return (
-<>
-<h2 className='text-center' >home component</h2>
+    <>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>Home</title>
+      </Helmet>
+      
 
 
 
-</>  )
+    </>)
 }

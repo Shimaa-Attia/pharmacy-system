@@ -1,39 +1,44 @@
-.sidebar{
+/* .sidebar{
     max-width: 240px;
+    background-color: aqua;
+} */
+.height_55{
+    
+    height: 55px;
+    
+    
 }
 
-.sidebar  a{
-    display: block;
-   
-
-    /* cursor: pointer; */
-
-}
 i{
     cursor: pointer;
 }
- /* .sidebar ul li span , .sidebar ul li i {
+   ul li span ,  ul li i {
     color: black ;
-} */
-/* .sidebar ul li:hover {
+} 
+ /* ul li:hover {
     background-color: #0D6EFD;
   
     border-radius: 5px; 
-}*/
- /* .sidebar ul li:hover span , .sidebar ul li:hover i {
+}
+ ul li:hover span ,  ul li:hover i {
     color: white;
-}   */
-.sparator{
- 
-    box-shadow: rgba(17, 17, 26, 0.1) 0px 1px 0px;
-    min-height: 1px;
-}
-nav{
- transition: all 0.5s;
-}
-/* .nav-pills li .nav-link .active span{
-background-color: #0d6efd;
-color: white !important;
+}    */
 
- } */
+
+  .active *  {
+    display: block;
+    color: white !important;
+    background-color: blueviolet !important;
+  
+}
+.nav .nav-item .nav-link.active *{
+color: white !important;
+}
+
+
+/* .nav-pills .nav-link.active span ,.nav-pills .nav-link.active i{
+    color: white !important;
+    background-color: blueviolet !important;
+} */
+
 

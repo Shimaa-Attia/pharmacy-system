@@ -3,10 +3,11 @@ import React, { useEffect, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Table from 'react-bootstrap/Table';
+import { Helmet } from 'react-helmet';
 
 export default function Users() {
-  
-  
+
+
 
   let accessToken = localStorage.getItem('userToken');
   let [users, setUsers] = useState([]);
@@ -85,7 +86,7 @@ export default function Users() {
       return (
         <div className=' d-flex justify-content-center height-calc-70 align-items-center' >
           <i className='fa fa-spinner fa-spin fa-5x'></i>
-      
+
 
         </div>)
 
@@ -94,7 +95,10 @@ export default function Users() {
 
   return (
     <>
-
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title> Users</title>
+      </Helmet>
       <div className=" my-3 text-center row mx-2  ">
         <div className="col-md-6">
           <NavLink to='/users/add' className='btn btn-primary' >إضافة مستخدم</NavLink>

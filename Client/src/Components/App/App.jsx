@@ -21,10 +21,11 @@ import AddOrder from '../Orders/AddOrder';
 import DeleteOrder from '../Orders/DeleteOrder';
 import EditeOrder from '../Orders/EditeOrder';
 import OrderDetails from '../Orders/OrderDetails';
-import { jwtDecode } from 'jwt-decode';
 import { ToastContainer } from 'react-toastify';
 import DeleteClient from '../Clients/DeleteClient';
 import { Offline, Online } from 'react-detect-offline';
+import AddOrderDelivery from '../Delivery/AddOrderDelivery';
+
 
 
 function App() {
@@ -39,36 +40,34 @@ function App() {
   let saveUserData = () => {
     let encodedToken = localStorage.getItem('userToken');
     setUserData(encodedToken);
-    // console.log(userData);
-    // let decodedToken = jwtDecode(encodedToken);
-    // setUserData(decodedToken);
-    // console.log(userData);
-
   };
 
+
   let routes = createBrowserRouter([
-    
-      { index: true, element: <Login saveUserData={saveUserData} /> },
-     { path: '/', element: < MasterLayout userData={userData}  setUserData={setUserData}  />,
+
+    { index: true, element: <Login saveUserData={saveUserData} /> },
+    {
+      path: '/', element: < MasterLayout userData={userData} setUserData={setUserData} />,
       children:
         [
-          { path: 'home', element: <ProtectedRoute ><Home/></ProtectedRoute> },
-          { path: 'orders', element:<ProtectedRoute><Orders /> </ProtectedRoute>  },
-          { path: 'orders/add', element: <ProtectedRoute><AddOrder/> </ProtectedRoute> },
-          { path: 'orders/delete/:id', element: <ProtectedRoute><DeleteOrder/> </ProtectedRoute>  },
-          { path: 'orders/edite/:id', element: <ProtectedRoute><EditeOrder /> </ProtectedRoute>  },
-          { path: 'orders/details/:id', element: <ProtectedRoute><OrderDetails /> </ProtectedRoute>  },
-          { path: 'clients', element:<ProtectedRoute><Clients /> </ProtectedRoute>  },
-          { path: 'clients/add', element:<ProtectedRoute><AddClient /> </ProtectedRoute>  },
-          { path: 'clients/delete/:id', element: <ProtectedRoute><DeleteClient /> </ProtectedRoute>  },
+          { path: 'home', element: <ProtectedRoute ><Home /></ProtectedRoute> },
+          { path: 'orders', element: <ProtectedRoute><Orders /> </ProtectedRoute> },
+          { path: 'orders/add', element: <ProtectedRoute><AddOrder /> </ProtectedRoute> },
+          { path: 'orders/delete/:id', element: <ProtectedRoute><DeleteOrder /> </ProtectedRoute> },
+          { path: 'orders/edite/:id', element: <ProtectedRoute><EditeOrder /> </ProtectedRoute> },
+          { path: 'orders/details/:id', element: <ProtectedRoute><OrderDetails /> </ProtectedRoute> },
+          { path: 'clients', element: <ProtectedRoute><Clients /> </ProtectedRoute> },
+          { path: 'clients/add', element: <ProtectedRoute><AddClient /> </ProtectedRoute> },
+          { path: 'clients/delete/:id', element: <ProtectedRoute><DeleteClient /> </ProtectedRoute> },
           { path: 'clients/edite/:id', element: <ProtectedRoute><EditeClient /> </ProtectedRoute> },
-          { path: 'clients/details/:id', element:<ProtectedRoute><ClientDetails /> </ProtectedRoute>  },
-          { path: 'settings', element: <ProtectedRoute><Settings/>  </ProtectedRoute>  },
-          { path: 'users', element:<ProtectedRoute><Users/> </ProtectedRoute>   },
-          { path: 'users/add', element: <ProtectedRoute><AddUser /> </ProtectedRoute>  },
-          { path: 'users/delete/:id', element: <ProtectedRoute><DeleteUser/> </ProtectedRoute>  },
-          { path: 'users/edite/:id', element: <ProtectedRoute><EditeUser /> </ProtectedRoute>   },
-          { path: 'users/details/:id', element: <ProtectedRoute><UserDetails /> </ProtectedRoute>  },
+          { path: 'clients/details/:id', element: <ProtectedRoute><ClientDetails /> </ProtectedRoute> },
+          { path: 'settings', element: <ProtectedRoute><Settings />  </ProtectedRoute> },
+          { path: 'users', element: <ProtectedRoute><Users /> </ProtectedRoute> },
+          { path: 'users/add', element: <ProtectedRoute><AddUser /> </ProtectedRoute> },
+          { path: 'users/delete/:id', element: <ProtectedRoute><DeleteUser /> </ProtectedRoute> },
+          { path: 'users/edite/:id', element: <ProtectedRoute><EditeUser /> </ProtectedRoute> },
+          { path: 'users/details/:id', element: <ProtectedRoute><UserDetails /> </ProtectedRoute> },
+          { path: 'delivery/add', element: <ProtectedRoute><AddOrderDelivery /></ProtectedRoute> },
           { path: '*', element: <NotFound /> }
 
         ]
@@ -77,7 +76,7 @@ function App() {
   return (
     <>
 
-    <Offline> <div className='offline'>You Are Offline , Contect to the Internet.</div> </Offline>
+      <Offline> <div className='offline'>.أنت غير متصل بالإنترنت</div> </Offline>
 
 
       <RouterProvider router={routes} />

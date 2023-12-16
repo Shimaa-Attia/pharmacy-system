@@ -1,9 +1,9 @@
 import axios from 'axios';
 import Joi from 'joi';
 import React, { useEffect, useState } from 'react'
+import { Helmet } from 'react-helmet';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-
 export default function EditeUser() {
   let accessToken = localStorage.getItem('userToken');
   let [isLoading, setIsLoading] = useState(false);
@@ -100,6 +100,10 @@ export default function EditeUser() {
 
   return (
     <>
+       <Helmet>
+        <meta charSet="utf-8" />
+        <title>Edite User</title>
+      </Helmet>
       <h4 className='alert alert-primary mx-5 my-2 text-center' >تعديل بيانات ({users?.name})</h4>
       <div className="mx-5 p-3 rounded rounded-3 bg-white">
         <form onSubmit={editeUserSubmit} >

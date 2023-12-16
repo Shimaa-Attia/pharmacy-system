@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import Login from '../Login/Login';
 import { toast } from 'react-toastify';
+import { Helmet } from 'react-helmet';
 
 export default function DeleteClient() {
     let { id } = useParams();
@@ -48,6 +49,10 @@ export default function DeleteClient() {
 
     return (
         <>
+            <Helmet>
+                <meta charSet="utf-8" />
+                <title>Delete Client</title>
+            </Helmet>
             <h4 className='alert alert-primary m-3 text-center' >هل أنت متأكد من حذف ({clients.name})؟</h4>
             <div className="card w-75 m-auto p-3 ">
                 <div className="row">

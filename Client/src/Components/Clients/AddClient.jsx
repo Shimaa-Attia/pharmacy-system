@@ -5,7 +5,8 @@ import { useEffect, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Form, Formik } from "formik";
-import { ToggleButton } from 'react-bootstrap';
+import { Helmet } from 'react-helmet';
+
 
 export default function AddClient() {
 
@@ -104,6 +105,10 @@ export default function AddClient() {
 
     return (
         <>
+           <Helmet>
+        <meta charSet="utf-8" />
+        <title>Add Client</title>
+      </Helmet>
 
             <h3 className='alert alert-primary text-center mx-5 my-2  fw-bold'>إضافة عميل جديد</h3>
             <div className="mx-5 p-3 rounded rounded-3 bg-white">

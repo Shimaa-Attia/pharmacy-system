@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
-import Login from '../Login/Login';
 import { toast } from 'react-toastify';
 
 export default function DeleteOrder() {
@@ -40,6 +40,10 @@ export default function DeleteOrder() {
 
   return (
     <>
+       <Helmet>
+        <meta charSet="utf-8" />
+        <title>Delete Order</title>
+      </Helmet>
       <h4 className='alert alert-primary m-3 text-center' >هل أنت متأكد من حذف هذا الأوردر؟</h4>
       <div className="card w-75 m-auto p-3 ">
         <div className="row">

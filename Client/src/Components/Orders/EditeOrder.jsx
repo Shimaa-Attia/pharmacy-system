@@ -1,14 +1,13 @@
 import axios from 'axios';
 import Joi from 'joi';
 import React, { useEffect, useState } from 'react'
+import { Helmet } from 'react-helmet';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 
 export default function EditeOrder() {
-  let formInputs = document.querySelectorAll('form input');
-  let formSelects = document.querySelectorAll('form select');
-  let textarea = document.querySelector('form textarea');
+
 
   let accessToken = localStorage.getItem('userToken');
   let { id } = useParams();
@@ -139,6 +138,10 @@ export default function EditeOrder() {
 
   return (
     <>
+       <Helmet>
+        <meta charSet="utf-8" />
+        <title>Edite Order</title>
+      </Helmet>
      <h3 className='alert alert-primary text-center mx-5 my-2  fw-bold'>تعديل الأوردر</h3>
             <div className="mx-5 p-3 rounded rounded-3 bg-white">
                 <form onSubmit={editedOrederSubmit} >

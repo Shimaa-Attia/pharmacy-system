@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
-
 import { toast } from 'react-toastify';
 
 
@@ -44,6 +44,10 @@ export default function DeleteUser() {
 
     return (
         <>
+            <Helmet>
+                <meta charSet="utf-8" />
+                <title>Delete User</title>
+            </Helmet>
             <h4 className='alert alert-primary m-3 text-center' >هل أنت متأكد من حذف ({users.name})؟</h4>
             <div className="card m-auto w-50 p-3">
                 <div className="card-body  ">

@@ -1,6 +1,7 @@
 
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
+import { Helmet } from 'react-helmet';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
@@ -33,6 +34,10 @@ export default function ClientDetails() {
   }, []);
   return (
     <>
+       <Helmet>
+        <meta charSet="utf-8" />
+        <title>Client Details</title>
+      </Helmet>
       <h4 className='text-center alert alert-primary m-3 '>تفاصيل بيانات ({clients.name})</h4>
       <div className="card w-75 m-auto p-3 ">
         <div className="row">

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import Joi from 'joi';
 import React, { useEffect, useState } from 'react'
+import { Helmet } from 'react-helmet';
 import { NavLink, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
@@ -29,13 +30,13 @@ export default function AddOrder() {
 
     let getUserData = async () => {
         let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users`);
- 
-        data.data.map((user ) => {
+
+        data.data.map((user) => {
             if (user.role === 'delivery') {
-                setUsers([...users,user])
-                
+                setUsers([...users, user])
+
                 //  setUsers ( users => [...users,user]);
-                 
+
             }
         });
     };
@@ -97,10 +98,10 @@ export default function AddOrder() {
                 el.value = '';
             });
             formSelects.forEach((el) => {
-                el.selectedIndex ='0';
+                el.selectedIndex = '0';
             });
             textarea.value = '';
-        
+
 
         }).catch((errors) => {
             setIsLoading(false);
@@ -151,6 +152,10 @@ export default function AddOrder() {
 
     return (
         <>
+            <Helmet>
+                <meta charSet="utf-8" />
+                <title>Add Order</title>
+            </Helmet>
             <h3 className='alert alert-primary text-center mx-5 my-2  fw-bold'>إضافة أوردر </h3>
             <div className="mx-5 p-3 rounded rounded-3 bg-white">
                 <form onSubmit={submitOrderForm} >

@@ -31,7 +31,7 @@ export default function Navbar({ userData ,setUserData }) {
            
             <div  className='dropdown'>
                 <a className="nav-link" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="bi bi-person-circle text-white fs-3"></i>
+                <i className="bi bi-person-circle text-white fs-3"></i>
                 </a>
                 <ul className="dropdown-menu">
 

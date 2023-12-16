@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import {Form, Formik} from "formik";
+import { Helmet } from 'react-helmet';
 
 export default function EditeClient() {
   let accessToken = localStorage.getItem('userToken');
@@ -96,6 +97,10 @@ export default function EditeClient() {
 
   return (
     <>
+       <Helmet>
+        <meta charSet="utf-8" />
+        <title>Edite Client</title>
+      </Helmet>
       <h3 className='alert alert-primary text-center mx-5 my-2  fw-bold'> تعديل بيانات ({clients?.name}) </h3>
       <div className="mx-5 p-3 rounded rounded-3 bg-white">
 
