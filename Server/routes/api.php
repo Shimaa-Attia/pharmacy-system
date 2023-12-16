@@ -90,6 +90,8 @@ Route::middleware(['auth:api'])->group(function(){
         Route::delete('/deleteArchive/{id}',[OrdersController::class,'deleteArchive']);
          //search orders
          Route::get('/search/{key}',[OrdersController::class,'search']);
+         //get orders of an user
+        Route::get('/user/{id}',[OrdersController::class,'myUser']);
 
     });
 

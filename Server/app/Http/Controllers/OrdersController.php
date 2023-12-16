@@ -157,7 +157,8 @@ class OrdersController extends Controller
     }
 
     public function search($key){
-        return Order::where('cost','like',"%$key%")
+        return Order::with('user','customer')
+        ->where('cost','like',"%$key%")
         ->orWhereHas('customer',function($query) use ($key){
             $query->where('name','like',"%$key%")
             ->OrWhere('code','like',"%$key%");
@@ -167,6 +168,31 @@ class OrdersController extends Controller
             ->OrWhere('code','like',"%$key%");
         })
         ->get();
-    }
+        // $order_query = Order::with('user','customer')->where('cost','like',"%$key%");
+        // $orders = $order_query->get();
+        // return response()->json([
+        //    'data'=>$orders,
+        // ]);
 
+    }
+    public function myUser( $id){
+        //  $order_query = Order::with('user','customer')
+        //  ->where('user_id',$id);
+        //  if($request->key){
+        //     $key =$request->key;
+        //     $order_query->where('cost','like',"%$key%")
+        //     ->orWhereHas('customer',function($query) use ($key){
+        //         $query->where('name','like',"%$key%")
+        //         ->OrWhere('code','like',"%$key%");
+        //     });
+        //  }
+        // $orders = $order_query->get();
+        // return response()->json([
+        //    'data'=>$orders,
+        // ]);
+
+        return Order::with('user','customer')
+        ->where('user_id',$id)
+        ->get();
+    }
 }
