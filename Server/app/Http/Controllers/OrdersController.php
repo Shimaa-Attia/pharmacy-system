@@ -157,8 +157,7 @@ class OrdersController extends Controller
     }
 
     public function search($key){
-        return Order::with('user','customer')
-        ->where('cost','like',"%$key%")
+        $orders= Order::where('cost','like',"%$key%")
         ->orWhereHas('customer',function($query) use ($key){
             $query->where('name','like',"%$key%")
             ->OrWhere('code','like',"%$key%");
@@ -168,26 +167,27 @@ class OrdersController extends Controller
             ->OrWhere('code','like',"%$key%");
         })
         ->get();
+      return  OrderResource::collection($orders);
+
     }
     public function myUser( Request $request,$id){
 
          if($request->key){
             $key =$request->key;
-            $orders = Order::with('user','customer')
-                ->where('user_id',$id)
-                ->where(function($query) use ($key){
+            $orders = Order::where(function($query) use ($key){
                    $query ->where('cost','like',"%$key%")
                     ->orWhereHas('customer',function($query) use ($key){
                          $query->where('name','like',"%$key%")
                          ->OrWhere('code','like',"%$key%");
                     });
                 })->get();
-            return $orders;
+            return  OrderResource::collection($orders);
 
         }else{
-            return Order::with('user','customer')
-            ->where('user_id',$id)
+            $orders = Order::where('user_id',$id)
             ->get();
+            return  OrderResource::collection($orders);
+
         }
 
     }

@@ -227,14 +227,12 @@ class CustomerController extends Controller
 
     public function search($key)
     {
-        $customers = Customer::with('customFields')
-            ->where('name', 'like', "%$key%")
+        $customers = Customer::where('name', 'like', "%$key%")
             ->OrWhere('code', 'like', "%$key%")
             ->orWhereHas('customFields', function ($query) use ($key) {
                 $query->where('value', 'like', "%$key%");
             })
             ->get();
-
         return CustomerReource::collection($customers);
 
     }
