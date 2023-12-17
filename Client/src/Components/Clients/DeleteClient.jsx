@@ -1,19 +1,22 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import Login from '../Login/Login';
 import { toast } from 'react-toastify';
+import { Helmet } from 'react-helmet';
+import { AuthContext } from '../../Context/AuthStore';
 
 export default function DeleteClient() {
+    let { accessToken } = useContext(AuthContext);
     let { id } = useParams();
     let navigate = useNavigate();
-    let accessToken = localStorage.getItem('userToken');
+ 
     let [clients, setClients] = useState([]);
     let [contactInfo, setContactInfo] = useState([]);
 
     let getClient = async () => {
         try {
-            let { data } = await axios.get(`http://pharma-erp.atomicsoft-eg.com/api/customers/show/${id}`, {
+            let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers/show/${id}`, {
                 headers: {
                     "Authorization": `Bearer ${accessToken}`
                 }
@@ -31,7 +34,7 @@ export default function DeleteClient() {
     useEffect(() => { getClient() }, []);
     let deleteClient = async () => {
         try {
-            axios.delete(`http://pharma-erp.atomicsoft-eg.com/api/customers/delete/${id}`, {
+            axios.delete(`${process.env.REACT_APP_API_URL}/api/customers/delete/${id}`, {
                 headers: {
                     "Authorization": `Bearer ${accessToken}`
                 }
@@ -48,6 +51,10 @@ export default function DeleteClient() {
 
     return (
         <>
+            <Helmet>
+                <meta charSet="utf-8" />
+                <title>Delete Client</title>
+            </Helmet>
             <h4 className='alert alert-primary m-3 text-center' >هل أنت متأكد من حذف ({clients.name})؟</h4>
             <div className="card w-75 m-auto p-3 ">
                 <div className="row">

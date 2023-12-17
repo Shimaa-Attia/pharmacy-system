@@ -1,12 +1,14 @@
 import axios from 'axios';
 import Joi from 'joi';
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import {Form, Formik} from "formik";
+import { Helmet } from 'react-helmet';
+import { AuthContext } from '../../Context/AuthStore';
 
 export default function EditeClient() {
-  let accessToken = localStorage.getItem('userToken');
+  let { accessToken } = useContext(AuthContext);
   let [isLoading, setIsLoading] = useState(false);
   let navigate = useNavigate();
   let { id } = useParams();
@@ -14,7 +16,7 @@ export default function EditeClient() {
   let [contactInfo, setContactInfo] = useState([]);
   let getClient = async () => {
     try {
-      let { data } = await axios.get(`http://pharma-erp.atomicsoft-eg.com/api/customers/show/${id}`, {
+      let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers/show/${id}`, {
         headers: {
           "Authorization": `Bearer ${accessToken}`
         }
@@ -34,23 +36,10 @@ export default function EditeClient() {
     getClient()
   }, []);
   
-// let getContactValue =()=>{
-//   console.log('hello');
-// contactInfo.map((info)=>{
-//   console.log(info);
-//   if(info.name ==='phone'){
- 
-//   }
-
-// })
-// };
-// useEffect(() => {
-//   getContactValue()
-// }, []);
 
 
   let sendEditedDataToApi = async (values) => {
-    await axios.put(`http://pharma-erp.atomicsoft-eg.com/api/customers/${id}`, values, {
+    await axios.put(`${process.env.REACT_APP_API_URL}/api/customers/${id}`, values, {
       headers: {
         "Authorization": `Bearer ${accessToken}`
       }
@@ -109,10 +98,16 @@ export default function EditeClient() {
 
   return (
     <>
+       <Helmet>
+        <meta charSet="utf-8" />
+        <title>Edite Client</title>
+      </Helmet>
       <h3 className='alert alert-primary text-center mx-5 my-2  fw-bold'> تعديل بيانات ({clients?.name}) </h3>
       <div className="mx-5 p-3 rounded rounded-3 bg-white">
 
-        <Formik initialValues={
+        <Formik
+      
+        initialValues={
           {
             code: '',
             name: '',

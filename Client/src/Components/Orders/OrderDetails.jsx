@@ -1,7 +1,16 @@
-import React from 'react'
+import React, { useContext } from 'react'
+import { Helmet } from 'react-helmet'
+import { AuthContext } from '../../Context/AuthStore';
+
 
 export default function OrderDetails() {
+  let { accessToken } = useContext(AuthContext);
   return (
-    <div>OrderDetails</div>
+    <>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>Order Details</title>
+      </Helmet>
+    </>
   )
 }

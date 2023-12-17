@@ -1,25 +1,17 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Table from 'react-bootstrap/Table';
+import { Helmet } from 'react-helmet';
+import { AuthContext } from '../../Context/AuthStore';
 
 export default function Users() {
+
+  let { accessToken } = useContext(AuthContext);
   let [users, setUsers] = useState([]);
 
-  // let getUserData = async () => {
-  //   try {
-  //     let { data } = await axios.get(`http://pharma-erp.atomicsoft-eg.com/api/users`);
-  //     setUsers(data.data);
 
-  //   } catch (error) {
-  //     toast.error('حدث خطأ ما' ,{
-  //       position:'top-right'
-  //     })
-
-  //   }
-
-  // };
   let [searchText, setSearchText] = useState('');
   function handleSearchChange(event) {
     setSearchText(event.target.value)
@@ -29,26 +21,32 @@ export default function Users() {
   let getUserData = async () => {
     let searchResult;
     if (searchText !== undefined && searchText.trim().length > 0) {
-      searchResult = await axios.get(`http://pharma-erp.atomicsoft-eg.com/api/users?q=${searchText.trim()}`);
+      searchResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/search/${searchText.trim()}`, {
+        headers: {
+          "Authorization": `Bearer ${accessToken}`
+        }
+      });
+      setUsers(searchResult.data);
+      console.log('Hi from Search ')
 
-      console.log('Hi from Search only')
 
     } else {
-      searchResult = await axios.get(`http://pharma-erp.atomicsoft-eg.com/api/users`);
-      console.log('Hi from No Search ')
-
+      searchResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/users`);
+      console.log('Hi from No Search ');
+      setUsers(searchResult.data.data);
     }
-    setUsers(searchResult.data.data);
+
+
   }
   useEffect(() => { getUserData() }, [searchText]);
 
   let showUsers = () => {
     if (users.length > 0) {
       return (
-        <div className="shadow rounded rounded-4 bg-white mx-3 p-3 ">
-          <Table responsive='sm' className='table table-bordered table-hover text-center '>
-            <thead >
-              <tr className='bg-primary'>
+        <div className="shadow rounded rounded-4 bg-white mx-3 p-3 border  ">
+          <Table responsive='sm' className='table table-bordered  table-hover text-center '>
+            <thead className='table-primary' >
+              <tr >
                 <th  >خيارات</th>
                 <th>رقم الهاتف</th>
                 <th>الوظيفة</th>
@@ -83,9 +81,12 @@ export default function Users() {
         </div>
       )
     } else {
+
       return (
         <div className=' d-flex justify-content-center height-calc-70 align-items-center' >
           <i className='fa fa-spinner fa-spin fa-5x'></i>
+
+
         </div>)
 
     }
@@ -93,13 +94,16 @@ export default function Users() {
 
   return (
     <>
-
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title> Users</title>
+      </Helmet>
       <div className=" my-3 text-center row mx-2  ">
         <div className="col-md-6">
           <NavLink to='/users/add' className='btn btn-primary' >إضافة مستخدم</NavLink>
         </div>
         <div className="col-md-4">
-          <input type="text" className='form-control text-end ' placeholder=' ...بحث عن مستخدم ' onChange={handleSearchChange} />
+          <input type="text" className='form-control text-end ' placeholder=' ...بحث عن مستخدم   ' onChange={handleSearchChange} />
         </div>
       </div>
       {showUsers()}

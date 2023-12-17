@@ -1,11 +1,12 @@
 import axios from 'axios';
 import Joi from 'joi';
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import { Helmet } from 'react-helmet';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-
+import { AuthContext } from '../../Context/AuthStore';
 export default function EditeUser() {
-  let accessToken = localStorage.getItem('userToken');
+  let { accessToken } = useContext(AuthContext);
   let [isLoading, setIsLoading] = useState(false);
   let [users, setUsers] = useState({
     name: '',
@@ -27,7 +28,7 @@ export default function EditeUser() {
 
   let getUser = async () => {
     try {
-      let { data } = await axios.get(`http://pharma-erp.atomicsoft-eg.com/api/users/show/${id}`);
+      let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/show/${id}`);
       setUsers(data.data);
 
     } catch (error) {
@@ -38,7 +39,7 @@ export default function EditeUser() {
 
 
   let sendEditedDataToApi = async () => {
-    await axios.put(`http://pharma-erp.atomicsoft-eg.com/api/users/${id}`, users, {
+    await axios.put(`${process.env.REACT_APP_API_URL}/api/users/${id}`, users, {
       headers: {
         "Authorization": `Bearer ${accessToken}`
       }
@@ -100,6 +101,10 @@ export default function EditeUser() {
 
   return (
     <>
+       <Helmet>
+        <meta charSet="utf-8" />
+        <title>Edite User</title>
+      </Helmet>
       <h4 className='alert alert-primary mx-5 my-2 text-center' >تعديل بيانات ({users?.name})</h4>
       <div className="mx-5 p-3 rounded rounded-3 bg-white">
         <form onSubmit={editeUserSubmit} >

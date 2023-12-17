@@ -1,31 +1,57 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import { Table } from 'react-bootstrap';
+import { Helmet } from 'react-helmet';
 import { NavLink, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../Context/AuthStore';
 
 export default function Clients() {
-    let accessToken = localStorage.getItem('userToken');
+    let { accessToken } = useContext(AuthContext);
     let [clients, setClients] = useState([]);
 
+    let [searchText, setSearchText] = useState('');
+    function handleSearchChange(event) {
+        setSearchText(event.target.value);
 
-    let getClientData = async () => {
-        let { data } = await axios.get(`http://pharma-erp.atomicsoft-eg.com/api/customers`, {
-            headers: {
-                "Authorization": `Bearer ${accessToken}`
-            }
-        });
-        setClients([...data.data]);
     };
 
+    let getClientData = async () => {
+        let searchResult;
+        if (searchText !== undefined && searchText.trim().length > 0) {
+            searchResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers/search/${searchText.trim()}`, {
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`
+                }
+            });
+            console.log('Hi from Search ')
+           
+            setClients(searchResult.data);
+           
+            // console.log(searchResult.data);
+        } else {
+            searchResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers`, {
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`
+                }
+            });
+            console.log('Hi from No Search ')
+
+
+            setClients(searchResult.data.data);
+
+
+        }
+    };
     useEffect(() => {
         getClientData()
-    }, []);
+    }, [searchText]);
 
     let showClients = () => {
         if (clients.length > 0) {
             return (
                 <div className="shadow rounded rounded-4 bg-white mx-3 p-3 ">
-                    <table className='table table-bordered table-hover text-center  '>
-                        <thead>
+                    <Table responsive='md' className='table table-bordered table-hover text-center   '>
+                        <thead className='table-primary'>
                             <tr>
                                 <th>خيارات</th>
                                 <th>ملاحظات</th>
@@ -40,7 +66,7 @@ export default function Clients() {
                             {clients.map((client, index) => <tr key={client.id}>
                                 <td>
                                     <NavLink to={`/clients/delete/${client.id}`}>
-                                        <i className='bi bi-trash text-bg-danger p-1 mx-1 rounded'></i>
+                                        <i className='bi bi-trash text-bg-danger p-1 mx-1  rounded'></i>
                                     </NavLink>
                                     <NavLink to={`/clients/edite/${client.id}`}>
                                         <i className='bi bi-pencil-square text-bg-primary mx-1 p-1 rounded'></i>
@@ -72,7 +98,7 @@ export default function Clients() {
                             </tr>
                             )}
                         </tbody>
-                    </table>
+                    </Table>
                 </div>
             )
         } else {
@@ -84,13 +110,18 @@ export default function Clients() {
     };
 
     return (
+
         <>
+            <Helmet>
+                <meta charSet="utf-8" />
+                <title>Clients</title>
+            </Helmet>
             <div className=" my-3 text-center row mx-2  ">
                 <div className="col-md-6">
                     <NavLink to='/clients/add' className='btn btn-primary'>إضافة عميل</NavLink>
                 </div>
                 <div className="col-md-4">
-                    <input type="text" className='form-control text-end ' placeholder=' ...بحث عن عميل ' />
+                    <input type="text" className='form-control text-end' onChange={handleSearchChange} placeholder=' ...بحث عن عميل ' />
                 </div>
             </div>
 

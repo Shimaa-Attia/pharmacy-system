@@ -1,17 +1,19 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
-import Login from '../Login/Login';
 import { toast } from 'react-toastify';
+import { AuthContext } from '../../Context/AuthStore';
 
 export default function DeleteOrder() {
-  let accessToken = localStorage.getItem('userToken');
+  let { accessToken } = useContext(AuthContext);
+
   let { id } = useParams();
   let navigate = useNavigate();
   let [orders, setOrders] = useState([]);
   let getOrder = async () => {
     try {
-      let { data } = await axios.get(`http://pharma-erp.atomicsoft-eg.com/api/orders/show/${id}`);
+      let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/show/${id}`);
       setOrders(data.data);
 
     } catch (error) {
@@ -23,7 +25,7 @@ export default function DeleteOrder() {
   }, [])
   let DeleteOrder = async () => {
     try {
-      axios.delete(`http://pharma-erp.atomicsoft-eg.com/api/orders/delete/${id}`, {
+      axios.delete(`${process.env.REACT_APP_API_URL}/api/orders/delete/${id}`, {
         headers: {
           "Authorization": `Bearer ${accessToken}`
         }
@@ -40,6 +42,10 @@ export default function DeleteOrder() {
 
   return (
     <>
+       <Helmet>
+        <meta charSet="utf-8" />
+        <title>Delete Order</title>
+      </Helmet>
       <h4 className='alert alert-primary m-3 text-center' >هل أنت متأكد من حذف هذا الأوردر؟</h4>
       <div className="card w-75 m-auto p-3 ">
         <div className="row">
@@ -53,7 +59,6 @@ export default function DeleteOrder() {
               <h3 className='h2' > كود العميل : {orders.code} </h3>
             </div>
           </div>
-
 
           {orders.notes ?
             <div className=' col-md-12  ' >

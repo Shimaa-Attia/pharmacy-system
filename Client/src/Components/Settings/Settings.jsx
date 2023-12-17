@@ -1,18 +1,16 @@
 import React from 'react'
-import { NavLink, useNavigate } from 'react-router-dom'
-import Logout from '../Logout/Logout'
+import { Helmet } from 'react-helmet'
 
-export default function Settings({ setUserData}) {
 
- 
-// console.log(props);
-  
-
-  
+export default function Settings() {
   return (
    <>
-   <Logout  setUserData={setUserData}/>
-{/* <button className='btn btn-success' onClick={()=>{}}  >تسجيل الخروج</button> */}
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>Settings</title>
+      </Helmet>
+  
+
    </>
   )
 }

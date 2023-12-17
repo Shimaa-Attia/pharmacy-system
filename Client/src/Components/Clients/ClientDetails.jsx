@@ -1,11 +1,14 @@
 
 import axios from 'axios';
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import { Helmet } from 'react-helmet';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { AuthContext } from '../../Context/AuthStore';
 
 export default function ClientDetails() {
-  let accessToken = localStorage.getItem('userToken');
+  let { accessToken } = useContext(AuthContext);
+ 
   let navigate = useNavigate();
   let { id } = useParams();
   let [clients, setClients] = useState([]);
@@ -13,7 +16,7 @@ export default function ClientDetails() {
 
   let getClientDetails = async () => {
     try {
-      let { data } = await axios.get(`http://pharma-erp.atomicsoft-eg.com/api/customers/show/${id}`, {
+      let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers/show/${id}`, {
         headers: {
           "Authorization": `Bearer ${accessToken}`
         }
@@ -33,6 +36,10 @@ export default function ClientDetails() {
   }, []);
   return (
     <>
+       <Helmet>
+        <meta charSet="utf-8" />
+        <title>Client Details</title>
+      </Helmet>
       <h4 className='text-center alert alert-primary m-3 '>تفاصيل بيانات ({clients.name})</h4>
       <div className="card w-75 m-auto p-3 ">
         <div className="row">

@@ -1,18 +1,22 @@
 import axios from 'axios';
 import Joi from 'joi';
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
+import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
+import { AuthContext } from '../../Context/AuthStore';
+
+export default function Login({ saveUserData }) {
 
 
-export default function Login({saveUserData }) {
-
+ let {loginDeliveryData} = useContext(AuthContext);
   let navigate = useNavigate();
   let [isLoading, setIsLoading] = useState(false);
   let [users, setUsers] = useState({
     phone: '',
     password: '',
   });
+
 
   let getInputValue = (event) => {
     let myUsers = { ...users }; //deep copy
@@ -22,9 +26,9 @@ export default function Login({saveUserData }) {
 
   let validateLoginFrom = () => {
     const schema = Joi.object({
-      phone: Joi.string().required().pattern(/^01[0125][0-9]{8}$/).messages({ 
+      phone: Joi.string().required().pattern(/^01[0125][0-9]{8}$/).messages({
         "string.pattern.base": `رقم الهاتف غير صحيح`,
-        "any.required" :`"" phone required`,
+        "any.required": `"" phone required`,
       }),
       password: Joi.string().required(),
 
@@ -33,7 +37,7 @@ export default function Login({saveUserData }) {
   };
 
   let sendLoginDataToApi = async () => {
-    let { data } = await axios.post(`http://pharma-erp.atomicsoft-eg.com/api/login`, users);
+    let { data } = await axios.post(`${process.env.REACT_APP_API_URL}/api/login`, users);
     if (data.message == 'تم تسجيل دخولك بنجاح') {
       setIsLoading(false);
       localStorage.setItem('userToken', data.token);
@@ -42,6 +46,7 @@ export default function Login({saveUserData }) {
         position: 'top-center',
 
       });
+    
       navigate('home');
     } else {
       setIsLoading(false);
@@ -55,6 +60,7 @@ export default function Login({saveUserData }) {
 
     };
   };
+
 
   let submitLoginForm = (e) => {
     setIsLoading(true);
@@ -76,7 +82,11 @@ export default function Login({saveUserData }) {
   };
   return (
     <>
-   
+       <Helmet>
+        <meta charSet="utf-8" />
+        <title>Login</title>
+      </Helmet>
+
       <div className="container m-auto   pt-5 ">
         <div className="logo text-center py-3">
           <img src="" alt="logo" className='w-100' />
@@ -100,8 +110,9 @@ export default function Login({saveUserData }) {
           </form>
         </div>
 
+
       </div>
-    
+
     </>
   )
 }

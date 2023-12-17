@@ -1,6 +1,7 @@
 import axios from 'axios';
 import Joi from 'joi';
 import React, { useEffect, useState } from 'react'
+import { Helmet } from 'react-helmet';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
@@ -9,7 +10,7 @@ export default function AddUser() {
     let formElement = document.querySelectorAll('form input');
     let textarea = document.querySelector('form textarea');
 
- 
+
     let navigate = useNavigate();
     let [isLoading, setIsLoading] = useState(false);
 
@@ -32,14 +33,20 @@ export default function AddUser() {
         setUsers(myUsers);
     };
     let sendUserDataToApi = async () => {
-        await axios.post(`http://pharma-erp.atomicsoft-eg.com/api/users`, users).then((res) => {
+        await axios.post(`${process.env.REACT_APP_API_URL}/api/users`, users).then((res) => {
             toast.success(res.data.message, {
                 position: 'top-center'
             });
             setUsers(initUsers);
             setIsLoading(false);
+            formElement.forEach((el) => {
+                el.value = '';
+            });
+            textarea.value = '';
+            document.getElementById("role").selectedIndex = "0";
 
         }).catch((errors) => {
+            console.log(errors);
             setIsLoading(false);
             const errorList = errors?.response?.data?.error;
             if (errorList !== undefined) {
@@ -74,18 +81,8 @@ export default function AddUser() {
         e.preventDefault();
         let validation = validateUserForm();
         if (!validation.error) {
-        
-            sendUserDataToApi().finally(() => {
 
-                formElement.forEach((el) => {
-                    el.value = '';
-                });
-                textarea.value = '';
-                document.getElementById("role").selectedIndex= "0";
-              
-            });
-
-
+            sendUserDataToApi();
         } else {
             setIsLoading(false);
             try {
@@ -100,6 +97,10 @@ export default function AddUser() {
 
     return (
         <>
+            <Helmet>
+                <meta charSet="utf-8" />
+                <title>Add User</title>
+            </Helmet>
             <h3 className='alert alert-primary text-center mx-5 my-2  fw-bold'>إضافة مستخدم جديد</h3>
             <div className="mx-5 p-3 rounded rounded-3 bg-white">
                 <form onSubmit={submitUserForm}>

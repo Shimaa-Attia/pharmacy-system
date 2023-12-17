@@ -1,32 +1,32 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
-
 import { toast } from 'react-toastify';
+import { AuthContext } from '../../Context/AuthStore';
 
 
 export default function DeleteUser() {
-
+    let { accessToken } = useContext(AuthContext);
     let { id } = useParams();
     let navigate = useNavigate();
-    let accessToken = localStorage.getItem('userToken');
+ 
 
     let [users, setUsers] = useState([]);
     let getUser = async () => {
         try {
-            let { data } = await axios.get(`http://pharma-erp.atomicsoft-eg.com/api/users/show/${id}`);
+            let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/show/${id}`);
             setUsers(data.data);
 
         } catch (error) {
             toast.error('حدث خطأ ما، حاول مرة أخرى')
-
         }
 
     };
     useEffect(() => { getUser() }, []);
     let deleteUser = async () => {
         try {
-            axios.delete(`http://pharma-erp.atomicsoft-eg.com/api/users/delete/${id}`, {
+            axios.delete(`${process.env.REACT_APP_API_URL}/api/users/delete/${id}`, {
                 headers: {
                     "Authorization": `Bearer ${accessToken}`
                 }
@@ -45,6 +45,10 @@ export default function DeleteUser() {
 
     return (
         <>
+            <Helmet>
+                <meta charSet="utf-8" />
+                <title>Delete Usera</title>
+            </Helmet>
             <h4 className='alert alert-primary m-3 text-center' >هل أنت متأكد من حذف ({users.name})؟</h4>
             <div className="card m-auto w-50 p-3">
                 <div className="card-body  ">

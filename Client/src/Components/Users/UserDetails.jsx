@@ -1,17 +1,17 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
+import { Helmet } from 'react-helmet';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-
 export default function UserDetails() {
-  let accessToken = localStorage.getItem('userToken');
+ 
   let [users, setUsers] = useState([]);
   let { id } = useParams();
 
   let getUserDetails = async () => {
     try {
-      let { data } = await axios.get(`http://pharma-erp.atomicsoft-eg.com/api/users/show/${id}`);
+      let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/show/${id}`);
       setUsers(data.data);
 
     } catch (error) {
@@ -25,6 +25,10 @@ export default function UserDetails() {
   }, []);
   return (
     <>
+     <Helmet>
+        <meta charSet="utf-8" />
+        <title> User Details</title>
+      </Helmet>
       <h4 className='text-center alert alert-primary m-3 '>تفاصيل بيانات ({users.name})</h4>
       <div className="card w-75 m-auto  p-5 ">
         <div className="row  ">

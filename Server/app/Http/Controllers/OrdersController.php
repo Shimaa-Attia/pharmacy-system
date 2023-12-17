@@ -156,4 +156,39 @@ class OrdersController extends Controller
         "message"=>"تم الحذف"],200);
     }
 
+    public function search($key){
+        return Order::with('user','customer')
+        ->where('cost','like',"%$key%")
+        ->orWhereHas('customer',function($query) use ($key){
+            $query->where('name','like',"%$key%")
+            ->OrWhere('code','like',"%$key%");
+        })
+        ->orWhereHas('user',function($query) use ($key){
+            $query->where('name','like',"%$key%")
+            ->OrWhere('code','like',"%$key%");
+        })
+        ->get();
+    }
+    public function myUser( Request $request,$id){
+
+         if($request->key){
+            $key =$request->key;
+            $orders = Order::with('user','customer')
+                ->where('user_id',$id)
+                ->where(function($query) use ($key){
+                   $query ->where('cost','like',"%$key%")
+                    ->orWhereHas('customer',function($query) use ($key){
+                         $query->where('name','like',"%$key%")
+                         ->OrWhere('code','like',"%$key%");
+                    });
+                })->get();
+            return $orders;
+
+        }else{
+            return Order::with('user','customer')
+            ->where('user_id',$id)
+            ->get();
+        }
+
+    }
 }

@@ -225,4 +225,13 @@ class CustomerController extends Controller
     }
 
 
+    public function search($key){
+        return Customer::with('customFields')
+        ->where('name','like',"%$key%")
+        ->OrWhere('code','like',"%$key%")
+        ->orWhereHas('customFields',function($query) use ($key){
+            $query->where('value','like',"%$key%");
+        })
+        ->get();
+    }
 }
