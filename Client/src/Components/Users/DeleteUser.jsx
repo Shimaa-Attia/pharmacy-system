@@ -1,15 +1,16 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { AuthContext } from '../../Context/AuthStore';
 
 
 export default function DeleteUser() {
-
+    let { accessToken } = useContext(AuthContext);
     let { id } = useParams();
     let navigate = useNavigate();
-    let accessToken = localStorage.getItem('userToken');
+ 
 
     let [users, setUsers] = useState([]);
     let getUser = async () => {
@@ -46,7 +47,7 @@ export default function DeleteUser() {
         <>
             <Helmet>
                 <meta charSet="utf-8" />
-                <title>Delete User</title>
+                <title>Delete Usera</title>
             </Helmet>
             <h4 className='alert alert-primary m-3 text-center' >هل أنت متأكد من حذف ({users.name})؟</h4>
             <div className="card m-auto w-50 p-3">

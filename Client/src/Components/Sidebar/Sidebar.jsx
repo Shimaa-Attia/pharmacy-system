@@ -1,11 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import styles from './Sidebar.module.css';
+import { AuthContext } from '../../Context/AuthStore';
 
 
 export default function Sidebar({ userData }) {
 
-  
+  let {deliveryData} = useContext(AuthContext);
 
 
     return (
@@ -25,6 +26,7 @@ export default function Sidebar({ userData }) {
 
                                 <div>
                                     <ul className="nav  flex-column mb-2 ">
+                                        
                                         <li className="nav-item my-1">
                                             <NavLink to='/home' className="nav-link fw-bolder " >
                                                 <span className='me-3 d-none d-sm-inline'> الرئيسية </span>

@@ -4,24 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 
-export default function Navbar({ userData ,setUserData }) {
-
-  let accessToken = localStorage.getItem('userToken');
-  let navigate = useNavigate();
-  let logout = async () => {
-    let res = await axios.post(`${process.env.REACT_APP_API_URL}/api/logout`, {}, {
-      headers: {
-        "Authorization": `Bearer ${accessToken}`
-      }
-    });
-    localStorage.removeItem('userToken');
-    setUserData(null);
-    toast.success(res.data.message, {
-      position: 'top-center'
-    });
-    navigate('/');
-
-  };
+export default function Navbar({ userData ,logout }) {
 
   return (
     <>

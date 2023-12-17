@@ -1,11 +1,12 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Table } from 'react-bootstrap';
 import { Helmet } from 'react-helmet';
 import { NavLink, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../Context/AuthStore';
 
 export default function Clients() {
-    let accessToken = localStorage.getItem('userToken');
+    let { accessToken } = useContext(AuthContext);
     let [clients, setClients] = useState([]);
 
     let [searchText, setSearchText] = useState('');
@@ -23,9 +24,9 @@ export default function Clients() {
                 }
             });
             console.log('Hi from Search ')
+           
             setClients(searchResult.data);
-            console.log(searchResult);
-            console.log(clients.length);
+           
             // console.log(searchResult.data);
         } else {
             searchResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers`, {
@@ -49,7 +50,7 @@ export default function Clients() {
         if (clients.length > 0) {
             return (
                 <div className="shadow rounded rounded-4 bg-white mx-3 p-3 ">
-                    <Table responsive='sm' className='table table-bordered table-hover text-center   '>
+                    <Table responsive='md' className='table table-bordered table-hover text-center   '>
                         <thead className='table-primary'>
                             <tr>
                                 <th>خيارات</th>

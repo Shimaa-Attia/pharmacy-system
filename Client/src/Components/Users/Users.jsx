@@ -1,15 +1,14 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Table from 'react-bootstrap/Table';
 import { Helmet } from 'react-helmet';
+import { AuthContext } from '../../Context/AuthStore';
 
 export default function Users() {
 
-
-
-  let accessToken = localStorage.getItem('userToken');
+  let { accessToken } = useContext(AuthContext);
   let [users, setUsers] = useState([]);
 
 

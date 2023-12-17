@@ -1,14 +1,16 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import Login from '../Login/Login';
 import { toast } from 'react-toastify';
 import { Helmet } from 'react-helmet';
+import { AuthContext } from '../../Context/AuthStore';
 
 export default function DeleteClient() {
+    let { accessToken } = useContext(AuthContext);
     let { id } = useParams();
     let navigate = useNavigate();
-    let accessToken = localStorage.getItem('userToken');
+ 
     let [clients, setClients] = useState([]);
     let [contactInfo, setContactInfo] = useState([]);
 

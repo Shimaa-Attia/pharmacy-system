@@ -1,19 +1,20 @@
 import axios from 'axios';
 import Joi from 'joi';
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet';
 import { NavLink, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { AuthContext } from '../../Context/AuthStore';
 
 
 
 export default function AddOrder() {
-
+    let { accessToken } = useContext(AuthContext);
     let formInputs = document.querySelectorAll('form input');
     let formSelects = document.querySelectorAll('form select');
     let textarea = document.querySelector('form textarea');
 
-    let accessToken = localStorage.getItem('userToken');
+   
     let [isLoading, setIsLoading] = useState(false);
     let [users, setUsers] = useState([]);
     let [clients, setClients] = useState([]);

@@ -11,7 +11,7 @@ import AddUser from '../Users/AddUser';
 import DeleteUser from '../Users/DeleteUser';
 import EditeUser from '../Users/EditeUser';
 import UserDetails from '../Users/UserDetails';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 import AddClient from '../Clients/AddClient';
 import EditeClient from '../Clients/EditeClient';
@@ -25,49 +25,39 @@ import { ToastContainer } from 'react-toastify';
 import DeleteClient from '../Clients/DeleteClient';
 import { Offline, Online } from 'react-detect-offline';
 import AddOrderDelivery from '../Delivery/AddOrderDelivery';
+import { AuthContext } from '../../Context/AuthStore';
 
 
 
 function App() {
-  // for handle Reload
-  useEffect(() => {
-    if (localStorage.getItem('userToken') !== null) {
-      saveUserData();
-    }
-  }, []);
 
-  let [userData, setUserData] = useState(null);
-  let saveUserData = () => {
-    let encodedToken = localStorage.getItem('userToken');
-    setUserData(encodedToken);
-  };
-
-
+let { userData, saveUserData ,logout } = useContext(AuthContext);
+ 
   let routes = createBrowserRouter([
 
     { index: true, element: <Login saveUserData={saveUserData} /> },
     {
-      path: '/', element: < MasterLayout userData={userData} setUserData={setUserData} />,
+      path: '/', element: < MasterLayout userData={userData} logout={logout} />,
       children:
         [
-          { path: 'home', element: <ProtectedRoute ><Home /></ProtectedRoute> },
-          { path: 'orders', element: <ProtectedRoute><Orders /> </ProtectedRoute> },
-          { path: 'orders/add', element: <ProtectedRoute><AddOrder /> </ProtectedRoute> },
-          { path: 'orders/delete/:id', element: <ProtectedRoute><DeleteOrder /> </ProtectedRoute> },
-          { path: 'orders/edite/:id', element: <ProtectedRoute><EditeOrder /> </ProtectedRoute> },
-          { path: 'orders/details/:id', element: <ProtectedRoute><OrderDetails /> </ProtectedRoute> },
-          { path: 'clients', element: <ProtectedRoute><Clients /> </ProtectedRoute> },
-          { path: 'clients/add', element: <ProtectedRoute><AddClient /> </ProtectedRoute> },
-          { path: 'clients/delete/:id', element: <ProtectedRoute><DeleteClient /> </ProtectedRoute> },
-          { path: 'clients/edite/:id', element: <ProtectedRoute><EditeClient /> </ProtectedRoute> },
-          { path: 'clients/details/:id', element: <ProtectedRoute><ClientDetails /> </ProtectedRoute> },
-          { path: 'settings', element: <ProtectedRoute><Settings />  </ProtectedRoute> },
-          { path: 'users', element: <ProtectedRoute><Users /> </ProtectedRoute> },
-          { path: 'users/add', element: <ProtectedRoute><AddUser /> </ProtectedRoute> },
-          { path: 'users/delete/:id', element: <ProtectedRoute><DeleteUser /> </ProtectedRoute> },
-          { path: 'users/edite/:id', element: <ProtectedRoute><EditeUser /> </ProtectedRoute> },
-          { path: 'users/details/:id', element: <ProtectedRoute><UserDetails /> </ProtectedRoute> },
-          { path: 'delivery/add', element: <ProtectedRoute><AddOrderDelivery /></ProtectedRoute> },
+          { path: 'home', element: <ProtectedRoute  userData={userData} ><Home /></ProtectedRoute> },
+          { path: 'orders', element: <ProtectedRoute  userData={userData}><Orders /> </ProtectedRoute> },
+          { path: 'orders/add', element: <ProtectedRoute  userData={userData}><AddOrder /> </ProtectedRoute> },
+          { path: 'orders/delete/:id', element: <ProtectedRoute  userData={userData}><DeleteOrder /> </ProtectedRoute> },
+          { path: 'orders/edite/:id', element: <ProtectedRoute  userData={userData}><EditeOrder /> </ProtectedRoute> },
+          { path: 'orders/details/:id', element: <ProtectedRoute  userData={userData}><OrderDetails /> </ProtectedRoute> },
+          { path: 'clients', element: <ProtectedRoute  userData={userData}><Clients /> </ProtectedRoute> },
+          { path: 'clients/add', element: <ProtectedRoute  userData={userData}><AddClient /> </ProtectedRoute> },
+          { path: 'clients/delete/:id', element: <ProtectedRoute  userData={userData}><DeleteClient /> </ProtectedRoute> },
+          { path: 'clients/edite/:id', element: <ProtectedRoute  userData={userData}><EditeClient /> </ProtectedRoute> },
+          { path: 'clients/details/:id', element: <ProtectedRoute  userData={userData}><ClientDetails /> </ProtectedRoute> },
+          { path: 'settings', element: <ProtectedRoute  userData={userData}><Settings />  </ProtectedRoute> },
+          { path: 'users', element: <ProtectedRoute  userData={userData}><Users /> </ProtectedRoute> },
+          { path: 'users/add', element: <ProtectedRoute  userData={userData}><AddUser /> </ProtectedRoute> },
+          { path: 'users/delete/:id', element: <ProtectedRoute  userData={userData}><DeleteUser /> </ProtectedRoute> },
+          { path: 'users/edite/:id', element: <ProtectedRoute  userData={userData}><EditeUser /> </ProtectedRoute> },
+          { path: 'users/details/:id', element: <ProtectedRoute  userData={userData}><UserDetails /> </ProtectedRoute> },
+          { path: 'delivery/add', element: <ProtectedRoute  userData={userData}><AddOrderDelivery /></ProtectedRoute> },
           { path: '*', element: <NotFound /> }
 
         ]

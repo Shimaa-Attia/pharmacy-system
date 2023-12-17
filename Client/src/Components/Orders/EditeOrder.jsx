@@ -1,15 +1,16 @@
 import axios from 'axios';
 import Joi from 'joi';
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { AuthContext } from '../../Context/AuthStore';
 
 
 export default function EditeOrder() {
 
-
-  let accessToken = localStorage.getItem('userToken');
+  let { accessToken } = useContext(AuthContext);
+ 
   let { id } = useParams();
   let navigate = useNavigate();
   let [isLoading, setIsLoading] = useState(false);

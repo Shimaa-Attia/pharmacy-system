@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import axios from 'axios';
 import Joi from 'joi';
 import { useEffect, useState } from 'react'
@@ -6,13 +6,14 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Form, Formik } from "formik";
 import { Helmet } from 'react-helmet';
+import { AuthContext } from '../../Context/AuthStore';
 
 
 export default function AddClient() {
-
+    let { accessToken } = useContext(AuthContext);
     let formInputs = document.querySelectorAll('.form-control');
     // let textarea = document.querySelector('form textarea');
-    let accessToken = localStorage.getItem('userToken');
+
     let [isLoading, setIsLoading] = useState(false);
 
     let initialValues = {
@@ -105,10 +106,10 @@ export default function AddClient() {
 
     return (
         <>
-           <Helmet>
-        <meta charSet="utf-8" />
-        <title>Add Client</title>
-      </Helmet>
+            <Helmet>
+                <meta charSet="utf-8" />
+                <title>Add Client</title>
+            </Helmet>
 
             <h3 className='alert alert-primary text-center mx-5 my-2  fw-bold'>إضافة عميل جديد</h3>
             <div className="mx-5 p-3 rounded rounded-3 bg-white">
@@ -142,7 +143,7 @@ export default function AddClient() {
                                             onChange={formik.handleChange}
                                         />
                                     </div>
-                                
+
                                     <div className="col-md-6">
                                         <label htmlFor="addresses1" className='form-label'> عنوان</label>
                                         <input type="text" className='form-control address' name="addresses[0]"
@@ -157,19 +158,19 @@ export default function AddClient() {
                                             onChange={formik.handleChange}
                                         />
                                     </div>}
-                                    {showInput &&   <div className="col-md-6">
+                                    {showInput && <div className="col-md-6">
                                         <label htmlFor="addresses2" className='form-label'> عنوان آخر</label>
                                         <input type="text" className='form-control address' name="addresses[1]"
                                             onChange={formik.handleChange}
                                             id="addresses2"
                                         />
-                                    </div> }
+                                    </div>}
                                     <div className="col-md-6 ">
                                         <button type='button' className='btn btn-success' onClick={toggleInput} >
                                             {showInput === false ? 'إضافة المزيد' : 'إخفاء'}
                                         </button>
                                     </div>
-                                  
+
                                     <div className="col-md-12">
                                         <label htmlFor="notes" className='form-label'>ملاحظات</label>
                                         <textarea name="notes" id="notes" className='form-control'

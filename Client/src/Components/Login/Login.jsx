@@ -1,13 +1,15 @@
 import axios from 'axios';
 import Joi from 'joi';
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { AuthContext } from '../../Context/AuthStore';
 
 export default function Login({ saveUserData }) {
 
-  let [deliveryData, setDeliveryData] = useState([]);
+
+ let {loginDeliveryData} = useContext(AuthContext);
   let navigate = useNavigate();
   let [isLoading, setIsLoading] = useState(false);
   let [users, setUsers] = useState({
@@ -44,10 +46,7 @@ export default function Login({ saveUserData }) {
         position: 'top-center',
 
       });
-      if (data.user.role === 'delivery') {
-        setDeliveryData(data.user);
-      }
-
+    
       navigate('home');
     } else {
       setIsLoading(false);

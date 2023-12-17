@@ -7,7 +7,7 @@ import { ToastContainer } from "react-toastify";
 
 
 
-export default function MasterLayout({userData , setUserData}) {
+export default function MasterLayout({userData ,logout}) {
 
   return (
     <>
@@ -15,7 +15,7 @@ export default function MasterLayout({userData , setUserData}) {
     
         <div className=" g-0 row">
           <div className="col-10">
-            <Navbar userData={userData} setUserData={setUserData} />
+            <Navbar userData={userData}  logout={logout} />
             <Outlet/>
           </div>
           <div className='col-auto' >
