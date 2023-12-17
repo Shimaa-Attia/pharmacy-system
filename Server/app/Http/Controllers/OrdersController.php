@@ -28,14 +28,14 @@ class OrdersController extends Controller
     }
 
     public function store(Request $request){
+
         $validator =  Validator::make($request->all(),[
             'cost' => 'numeric|required',
             'totalAmmount' => 'numeric|required',
             'customer_id'=>'required|exists:customers,id',
-            'customer_phone'=>'required|regex:/(01)[0-9]{9}/|exists:custom_fields,value',
+            'customer_phone'=>'required|regex:/^01[0125][0-9]{8}$/|exists:custom_fields,value',
             'customer_address'=>'required|exists:custom_fields,value',
             'user_id'=>'required|exists:users,id'
-
           ]);
         if($validator->fails()){
            return response()->json([

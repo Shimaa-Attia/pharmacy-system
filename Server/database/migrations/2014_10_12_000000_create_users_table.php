@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('phone')->unique();
-            $table->enum('role', ['طيار', 'مشرف', 'صيدلي'])->default('طيار');
+            $table->enum('role', ['delivery', 'admin', 'doctor'])->default('delivery');
             $table->string('code')->unique();
             $table->decimal("hourRate", 6, 2)->nullable();
             $table->text('notes')->nullable();

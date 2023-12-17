@@ -22,9 +22,9 @@ class UserController extends Controller
             'name' => 'required|max:255',
             'phone' => 'required|regex:/^01[0125][0-9]{8}$/',
             'password' => 'required|confirmed|min:6',
-            'role' => 'required|in:طيار,مشرف,صيدلي',
+            'role' => 'required|in:delivery,admin,doctor',
             'code' => 'required',
-            'hourRate' => 'numeric',
+            'hourRate' => 'numeric|nullable',
             'salary' => 'numeric',
         ]);
 
