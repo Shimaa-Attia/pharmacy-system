@@ -23,19 +23,16 @@ export default function Clients() {
                     "Authorization": `Bearer ${accessToken}`
                 }
             });
-            console.log('Hi from Search ')
-           
-            setClients(searchResult.data);
-           
-            // console.log(searchResult.data);
+
+
+            setClients(searchResult.data.data);
+
         } else {
             searchResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers`, {
                 headers: {
                     "Authorization": `Bearer ${accessToken}`
                 }
             });
-            console.log('Hi from No Search ')
-
 
             setClients(searchResult.data.data);
 
@@ -77,14 +74,14 @@ export default function Clients() {
                                 </td>
                                 <td>{client.notes}</td>
                                 <td>
-                                    {client?.contactInfo.map((contactInfo) => {
+                                    {client?.contactInfo?.map((contactInfo) => {
                                         if (contactInfo.name === "address") {
                                             return <p key={contactInfo.id}>{contactInfo.value}</p>
                                         }
                                     })}
                                 </td>
                                 <td>
-                                    {client?.contactInfo.map((contactInfo) => {
+                                    {client?.contactInfo?.map((contactInfo) => {
                                         if (contactInfo.name === "phone") {
                                             return <p key={contactInfo.id}>{contactInfo.value}</p>
                                         }

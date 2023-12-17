@@ -160,7 +160,7 @@ export default function EditeOrder() {
                             <select name="customer_id" defaultValue={0} className='form-control ' id="customer_id"
                                 onChange={getInputValue}>
                                 <option value={0} hidden disabled>اختر</option>
-                                {clients.map((client) => <option key={client.id} value={client.id} >{client.code} {client.name}</option>)}
+                                {clients.map((client) => <option key={client.id}  value={client.id} >{client.code} {client.name}</option>)}
                             </select>
                         </div>
                         <div className="col-md-4">

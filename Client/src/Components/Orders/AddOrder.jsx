@@ -32,14 +32,9 @@ export default function AddOrder() {
     let getUserData = async () => {
         let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users`);
 
-        data.data.map((user) => {
-            if (user.role === 'delivery') {
-                setUsers([...users, user])
+        let delivery = data.data.filter((user) => user.role === 'delivery');
+        setUsers(delivery)
 
-                //  setUsers ( users => [...users,user]);
-
-            }
-        });
     };
     useEffect(() => {
         getUserData()

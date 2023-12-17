@@ -265,7 +265,7 @@ class UserController extends Controller
 
             return response()->json(Auth::guard('api')->user());
         }
-            return response('Unauthenticated user');
+            return response('Unauthenticated user', 401);
 
     }
 

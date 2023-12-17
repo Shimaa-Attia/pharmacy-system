@@ -35,19 +35,16 @@ export default function Orders() {
           "Authorization": `Bearer ${accessToken}`
         }
       });
-
-      console.log('Hi from Search ')
       setOrders(searchResult.data);
-      console.log(searchResult);
-
     } else {
-      searchResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders`, {
+      orders = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders`, {
         headers: {
           "Authorization": `Bearer ${accessToken}`
         }
       });
-      console.log('Hi from No Search ')
-      setOrders(searchResult.data.data);
+
+      console.log(orders.data.data)
+      setOrders(orders.data.data);
 
     }
 
@@ -84,10 +81,10 @@ export default function Orders() {
                     <i className='bi bi-list-ul text-bg-success mx-1 p-1 rounded'></i>
                   </NavLink>
                 </td>
-                <td>{order.customer_phone}</td>
-                <td>{users.phone}</td>
-                <td>{users.name}</td>
-                <td>{users.code}</td>
+                <td>{order?.customer?.name}</td>
+                <td>{order?.delivery_man?.phone}</td>
+                <td>{order?.delivery_man?.name}</td>
+                <td>{order?.delivery_man?.code}</td>
                 <td>{++index}</td>
               </tr>
               )}

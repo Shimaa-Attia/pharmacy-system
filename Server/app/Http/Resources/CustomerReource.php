@@ -15,19 +15,12 @@ class CustomerReource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $contacts = DB::table('custom_fields')
-                ->select('id','name','value')
-                ->where('customer_id', '=', $this->id)
-                ->get();
-
-
 
         return [
             'id'=>$this->id,
             'code'=>$this->code,
             'name'=>$this->name,
-            // 'contactInfo'=>$this->customFields,
-            'contactInfo'=>$contacts,
+            'contactInfo'=>$this->customFields,
             'notes'=>$this->notes,
         ];
     }
