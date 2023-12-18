@@ -39,7 +39,7 @@ class OrdersController extends Controller
           ]);
         if($validator->fails()){
            return response()->json([
-             "msg"=>$validator->errors()
+             "message"=>$validator->errors()
            ,409]);
         }
         //create

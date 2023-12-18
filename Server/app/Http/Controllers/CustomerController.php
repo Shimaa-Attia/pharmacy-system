@@ -66,7 +66,7 @@ class CustomerController extends Controller
         ]);
         if ($validator->fails()) {
             return response()->json([
-                "msg" => $validator->errors()], 400);
+                "message" => $validator->errors()], 400);
         }
 
         DB::transaction(function () use ($request) {
