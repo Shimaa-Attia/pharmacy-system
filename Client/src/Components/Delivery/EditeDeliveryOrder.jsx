@@ -16,7 +16,6 @@ export default function EditeDeliveryOrder() {
     let [isLoading, setIsLoading] = useState(false);
     let [clients, setClients] = useState([]);
     let [orders, setOrders] = useState({
-        user_id: '',
         customer_address: '',
         customer_phone: '',
         customer_id: '',
@@ -62,8 +61,8 @@ export default function EditeDeliveryOrder() {
 
     }, [orders.customer_id]);
 
-    let getContactValue = async (id) => {
-        let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers/contact/${id}`, {
+    let getContactValue = async (cust_id) => {
+        let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers/contact/${cust_id}`, {
             headers: {
                 "Authorization": `Bearer ${accessToken}`
             }
@@ -88,8 +87,15 @@ export default function EditeDeliveryOrder() {
                 position: 'top-center'
             });
             setIsLoading(false);
+            formInputs.forEach((el) => {
+                el.value = '';
+            });
+            formSelects.forEach((el) => {
+                el.selectedIndex = '0';
+            });
+            textarea.value = '';
 
-            navigate('/orders')
+            navigate(`/deliverylayout/deliveryOrders/${users.id}`)
         }).catch((errors) => {
             setIsLoading(false);
             const errorList = errors?.response?.data?.message;
@@ -108,7 +114,7 @@ export default function EditeDeliveryOrder() {
     let validateEditedFrom = () => {
         const schema = Joi.object({
 
-            user_id: Joi.number().required(),
+           
             customer_address: Joi.string().required(),
             customer_phone: Joi.string().required(),
             customer_id: Joi.number().required(),
@@ -145,10 +151,6 @@ export default function EditeDeliveryOrder() {
             <div className="mx-5 p-3 rounded rounded-3 bg-white">
                 <form onSubmit={editedOrederSubmit} >
                     <div className="row gy-3">
-
-                        <div className="col-md-4 ">
-                            <input type="text" name="user_id" value={users.id} id='user_id' />
-                        </div>
                         <div className="col-md-4">
                             <label htmlFor="customer_id" className='form-label'>كود العميل أو الاسم</label>
                             <select name="customer_id" defaultValue={0} className='form-control ' id="customer_id"

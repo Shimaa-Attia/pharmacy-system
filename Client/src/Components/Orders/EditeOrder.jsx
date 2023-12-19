@@ -27,6 +27,22 @@ export default function EditeOrder() {
 
   });
 
+  let [orderData, setOrderData] = useState([]);
+  let getOrder = async () => {
+
+    let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/show/${id}`, {
+      headers: {
+        "Authorization": `Bearer ${accessToken}`
+      }
+    });
+    console.log(data);
+    setOrderData(data.data);
+
+  };
+  useEffect(() => {
+    getOrder()
+  }, []);
+
   let getUserData = async () => {
     let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users`);
     let delivery = data.data.filter((user) => user.role === 'delivery');
@@ -147,7 +163,7 @@ export default function EditeOrder() {
               <select name="user_id" defaultValue={0} className='form-control ' id="user_id"
                 onChange={getInputValue}>
                 <option value={0} hidden disabled>اختار</option>
-                {users.map((user) => <option key={user.id} value={user.id} selected={user.id === orders.user_id} >{user.code} {user.name}</option>)}
+                {users.map((user) => <option key={user.id} value={user?.id} selected={user?.id === orderData?.delivery_man?.id} >{user.code} {user.name}</option>)}
               </select>
             </div>
             <div className="col-md-4">
@@ -155,7 +171,7 @@ export default function EditeOrder() {
               <select name="customer_id" defaultValue={0} className='form-control ' id="customer_id"
                 onChange={getInputValue}>
                 <option value={0} hidden disabled>اختر</option>
-                {clients.map((client) => <option key={client.id} value={client.id} selected={client.id === orders.customer_id}  >{client.code} {client.name}</option>)}
+                {clients.map((client) => <option key={client.id} value={client?.id} selected={client?.id === orderData?.customer?.id}  >{client.code} {client.name}</option>)}
               </select>
             </div>
             <div className="col-md-4">
@@ -163,7 +179,7 @@ export default function EditeOrder() {
               <select name="customer_phone" defaultValue={0} className='form-control ' id="customer_phone"
                 onChange={getInputValue}>
                 <option value={0} hidden disabled>اختار</option>
-                {contacts?.phones ? contacts?.phones.map((phone) => <option key={phone.id} value={phone.value} > {phone.value}</option>) : null}
+                {contacts?.phones ? contacts?.phones.map((phone) => <option key={phone.id} value={phone.value}   > {phone.value}</option>) : null}
               </select>
             </div>
             <div className="col-md-4">
@@ -171,17 +187,19 @@ export default function EditeOrder() {
               <select name="customer_address" defaultValue={0} className='form-control ' id="customer_address"
                 onChange={getInputValue}>
                 <option value={0} hidden disabled>اختار</option>
-                {contacts?.addresses ? contacts?.addresses.map((address) => <option key={address.id} value={address.value} > {address.value}</option>) : null}
+                {contacts?.addresses ? contacts?.addresses.map((address) => <option key={address.id} value={address?.value}  > {address.value}</option>) : null}
 
               </select>
             </div>
             <div className="col-md-4">
               <label htmlFor="cost" className='form-label'>قيمة الأوردر </label>
-              <input type="number" className='form-control' name="cost" id="cost" onChange={getInputValue} />
+              <input type="number" className='form-control' name="cost" id="cost" 
+              onChange={getInputValue}  
+              />
             </div>
             <div className="col-md-4">
               <label htmlFor="totalAmmount" className='form-label'> إجمالي المبلغ مع الطيار </label>
-              <input type="number" className='form-control' name="totalAmmount" id="totalAmmount" onChange={getInputValue} />
+              <input type="number" className='form-control' name="totalAmmount" id="totalAmmount" onChange={getInputValue}  />
             </div>
             <div className="col-md-12">
               <label htmlFor="notes" className='form-label'>ملاحظات</label>

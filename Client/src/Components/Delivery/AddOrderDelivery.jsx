@@ -35,6 +35,20 @@ export default function AddOrderDelivery() {
     useEffect(() => {
         getClientData()
     }, []);
+  
+    let getUserData = async () => {
+
+        let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/auth`, {
+            headers: {
+                "Authorization": `Bearer ${accessToken}`
+            }
+        });
+
+        setUsers(data);
+    };
+    useEffect(() => {
+        getUserData()
+    }, []);
 
     let [contacts, setContacts] = useState([]);
     useEffect(() => {
@@ -68,8 +82,7 @@ export default function AddOrderDelivery() {
                 "Authorization": `Bearer ${accessToken}`
             }
         }).then((res) => {
-            console.log(res);
-            console.log('res');
+          
             toast.success(res.data.message, {
                 position: 'top-center'
             });
@@ -84,8 +97,7 @@ export default function AddOrderDelivery() {
 
 
         }).catch((errors) => {
-            console.log(errors);
-            console.log('error');
+       
             setIsLoading(false);
             const errorList = errors?.response?.data?.message;
             if (errorList !== undefined) {

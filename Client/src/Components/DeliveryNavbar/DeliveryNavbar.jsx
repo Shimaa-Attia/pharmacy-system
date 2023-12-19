@@ -1,9 +1,24 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../../Context/AuthStore';
 import { NavLink } from 'react-router-dom';
+import axios from 'axios';
 
 export default function DeliveryNavbar() {
-    let { logout, userData } = useContext(AuthContext);
+    let { logout, userData , accessToken} = useContext(AuthContext);
+    let [users, setUsers] = useState([]);
+    let getUserData = async () => {
+
+        let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/auth`, {
+            headers: {
+                "Authorization": `Bearer ${accessToken}`
+            }
+        });
+
+        setUsers(data);
+    };
+    useEffect(() => {
+        getUserData()
+    }, []);
     return (
         <>
 
@@ -25,7 +40,7 @@ export default function DeliveryNavbar() {
                     <div className="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
                             <li className="nav-item">
-                                <NavLink className="nav-link active text-white fs-6 fw-bold " aria-current="page" to='/deliverylayout' >الأوردرات</NavLink>
+                                <NavLink className="nav-link active text-white fs-6 fw-bold " aria-current="page" to={`/deliverylayout/deliveryOrders/${users.id}`} >الأوردرات</NavLink>
                             </li>
                         </ul>
 
