@@ -174,7 +174,8 @@ class OrdersController extends Controller
 
          if($request->key){
             $key =$request->key;
-            $orders = Order::where(function($query) use ($key){
+            $orders = Order::where('user_id',$id)
+            ->where(function($query) use ($key){
                    $query ->where('cost','like',"%$key%")
                     ->orWhereHas('customer',function($query) use ($key){
                          $query->where('name','like',"%$key%")
