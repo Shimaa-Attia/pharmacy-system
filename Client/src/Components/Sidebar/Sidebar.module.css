@@ -25,15 +25,13 @@ i{
 }    */
 
 
-  .active *  {
-    display: block;
+ nav a.active *  {
+
     color: white !important;
     background-color: blueviolet !important;
   
 }
-.nav .nav-item .nav-link.active *{
-color: white !important;
-}
+
 
 
 /* .nav-pills .nav-link.active span ,.nav-pills .nav-link.active i{

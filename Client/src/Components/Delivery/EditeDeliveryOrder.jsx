@@ -2,21 +2,17 @@ import axios from 'axios';
 import Joi from 'joi';
 import React, { useContext, useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet';
-import { NavLink, useParams } from 'react-router-dom';
+import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../../Context/AuthStore';
 
 
-
-export default function AddOrder() {
+export default function EditeDeliveryOrder() {
     let { accessToken } = useContext(AuthContext);
     let formInputs = document.querySelectorAll('form input');
     let formSelects = document.querySelectorAll('form select');
     let textarea = document.querySelector('form textarea');
-
-   
     let [isLoading, setIsLoading] = useState(false);
-    let [users, setUsers] = useState([]);
     let [clients, setClients] = useState([]);
     let [orders, setOrders] = useState({
         user_id: '',
@@ -28,18 +24,20 @@ export default function AddOrder() {
         notes: '',
 
     });
-
+    let [users, setUsers] = useState([]);
     let getUserData = async () => {
-        let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users`);
 
-        let delivery = data.data.filter((user) => user.role === 'delivery');
-        setUsers(delivery);
+        let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/auth`, {
+            headers: {
+                "Authorization": `Bearer ${accessToken}`
+            }
+        });
 
+        setUsers(data);
     };
     useEffect(() => {
         getUserData()
     }, []);
-
     let getClientData = async () => {
         let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers`, {
             headers: {
@@ -48,13 +46,11 @@ export default function AddOrder() {
         });
         setClients([...data.data]);
     };
-
     useEffect(() => {
         getClientData()
     }, []);
 
     let [contacts, setContacts] = useState([]);
-
     useEffect(() => {
         if (orders.customer_id === '') {
             return;
@@ -63,6 +59,7 @@ export default function AddOrder() {
         }
 
     }, [orders.customer_id]);
+
     let getContactValue = async (id) => {
         let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers/contact/${id}`, {
             headers: {
@@ -72,34 +69,25 @@ export default function AddOrder() {
 
         setContacts(data);
     };
-
+    
     let getInputValue = (event) => {
         let myOrders = { ...orders }; //deep copy
         myOrders[event.target.name] = event.target.value;
         setOrders(myOrders);
 
     };
-
-    let sendOrderDataToApi = async () => {
-        await axios.post(`${process.env.REACT_APP_API_URL}/api/orders`, orders, {
+    let sendEditedDataToApi = async () => {
+        await axios.put(`${process.env.REACT_APP_API_URL}/api/orders/${id}`, orders, {
             headers: {
                 "Authorization": `Bearer ${accessToken}`
             }
         }).then((res) => {
-           
             toast.success(res.data.message, {
                 position: 'top-center'
             });
             setIsLoading(false);
-            formInputs.forEach((el) => {
-                el.value = '';
-            });
-            formSelects.forEach((el) => {
-                el.selectedIndex = '0';
-            });
-            textarea.value = '';
 
-
+            navigate('/orders')
         }).catch((errors) => {
             setIsLoading(false);
             const errorList = errors?.response?.data?.message;
@@ -114,7 +102,8 @@ export default function AddOrder() {
             }
         });
     };
-    let validateOrderForm = () => {
+
+    let validateEditedFrom = () => {
         const schema = Joi.object({
 
             user_id: Joi.number().required(),
@@ -127,12 +116,12 @@ export default function AddOrder() {
         });
         return schema.validate(orders, { abortEarly: false });
     };
-    let submitOrderForm = (e) => {
+    let editedOrederSubmit = (e) => {
         setIsLoading(true);
         e.preventDefault();
-        let validation = validateOrderForm();
+        let validation = validateEditedFrom();
         if (!validation.error) {
-            sendOrderDataToApi();
+            sendEditedDataToApi();
         } else {
             setIsLoading(false);
             try {
@@ -144,26 +133,19 @@ export default function AddOrder() {
             }
         }
     };
-
-
-
     return (
         <>
             <Helmet>
                 <meta charSet="utf-8" />
-                <title>Add Order</title>
+                <title>Edite Order</title>
             </Helmet>
-            <h3 className='alert alert-primary text-center mx-5 my-2  fw-bold'>إضافة أوردر </h3>
+            <h3 className='alert alert-primary text-center mx-5 my-2  fw-bold'>تعديل الأوردر</h3>
             <div className="mx-5 p-3 rounded rounded-3 bg-white">
-                <form onSubmit={submitOrderForm} >
+                <form onSubmit={editedOrederSubmit} >
                     <div className="row gy-3">
-                        <div className="col-md-4">
-                            <label htmlFor="user_id" className='form-label'>كود الطيار أو الاسم</label>
-                            <select name="user_id" defaultValue={0} className='form-control ' id="user_id"
-                                onChange={getInputValue}>
-                                <option value={0} hidden disabled>اختار</option>
-                                {users.map((user) => <option key={user.id} value={user.id} >{user.code} {user.name}</option>)}
-                            </select>
+
+                        <div className="col-md-4 ">
+                            <input type="text" name="user_id" value={users.id} id='user_id' />
                         </div>
                         <div className="col-md-4">
                             <label htmlFor="customer_id" className='form-label'>كود العميل أو الاسم</label>
@@ -204,11 +186,11 @@ export default function AddOrder() {
                         </div>
                         <div className="col-md-3">
                             <button type='submit' className='btn btn-primary form-control fs-5'>
-                                {isLoading == true ? <i className='fa fa-spinner fa-spin'></i> : 'إضافة'}
+                                {isLoading == true ? <i className='fa fa-spinner fa-spin'></i> : 'تعديل'}
                             </button>
                         </div>
                         <div className="col-md-3">
-                            <NavLink to='/orders' className='btn  btn-secondary form-control fs-5'>رجوع</NavLink>
+                            <NavLink to={`/deliverylayout/deliveryOrders/${users.id}`} className='btn  btn-secondary form-control fs-5'>رجوع</NavLink>
 
                         </div>
                     </div>

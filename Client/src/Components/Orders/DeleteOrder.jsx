@@ -12,26 +12,27 @@ export default function DeleteOrder() {
   let navigate = useNavigate();
   let [orders, setOrders] = useState([]);
   let getOrder = async () => {
-    try {
-      let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/show/${id}`);
-      setOrders(data.data);
 
-    } catch (error) {
-      toast.error('حدث خطأ ما، حاول مرة أخرى')
-    }
+      let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/show/${id}`,{
+        headers: {
+          "Authorization": `Bearer ${accessToken}`
+        }
+      });
+      setOrders(data.data);
+      console.log(data.data);
   };
   useEffect(() => {
     getOrder()
-  }, [])
+  }, []);
   let DeleteOrder = async () => {
     try {
-      axios.delete(`${process.env.REACT_APP_API_URL}/api/orders/delete/${id}`, {
+   let {data}=   axios.delete(`${process.env.REACT_APP_API_URL}/api/orders/delete/${id}`, {
         headers: {
           "Authorization": `Bearer ${accessToken}`
         }
       });
       navigate('/orders')
-      toast.success('تم حذف العميل بنجاح');
+      toast.success('تم حذف الأوردر بنجاح');
 
     } catch (error) {
       toast.error('حدث خطأ ما، حاول مرة أخرى')
@@ -51,24 +52,34 @@ export default function DeleteOrder() {
         <div className="row">
           <div className=' col-md-6  ' >
             <div className='text-center rounded p-2' style={{ backgroundColor: ' rgb(160, 200, 240)' }} >
-              <h2 > الاسم : {orders.name} </h2>
+              <h2 > كود الطيار : {orders?.delivery_man?.code} </h2>
             </div>
           </div>
           <div className=' col-md-6  ' >
             <div className='text-center rounded p-2' style={{ backgroundColor: ' rgb(160, 200, 240)' }} >
-              <h3 className='h2' > كود العميل : {orders.code} </h3>
+              <h3 className='h2' > اسم الطيار  : {orders?.delivery_man?.name} </h3>
             </div>
           </div>
-
-          {orders.notes ?
-            <div className=' col-md-12  ' >
-              <div className='text-center rounded p-2' style={{ backgroundColor: ' rgb(160, 200, 240)' }} >
-                <h3 className='h2' > ملاحظات  : {orders.notes} </h3>
-              </div>
-            </div> : ''
-          }
-
-
+          <div className=' col-md-6  ' >
+            <div className='text-center rounded p-2 my-2' style={{ backgroundColor: ' rgb(160, 200, 240)' }} >
+              <h3 className='h2' > كود العميل  : {orders.customer?.code} </h3>
+            </div>
+          </div>
+          <div className=' col-md-6  ' >
+            <div className='text-center rounded p-2 my-2' style={{ backgroundColor: ' rgb(160, 200, 240)' }} >
+              <h3 className='h2' > اسم العميل  : {orders.customer?.name} </h3>
+            </div>
+          </div>
+          <div className=' col-md-6  ' >
+            <div className='text-center rounded p-2 my-2' style={{ backgroundColor: ' rgb(160, 200, 240)' }} >
+              <h3 className='h2' > قيمة الأوردر   : {orders.cost} </h3>
+            </div>
+          </div>
+          <div className=' col-md-6  ' >
+            <div className='text-center rounded p-2 my-2' style={{ backgroundColor: ' rgb(160, 200, 240)' }} >
+              <h3 className='h2' >  إجمالي المبلغ   : {orders.total_ammount} </h3>
+            </div>
+          </div>
         </div>
       </div>
 

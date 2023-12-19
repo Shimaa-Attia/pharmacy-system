@@ -1,42 +1,46 @@
 import axios from 'axios';
-import React, { useContext, useEffect, useState } from 'react'
-import { Table } from 'react-bootstrap';
+import React, { useContext, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useParams } from 'react-router-dom';
 import { AuthContext } from '../../Context/AuthStore';
+import { Table } from 'react-bootstrap';
 
-export default function Orders() {
+
+export default function DeliveryOrders() {
   let { accessToken } = useContext(AuthContext);
+  let { id } = useParams();
 
   let [orders, setOrders] = useState([]);
-
   let [searchText, setSearchText] = useState('');
   function handleSearchChange(event) {
     setSearchText(event.target.value)
 
   };
-
   let getOrderData = async () => {
     let searchResult;
     if (searchText !== undefined && searchText.trim().length > 0) {
-      searchResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/search/${searchText.trim()}`, {
+      searchResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/user/${id}?key=${searchText.trim()}`, {
         headers: {
           "Authorization": `Bearer ${accessToken}`
         }
       });
+      console.log('search');
+      console.log(searchResult);
       setOrders(searchResult.data.data);
     } else {
-      searchResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders`, {
+      searchResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/user/${id}`, {
         headers: {
           "Authorization": `Bearer ${accessToken}`
         }
-      });  
+      });
+      console.log('no search');
+      console.log(searchResult);
+
       setOrders(searchResult.data.data);
 
     }
   };
   useEffect(() => { getOrderData() }, [searchText]);
-
   let showOrders = () => {
     if (orders.length > 0) {
       return (
@@ -48,31 +52,24 @@ export default function Orders() {
                 <th>قيمة الأوردر</th>
                 <th>هاتف العميل</th>
                 <th>اسم العميل</th>
-                <th>هاتف الطيار</th>
-                <th>اسم الطيار</th>
-                {/* <th>كود الطيار</th> */}
+                <th>كود العميل</th>
                 <th>رقم</th>
               </tr>
             </thead>
             <tbody>
               {orders.map((order, index) => <tr key={order.id}>
                 <td>
-                  <NavLink to={`/orders/delete/${order.id}`} >
-                    <i className='bi bi-trash text-bg-danger p-1 mx-1 rounded'></i>
+                
+                  <NavLink to={`/deliverylayout/edite/${order.id}`} >
+                    <i className='bi bi-pencil-square text-bg-primary  p-1 rounded'></i>
                   </NavLink>
-                  <NavLink to={`/orders/edite/${order.id}`} >
-                    <i className='bi bi-pencil-square text-bg-primary mx-1 p-1 rounded'></i>
-                  </NavLink>
-                  <NavLink to={`/orders/details/${order.id}`} >
-                    <i className='bi bi-list-ul text-bg-success mx-1 p-1 rounded'></i>
-                  </NavLink>
+               
                 </td>
                 <td>{order.cost}</td>
                 <td>{order?.customer_phone}</td>
                 <td>{order?.customer?.name}</td>
-                <td>{order?.delivery_man?.phone}</td>
-                <td>{order?.delivery_man?.name}</td>
-                {/* <td>{order?.delivery_man?.code}</td> */}
+                <td>{order?.customer?.code}</td>
+
                 <td>{++index}</td>
               </tr>
               )}
@@ -89,21 +86,23 @@ export default function Orders() {
 
     }
   };
-
   return (
     <>
       <Helmet>
         <meta charSet="utf-8" />
-        <title>Orders</title>
+        <title>Delivery Orders</title>
       </Helmet>
-      <div className=" my-3 text-center row mx-2  ">
-        <div className="col-md-6">
-          <NavLink to='/orders/add' className='btn btn-primary' >إضافة أوردر</NavLink>
-        </div>
-        <div className="col-md-4">
-          <input type="text" className='form-control text-end ' placeholder=' ...بحث عن أوردر ' onChange={handleSearchChange} />
+      <div className='container'>
+        <div className=" my-3 text-center row   ">
+          <div className="col-md-6 ">
+            <NavLink to={`/deliverylayout/add/${id}`} className='btn btn-primary' >إضافة أوردر</NavLink>
+          </div>
+          <div className="col-md-4">
+            <input type="text" className='form-control text-end ' placeholder=' ...بحث عن أوردر ' onChange={handleSearchChange} />
+          </div>
         </div>
       </div>
+
       {showOrders()}
     </>
   )

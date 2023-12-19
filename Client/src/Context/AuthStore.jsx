@@ -18,18 +18,8 @@ export default function AuthContextProvider(props) {
         let encodedToken = localStorage.getItem('userToken');
         setUserData(encodedToken);
     };
-    let [users, setUsers] = useState({
-        phone: '',
-        password: '',
-      });
-let [deliveryData , setDeliveryData] = useState([]);
-    let loginDeliveryData =async () =>{
-        let { data } = await axios.post(`${process.env.REACT_APP_API_URL}/api/login`, users);
-         if (data.user.role === 'delivery') {
-        setDeliveryData(data.user);
-        console.log('hello i am delivery');
-      }
-    };
+  
+
 
     let logout = async () => {
         let res = await axios.post(`${process.env.REACT_APP_API_URL}/api/logout`, {}, {
@@ -46,7 +36,7 @@ let [deliveryData , setDeliveryData] = useState([]);
     };
 
 
-    return <AuthContext.Provider value={{ userData, saveUserData, logout, accessToken ,loginDeliveryData , deliveryData }} >
+    return <AuthContext.Provider value={{ userData, saveUserData, logout, accessToken }} >
         {props.children}
     </AuthContext.Provider>
 

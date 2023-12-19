@@ -17,7 +17,6 @@ export default function ProtectedRoute({userData, children}) {
                 }
             });
 
-
             if (data !== null) {
                 setUser(data)
             }

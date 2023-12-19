@@ -54,7 +54,7 @@ export default function EditeClient() {
 
     }).catch((errors) => {
       setIsLoading(false);
-      const errorList = errors?.response?.data?.msg;
+      const errorList = errors?.response?.data?.message;
       if (errorList !== undefined) {
         Object.keys(errorList).map((err) => {
           errorList[err].map((err) => {
