@@ -4,7 +4,7 @@ import Joi from 'joi';
 import { useEffect, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { Form, Formik } from "formik";
+import {Field, Form, Formik} from "formik";
 import { Helmet } from 'react-helmet';
 import { AuthContext } from '../../Context/AuthStore';
 
@@ -25,22 +25,19 @@ export default function AddClient() {
     }
     let [clientData, setClientData] = useState({ ...initialValues });
 
-    let sendClientDataToApi = async (values) => {
+    let sendClientDataToApi = async (values, resetForm, setFieldValue) => {
 
         await axios.post(`${process.env.REACT_APP_API_URL}/api/customers`, values, {
             headers: {
                 "Authorization": `Bearer ${accessToken}`
             }
         }).then((res) => {
-
             toast.success(res.data.message, {
                 position: 'top-center'
             });
             setIsLoading(false);
-            formInputs.forEach((el) => {
-                el.value = '';
-            });
-
+          setClientData({ ...initialValues });
+            resetForm();
         }).catch((errors) => {
             console.log(errors);
             setIsLoading(false);
@@ -71,19 +68,11 @@ export default function AddClient() {
 
     };
 
-    let submitClientForm = (values) => {
+    let submitClientForm = (values,  resetForm ,setFieldValue) => {
         setIsLoading(true);
         let validation = validateClientForm(values);
         if (!validation.error) {
-            sendClientDataToApi(values).finally(() => {
-                values = {
-                    code: '',
-                    name: '',
-                    phones: [],
-                    addresses: [],
-                    notes: ''
-                }
-            });
+            sendClientDataToApi(values, resetForm, setFieldValue);
 
         } else {
             setIsLoading(false);
@@ -110,15 +99,13 @@ export default function AddClient() {
                 <meta charSet="utf-8" />
                 <title>Add Client</title>
             </Helmet>
-
             <h3 className='alert alert-primary text-center mx-5 my-2  fw-bold'>إضافة عميل جديد</h3>
             <div className="mx-5 p-3 rounded rounded-3 bg-white">
 
                 <Formik initialValues={
                     clientData
-                } onSubmit={(values) => {
-                    submitClientForm(values)
-
+                } onSubmit={(values, { resetForm,setFieldValue }) => {
+                    submitClientForm(values, resetForm, setFieldValue);
                 }}>
                     {
                         formik => {
@@ -126,44 +113,30 @@ export default function AddClient() {
                                 <Form className="row g-3">
                                     <div className="col-md-6">
                                         <label htmlFor="code" className='form-label'>كود العميل</label>
-                                        <input type="text" className='form-control' name="code" id="code"
-                                            onChange={formik.handleChange}
-                                        />
+                                        <Field type="text" className='form-control' name="code" id="code"/>
                                     </div>
                                     <div className="col-md-6">
                                         <label htmlFor="name" className='form-label'>الاسم</label>
-                                        <input type="text" className='form-control' name="name" id="name"
-                                            onChange={formik.handleChange}
-                                        />
+                                        <Field type="text" className='form-control' name="name" id="name"/>
                                     </div>
                                     <div className="col-md-6">
                                         <label htmlFor="phone1" className='form-label'> رقم هاتف</label>
-                                        <input type="tel" className='form-control phone' name="phones[0]"
-                                            id="phone1"
-                                            onChange={formik.handleChange}
-                                        />
+                                        <Field type="text" id="phone1" className='form-control' name="phones[0]" />
                                     </div>
 
                                     <div className="col-md-6">
                                         <label htmlFor="addresses1" className='form-label'> عنوان</label>
-                                        <input type="text" className='form-control address' name="addresses[0]"
-                                            onChange={formik.handleChange}
-                                            id="addresses1"
-                                        />
+
+                                        <Field type="text" id="addresses1" className='form-control' name="addresses[0]" />
                                     </div>
                                     {showInput && <div className="col-md-6">
                                         <label htmlFor="phone2" className='form-label'> رقم هاتف آخر </label>
-                                        <input type="tel" className='form-control phone ' name="phones[1]"
-                                            id="phone2"
-                                            onChange={formik.handleChange}
-                                        />
+                                        <Field type="text" id="phone2" className='form-control' name="phones[1]" />
                                     </div>}
                                     {showInput && <div className="col-md-6">
                                         <label htmlFor="addresses2" className='form-label'> عنوان آخر</label>
-                                        <input type="text" className='form-control address' name="addresses[1]"
-                                            onChange={formik.handleChange}
-                                            id="addresses2"
-                                        />
+
+                                        <Field type="text" id="addresses2" className='form-control' name="addresses[1]" />
                                     </div>}
                                     <div className="col-md-6 ">
                                         <button type='button' className='btn btn-success' onClick={toggleInput} >
@@ -173,10 +146,7 @@ export default function AddClient() {
 
                                     <div className="col-md-12">
                                         <label htmlFor="notes" className='form-label'>ملاحظات</label>
-                                        <textarea name="notes" id="notes" className='form-control'
-
-                                            onChange={formik.handleChange}
-                                        />
+                                        <Field type="text" as="textarea" id="notes" className='form-control' name="notes" />
                                     </div>
                                     <div className="col-md-3">
                                         <button type='submit' className='btn btn-primary form-control fs-5'>

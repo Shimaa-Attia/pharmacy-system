@@ -147,7 +147,7 @@ export default function EditeOrder() {
               <select name="user_id" defaultValue={0} className='form-control ' id="user_id"
                 onChange={getInputValue}>
                 <option value={0} hidden disabled>اختار</option>
-                {users.map((user) => <option key={user.id} value={user.id} >{user.code} {user.name}</option>)}
+                {users.map((user) => <option key={user.id} value={user.id} selected={user.id === orders.user_id} >{user.code} {user.name}</option>)}
               </select>
             </div>
             <div className="col-md-4">
@@ -155,7 +155,7 @@ export default function EditeOrder() {
               <select name="customer_id" defaultValue={0} className='form-control ' id="customer_id"
                 onChange={getInputValue}>
                 <option value={0} hidden disabled>اختر</option>
-                {clients.map((client) => <option key={client.id} value={client.id} >{client.code} {client.name}</option>)}
+                {clients.map((client) => <option key={client.id} value={client.id} selected={client.id === orders.customer_id}  >{client.code} {client.name}</option>)}
               </select>
             </div>
             <div className="col-md-4">

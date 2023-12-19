@@ -14,29 +14,14 @@ export default function AddOrderDelivery() {
     let [isLoading, setIsLoading] = useState(false);
     let [clients, setClients] = useState([]);
     let [orders, setOrders] = useState({
-        user_id: '',
         customer_address: '',
         customer_phone: '',
         customer_id: '',
         totalAmmount: '',
         cost: '',
         notes: '',
-
     });
     let [users, setUsers] = useState([]);
-    let getUserData = async () => {
-
-        let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/auth`, {
-            headers: {
-                "Authorization": `Bearer ${accessToken}`
-            }
-        });
-
-        setUsers(data);
-    };
-    useEffect(() => {
-        getUserData()
-    }, []);
 
     let getClientData = async () => {
         let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers`, {
@@ -116,8 +101,6 @@ export default function AddOrderDelivery() {
     };
     let validateOrderForm = () => {
         const schema = Joi.object({
-
-            user_id: Joi.number().required(),
             customer_address: Joi.string().required(),
             customer_phone: Joi.string().required(),
             customer_id: Joi.number().required(),
@@ -160,10 +143,6 @@ export default function AddOrderDelivery() {
             <div className="mx-5 p-3 rounded rounded-3 bg-white">
                 <form onSubmit={submitOrderForm} >
                     <div className="row gy-3">
-
-                        <div className="col-md-4 ">
-                            <input type="text" name="user_id" value={users.id} id='user_id'  />
-                        </div>
 
                         <div className="col-md-4">
                             <label htmlFor="customer_id" className='form-label'>كود العميل أو الاسم</label>

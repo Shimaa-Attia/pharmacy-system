@@ -9,6 +9,7 @@ import { AuthContext } from '../../Context/AuthStore';
 
 export default function EditeDeliveryOrder() {
     let { accessToken } = useContext(AuthContext);
+    let  navigate = useNavigate();
     let formInputs = document.querySelectorAll('form input');
     let formSelects = document.querySelectorAll('form select');
     let textarea = document.querySelector('form textarea');
@@ -25,6 +26,7 @@ export default function EditeDeliveryOrder() {
 
     });
     let [users, setUsers] = useState([]);
+    let { id } = useParams();
     let getUserData = async () => {
 
         let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/auth`, {

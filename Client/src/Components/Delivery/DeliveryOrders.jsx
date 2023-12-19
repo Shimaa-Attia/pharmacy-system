@@ -45,7 +45,7 @@ export default function DeliveryOrders() {
     if (orders.length > 0) {
       return (
         <div className="shadow rounded rounded-4 bg-white mx-3 p-3 ">
-          <Table responsive='sm' className='table table-bordered table-hover text-center '>
+          <Table responsive='sm' className='table table-bordered table-hover table-lightborder text-center table-responsive-list'>
             <thead className='table-primary'>
               <tr>
                 <th>خيارات</th>
@@ -58,19 +58,19 @@ export default function DeliveryOrders() {
             </thead>
             <tbody>
               {orders.map((order, index) => <tr key={order.id}>
-                <td>
+                <td data-label="خيارات">
                 
                   <NavLink to={`/deliverylayout/edite/${order.id}`} >
                     <i className='bi bi-pencil-square text-bg-primary  p-1 rounded'></i>
                   </NavLink>
                
                 </td>
-                <td>{order.cost}</td>
-                <td>{order?.customer_phone}</td>
-                <td>{order?.customer?.name}</td>
-                <td>{order?.customer?.code}</td>
+                <td data-label="قيمة الأوردر">{order.cost}</td>
+                <td data-label="هاتف العميل">{order?.customer_phone}</td>
+                <td data-label="اسم العميل">{order?.customer?.name}</td>
+                <td data-label="كود العميل">{order?.customer?.code}</td>
 
-                <td>{++index}</td>
+                <td data-label="#">{++index}</td>
               </tr>
               )}
             </tbody>

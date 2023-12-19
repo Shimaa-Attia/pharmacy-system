@@ -29,6 +29,10 @@ class OrdersController extends Controller
 
     public function store(Request $request){
 
+        if (\Auth::user()->role == 'delivery' && \Auth::check()) {
+          $request->request->add(['user_id' => \Auth::user()->id]);
+        }
+
         $validator =  Validator::make($request->all(),[
             'cost' => 'numeric|required',
             'totalAmmount' => 'numeric|required',
@@ -42,6 +46,7 @@ class OrdersController extends Controller
              "message"=>$validator->errors()
            ,409]);
         }
+
         //create
 
       $order =  Order::create([
@@ -62,6 +67,11 @@ class OrdersController extends Controller
     }
 
     public function update(Request $request, $id){
+
+        if (\Auth::user()->role == 'delivery' && \Auth::check()) {
+            $request->request->add(['user_id' => \Auth::user()->id]);
+        }
+
         //check
          $order =  Order::find($id);
          if($order == null){
@@ -94,7 +104,6 @@ class OrdersController extends Controller
          "customer_phone"=>$request->customer_phone,
          "customer_address"=>$request->customer_address,
          "user_id"=>$request->user_id,
-
       ]);
       //response
      return response()->json([

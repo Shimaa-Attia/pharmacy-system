@@ -36,4 +36,36 @@
   z-index: 9999;
 }
 
+@media screen and (max-width: 600px) {
+  table.table-responsive-list thead {
+    display: none;
+  }
+
+  table.table-responsive-list tr {
+    padding: 3px;
+    display: block;
+    margin: .5rem 0 2rem;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 15px 0 rgba(16, 37, 133, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+
+  }
+
+  table.table-responsive-list td {
+    display: block;
+    text-align: left;
+    border-bottom: 1px solid rgb(255 255 255 / 33%)
+  }
+
+  table.table-responsive-list td:last-child {
+    border-bottom: 0;
+  }
+
+  table.table-responsive-list td:before {
+    content: attr(data-label);
+    float: right;
+    font-weight: bold;
+  }
+}
 

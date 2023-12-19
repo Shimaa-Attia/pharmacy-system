@@ -3,7 +3,7 @@ import Joi from 'joi';
 import React, { useContext, useEffect, useState } from 'react'
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import {Form, Formik} from "formik";
+import {Field, Form, Formik} from "formik";
 import { Helmet } from 'react-helmet';
 import { AuthContext } from '../../Context/AuthStore';
 
@@ -12,8 +12,14 @@ export default function EditeClient() {
   let [isLoading, setIsLoading] = useState(false);
   let navigate = useNavigate();
   let { id } = useParams();
-  let [clients, setClients] = useState([]);
-  let [contactInfo, setContactInfo] = useState([]);
+  let [clients, setClients] = useState({
+    code: '',
+    name: '',
+    phones: [],
+    addresses: [],
+    notes: ''
+  });
+
   let getClient = async () => {
     try {
       let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers/show/${id}`, {
@@ -21,22 +27,28 @@ export default function EditeClient() {
           "Authorization": `Bearer ${accessToken}`
         }
       });
-      setClients(data.data);
-      setContactInfo(data.data.contactInfo);
-      
+
+      let phones = data?.data?.contactInfo.filter((item) => item.name === 'phone');
+      let addresses = data?.data?.contactInfo.filter((item) => item.name === 'address');
+
+      setClients({
+        code: data?.data?.code,
+        name: data?.data?.name,
+        phones: phones,
+        addresses: addresses,
+        notes: data?.data?.notes ?? ''
+      });
+
     } catch (error) {
       toast.error('حدث خطأ ما، حاول مرة أخرى')
     }
- 
- 
-    
+
   };
 
-  useEffect(() => {
-    getClient()
-  }, []);
-  
+  useEffect( () => {
+     getClient()
 
+  }, []);
 
   let sendEditedDataToApi = async (values) => {
     await axios.put(`${process.env.REACT_APP_API_URL}/api/customers/${id}`, values, {
@@ -68,7 +80,7 @@ export default function EditeClient() {
   };
   let validateClientForm = (values) => {
     const schema = Joi.object({
-      name: Joi.string().min(3).max(20).required(),
+      name: Joi.string().min(3).required(),
       code: Joi.string().required(),
       phones: Joi.required(),
       addresses: Joi.required(),
@@ -106,16 +118,7 @@ export default function EditeClient() {
       <div className="mx-5 p-3 rounded rounded-3 bg-white">
 
         <Formik
-      
-        initialValues={
-          {
-            code: '',
-            name: '',
-            phones: [],
-            addresses: [],
-            notes: ''
-          }
-        } onSubmit={(values) => {
+        initialValues={clients} enableReinitialize={true} onSubmit={(values) => {
           editeClientSubmit(values)
         }}>
           {
@@ -124,52 +127,31 @@ export default function EditeClient() {
                 <Form className="row g-3">
                   <div className="col-md-6">
                     <label htmlFor="code" className='form-label'>كود العميل</label>
-                    <input type="text" className='form-control' name="code" id="code"
-                      onChange={formik.handleChange} value={clients?.code}
-                    />
+                    <Field type="text" className='form-control' name="code" id="code"/>
                   </div>
                   <div className="col-md-6">
                     <label htmlFor="name" className='form-label'>الاسم</label>
-                    <input type="text" className='form-control' name="name" id="name"
-                      onChange={formik.handleChange} 
-                    />
+                    <Field type="text" className='form-control' name="name" id="name"/>
                   </div>
                   <div className="col-md-6">
                     <label htmlFor="phone1" className='form-label'> رقم هاتف</label>
-                    <input type="tel" className='form-control phone' name="phones[0]"
-                      id="phone1"  
-                     
-                   
-                      onChange={formik.handleChange}
-                    />
+                    <Field type="tel" className='form-control phone' name="phones[0].value"/>
                   </div>
                   <div className="col-md-6">
                     <label htmlFor="phone2" className='form-label'> رقم هاتف 2 </label>
-                    <input type="tel" className='form-control phone ' name="phones[1]"
-                      id="phone2"
-                      onChange={formik.handleChange}
-                    />
+                    <Field type="tel" className='form-control phone' name="phones[1].value"/>
                   </div>
                   <div className="col-md-6">
                     <label htmlFor="addresses1" className='form-label'> العنوان</label>
-                    <input type="text" className='form-control address' name="addresses[0]"
-                      id="addresses1" 
-                      onChange={formik.handleChange}
-                    />
+                    <Field type="text" className='form-control address' name="addresses[0].value"/>
                   </div>
                   <div className="col-md-6">
                     <label htmlFor="addresses2" className='form-label'> 2العنوان</label>
-                    <input type="text" className='form-control address' name="addresses[1]"
-                      id="addresses2"
-                      onChange={formik.handleChange}
-                    />
+                    <Field type="text" className='form-control address' name="addresses[1].value"/>
                   </div>
                   <div className="col-md-12">
                     <label htmlFor="notes" className='form-label'>ملاحظات</label>
-                    <textarea name="notes" id="notes" className='form-control'
-                   
-                      onChange={formik.handleChange}
-                    />
+                    <Field type="text" className='form-control' name="notes" id="notes"/>
                   </div>
                   <div className="col-md-3">
                     <button type='submit' className='btn btn-primary form-control fs-5'>
@@ -186,7 +168,6 @@ export default function EditeClient() {
             }
           }
         </Formik>
-
       </div>
 
 

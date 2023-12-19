@@ -106,22 +106,18 @@ class CustomerController extends Controller
 
     }
 
-    public
-    function update(Request $request, $id)
+    public function update(Request $request, $id)
     {
-        $customer = customer::find($id);
-        if ($customer == null) {
-            return response()->json([
-                "message" => "هذا العميل غير موجود"
-            ], 404);
+        if (isset($id)) {
+            $request->request->add(["id" => $id]);
         }
 
-
         $validator = Validator::make($request->all(), [
+            "id" => 'required|exists:customers,id',
             'name' => 'required',
-            'code' => 'required|unique:customers,code,' . $customer->id,
-            "phones.*" => 'required|regex:/^01[0125][0-9]{8}$/|unique:custom_fields,value,' . $customer->id . ',customer_id',
-            "addresses.*" => 'required|min:5',
+            'code' => 'required|unique:customers,code,' . $id,
+            "phones.value.*" => 'required|regex:/^01[0125][0-9]{8}$/|unique:custom_fields,value,' . $id . ',customer_id',
+            "addresses.value.*" => 'required|min:5',
 
         ]);
         if ($validator->fails()) {
@@ -138,31 +134,22 @@ class CustomerController extends Controller
                 "notes" => $request->notes
             ]);
 
-
-            CustomField::where('customer_id', $id)->delete();
             foreach ($request->phones as $phone) {
-
-                CustomField::create([
-                    "name" => "phone",
-                    "value" => $phone,
-                    "customer_id" => $customer->id
+                CustomField::where("id", $phone["id"])->update([
+                    "value" => $phone['value']
                 ]);
-
             }
             foreach ($request->addresses as $address) {
-                CustomField::create([
-                    "name" => "address",
-                    "value" => $address,
-                    "customer_id" => $customer->id
+                CustomField::where("id", $address["id"])->update([
+                    "value" => $address['value']
                 ]);
-
             }
 
         });
 
         return response()->json([
             "message" => "تم تحديث بيانات العميل",
-        ], 200);
+        ]);
 
 
     }
