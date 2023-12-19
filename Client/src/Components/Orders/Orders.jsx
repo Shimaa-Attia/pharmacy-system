@@ -41,7 +41,7 @@ export default function Orders() {
     if (orders.length > 0) {
       return (
         <div className="shadow rounded rounded-4 bg-white mx-3 p-3 ">
-          <Table responsive='sm' className='table table-bordered table-hover text-center '>
+          <table responsive='sm' className='table table-bordered table-hover text-center table-responsive-list '>
             <thead className='table-primary'>
               <tr>
                 <th>خيارات</th>
@@ -56,7 +56,7 @@ export default function Orders() {
             </thead>
             <tbody>
               {orders.map((order, index) => <tr key={order.id}>
-                <td>
+                <td data-label="خيارات">
                   <NavLink to={`/orders/delete/${order.id}`} >
                     <i className='bi bi-trash text-bg-danger p-1 mx-1 rounded'></i>
                   </NavLink>
@@ -67,18 +67,18 @@ export default function Orders() {
                     <i className='bi bi-list-ul text-bg-success mx-1 p-1 rounded'></i>
                   </NavLink>
                 </td>
-                <td>{order.cost}</td>
-                <td>{order?.customer_phone}</td>
-                <td>{order?.customer?.name}</td>
-                <td>{order?.delivery_man?.phone}</td>
-                <td>{order?.delivery_man?.name}</td>
-                {/* <td>{order?.delivery_man?.code}</td> */}
-                <td>{++index}</td>
+                <td data-label="قيمة الأوردر">{order.cost}</td>
+                <td data-label="هاتف العميل">{order?.customer_phone}</td>
+                <td data-label="اسم العميل">{order?.customer?.name}</td>
+                <td data-label="هاتف الطيار">{order?.delivery_man?.phone}</td>
+                <td data-label="اسم الطيار">{order?.delivery_man?.name}</td>
+              
+                <td data-label="#">{++index}</td>
               </tr>
               )}
             </tbody>
 
-          </Table>
+          </table>
         </div>
       )
     } else {
@@ -98,10 +98,10 @@ export default function Orders() {
       </Helmet>
       <div className=" my-3 text-center row mx-2  ">
         <div className="col-md-6">
-          <NavLink to='/orders/add' className='btn btn-primary' >إضافة أوردر</NavLink>
+          <NavLink to='/orders/add' className='btn btn-primary mb-1' >إضافة أوردر</NavLink>
         </div>
         <div className="col-md-4">
-          <input type="text" className='form-control text-end ' placeholder=' ...بحث عن أوردر ' onChange={handleSearchChange} />
+          <input type="text" className='form-control text-end mt-1 ' placeholder=' ...بحث عن أوردر ' onChange={handleSearchChange} />
         </div>
       </div>
       {showOrders()}

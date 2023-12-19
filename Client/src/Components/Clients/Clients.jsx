@@ -47,7 +47,7 @@ export default function Clients() {
         if (clients.length > 0) {
             return (
                 <div className="shadow rounded rounded-4 bg-white mx-3 p-3 ">
-                    <Table responsive='md' className='table table-bordered table-hover text-center   '>
+                    <table responsive='md' className='table table-bordered table-hover text-center table-responsive-list  '>
                         <thead className='table-primary'>
                             <tr>
                                 <th>خيارات</th>
@@ -61,7 +61,7 @@ export default function Clients() {
                         </thead>
                         <tbody>
                             {clients.map((client, index) => <tr key={client.id}>
-                                <td>
+                                <td data-label="خيارات">
                                     <NavLink to={`/clients/delete/${client.id}`}>
                                         <i className='bi bi-trash text-bg-danger p-1 mx-1  rounded'></i>
                                     </NavLink>
@@ -72,15 +72,16 @@ export default function Clients() {
                                         <i className='bi bi-list-ul text-bg-success mx-1 p-1 rounded'></i>
                                     </NavLink>
                                 </td>
-                                <td>{client.notes}</td>
-                                <td>
+
+                               
+                                <td data-label="العناوين">
                                     {client?.contactInfo?.map((contactInfo) => {
                                         if (contactInfo.name === "address") {
                                             return <p key={contactInfo.id}>{contactInfo.value}</p>
                                         }
                                     })}
                                 </td>
-                                <td>
+                                <td data-label="أرقام الهواتف">
                                     {client?.contactInfo?.map((contactInfo) => {
                                         if (contactInfo.name === "phone") {
                                             return <p key={contactInfo.id}>{contactInfo.value}</p>
@@ -89,13 +90,13 @@ export default function Clients() {
                                 </td>
 
 
-                                <td>{client.name}</td>
-                                <td>{client.code}</td>
-                                <td>{++index}</td>
+                                <td data-label="اسم العميل">{client.name}</td>
+                                <td data-label="كود العميل">{client.code}</td>
+                                <td data-label="#">{++index}</td>
                             </tr>
                             )}
                         </tbody>
-                    </Table>
+                    </table>
                 </div>
             )
         } else {
@@ -115,10 +116,10 @@ export default function Clients() {
             </Helmet>
             <div className=" my-3 text-center row mx-2  ">
                 <div className="col-md-6">
-                    <NavLink to='/clients/add' className='btn btn-primary'>إضافة عميل</NavLink>
+                    <NavLink to='/clients/add' className='btn btn-primary mb-1'>إضافة عميل</NavLink>
                 </div>
                 <div className="col-md-4">
-                    <input type="text" className='form-control text-end' onChange={handleSearchChange} placeholder=' ...بحث عن عميل ' />
+                    <input type="text" className='form-control text-end mt-1' onChange={handleSearchChange} placeholder=' ...بحث عن عميل ' />
                 </div>
             </div>
 

@@ -44,7 +44,7 @@ export default function Users() {
     if (users.length > 0) {
       return (
         <div className="shadow rounded rounded-4 bg-white mx-3 p-3 border  ">
-          <Table responsive='sm' className='table table-bordered  table-hover text-center '>
+          <table responsive='sm' className='table table-bordered  table-hover text-center table-responsive-list '>
             <thead className='table-primary' >
               <tr >
                 <th  >خيارات</th>
@@ -57,7 +57,7 @@ export default function Users() {
             </thead>
             <tbody>
               {users.map((user, index) => <tr key={user.id}>
-                <td>
+                <td  data-label="خيارات">
                   <NavLink to={`/users/delete/${user.id}`} >
                     <i className='bi bi-trash text-bg-danger p-1 mx-1 rounded'></i>
                   </NavLink>
@@ -68,16 +68,16 @@ export default function Users() {
                     <i className='bi bi-list-ul text-bg-success mx-1 p-1 rounded'></i>
                   </NavLink>
                 </td>
-                <td>{user.phone}</td>
-                <td>{user.role}</td>
-                <td>{user.name}</td>
-                <td>{user.code}</td>
-                <td>{++index}</td>
+                <td  data-label="رقم الهاتف">{user.phone}</td>
+                <td data-label="الوظيفة">{user.role}</td>
+                <td  data-label="اسم المستخدم">{user.name}</td>
+                <td  data-label="كود المستخدم">{user.code}</td>
+                <td  data-label="#">{++index}</td>
               </tr>
               )}
             </tbody>
 
-          </Table>
+          </table>
         </div>
       )
     } else {
@@ -100,10 +100,10 @@ export default function Users() {
       </Helmet>
       <div className=" my-3 text-center row mx-2  ">
         <div className="col-md-6">
-          <NavLink to='/users/add' className='btn btn-primary' >إضافة مستخدم</NavLink>
+          <NavLink to='/users/add' className='btn btn-primary mb-1' >إضافة مستخدم</NavLink>
         </div>
         <div className="col-md-4">
-          <input type="text" className='form-control text-end ' placeholder=' ...بحث عن مستخدم   ' onChange={handleSearchChange} />
+          <input type="text" className='form-control text-end  mt-1 ' placeholder=' ...بحث عن مستخدم   ' onChange={handleSearchChange} />
         </div>
       </div>
       {showUsers()}

@@ -5,11 +5,10 @@ import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../../Context/AuthStore';
+import logo from '../../imgs/logo.jpg'
 
 export default function Login({ saveUserData }) {
 
-
-    let { loginDeliveryData } = useContext(AuthContext);
     let navigate = useNavigate();
     let [isLoading, setIsLoading] = useState(false);
     let [users, setUsers] = useState({
@@ -100,8 +99,8 @@ export default function Login({ saveUserData }) {
             </Helmet>
 
             <div className="container m-auto   pt-5 ">
-                <div className="logo text-center py-3">
-                    <img src="" alt="logo" className='w-100' />
+                <div className="text-center py-3 w-25 m-auto">
+                    <img src={logo} alt="logo" className='w-75' />
                 </div>
                 <div className="w-50 m-auto">
                     <form onSubmit={submitLoginForm}>

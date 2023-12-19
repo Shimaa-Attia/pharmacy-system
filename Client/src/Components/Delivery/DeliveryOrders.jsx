@@ -45,7 +45,7 @@ export default function DeliveryOrders() {
     if (orders.length > 0) {
       return (
         <div className="shadow rounded rounded-4 bg-white mx-3 p-3 ">
-          <Table responsive='sm' className='table table-bordered table-hover table-lightborder text-center table-responsive-list'>
+          <Table responsive='sm' className='table table-bordered table-hover text-center table-responsive-list'>
             <thead className='table-primary'>
               <tr>
                 <th>خيارات</th>
