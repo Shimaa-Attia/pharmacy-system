@@ -176,7 +176,7 @@ class CustomerController extends Controller
 
         $customers = Customer::onlyTrashed()->get();
         return response()->json([
-            'customers' => $customers,
+            'customers' =>  CustomerReource::collection($customers),
         ]);
     }
 
@@ -192,7 +192,7 @@ class CustomerController extends Controller
         $customer->restore();
         return response()->json([
             "message" => "تم إستعادة العميل",
-            "customer" => $customer
+            "customer" => new CustomerReource($customer)
         ], 200);
     }
 

@@ -62,7 +62,7 @@ class OrdersController extends Controller
 
         return response()->json([
          "message"=>"تم إضافة الطلب",
-         'order'=>$order
+         'order'=> $order
         ],200);
 
     }
@@ -134,7 +134,7 @@ class OrdersController extends Controller
         $orders = Order::onlyTrashed()->get();
 
             return response()->json([
-                'order' => $orders,
+                'orders' => OrderResource::collection($orders),
             ]  );
 
 
@@ -150,7 +150,7 @@ class OrdersController extends Controller
         $order->restore();
         return response()->json([
         "message"=>"تم إستعادة الطلب",
-        "order"=>$order]
+        "order"=>new OrderResource($order)]
         ,200);
     }
 
