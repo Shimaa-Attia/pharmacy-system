@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -29,13 +30,13 @@ class OrdersController extends Controller
 
     public function store(Request $request){
 
-        if (\Auth::user()->role == 'delivery' && \Auth::check()) {
-          $request->request->add(['user_id' => \Auth::user()->id]);
+        if (Auth::user()->role == 'delivery' && Auth::check()) {
+          $request->request->add(['user_id' => Auth::user()->id]);
         }
 
         $validator =  Validator::make($request->all(),[
             'cost' => 'numeric|required',
-            'totalAmmount' => 'numeric|required',
+            'total_ammount' => 'numeric|required',
             'customer_id'=>'required|exists:customers,id',
             'customer_phone'=>'required|regex:/^01[0125][0-9]{8}$/|exists:custom_fields,value',
             'customer_address'=>'required|exists:custom_fields,value',
@@ -51,7 +52,7 @@ class OrdersController extends Controller
 
       $order =  Order::create([
          "cost"=>$request->cost,
-         "totalAmmount"=>$request->totalAmmount,
+         "totalAmmount"=>$request->total_ammount,
          "notes"=>$request->notes,
          "customer_id"=>$request->customer_id,
          "customer_phone"=>$request->customer_phone,
@@ -67,9 +68,9 @@ class OrdersController extends Controller
     }
 
     public function update(Request $request, $id){
-
-        if (\Auth::user()->role == 'delivery' && \Auth::check()) {
-            $request->request->add(['user_id' => \Auth::user()->id]);
+ /** @var \App\Models\User $user * */
+        if (Auth::user()->role == 'delivery' && Auth::check()) {
+            $request->request->add(['user_id' => Auth::user()->id]);
         }
 
         //check
@@ -82,7 +83,7 @@ class OrdersController extends Controller
        //validation
        $validator =  Validator::make($request->all(),[
         'cost' => 'numeric|required',
-        'totalAmmount' => 'numeric|required',
+        'total_ammount' => 'numeric|required',
         'customer_id'=>'required|exists:customers,id',
         'customer_phone'=>'required|regex:/(01)[0-9]{9}/|exists:custom_fields,value',
         'customer_address'=>'required|exists:custom_fields,value',
@@ -98,7 +99,7 @@ class OrdersController extends Controller
 
       $order->update([
         "cost"=>$request->cost,
-         "totalAmmount"=>$request->totalAmmount,
+         "totalAmmount"=>$request->total_ammount,
          "notes"=>$request->notes,
          "customer_id"=>$request->customer_id,
          "customer_phone"=>$request->customer_phone,
