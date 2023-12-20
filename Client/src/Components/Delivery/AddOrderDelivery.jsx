@@ -1,28 +1,32 @@
 import axios from 'axios';
 import Joi from 'joi';
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Helmet } from 'react-helmet';
 import { NavLink, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../../Context/AuthStore';
+import Select from 'react-select';
 
 export default function AddOrderDelivery() {
     let { accessToken } = useContext(AuthContext);
+    const selectRef = useRef();
+
     let formInputs = document.querySelectorAll('form input');
     let formSelects = document.querySelectorAll('form select');
     let textarea = document.querySelector('form textarea');
     let [isLoading, setIsLoading] = useState(false);
     let [clients, setClients] = useState([]);
+    let [users, setUsers] = useState([]);
     let [orders, setOrders] = useState({
         customer_address: '',
         customer_phone: '',
         customer_id: '',
-        totalAmmount: '',
+        total_ammount: '',
         cost: '',
         notes: '',
     });
-    let [users, setUsers] = useState([]);
-
+   
+    let [clientOptions, setClientOptions] = useState([]);
     let getClientData = async () => {
         let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers`, {
             headers: {
@@ -35,9 +39,15 @@ export default function AddOrderDelivery() {
     useEffect(() => {
         getClientData()
     }, []);
+    useEffect(() => {
+        let mapClient = clients?.map((client) => ({
+            value: `${client.id}`,
+            label: `${client.code}${client.name}`
+        }));
+        setClientOptions(mapClient);
+          }, [clients]);
   
     let getUserData = async () => {
-
         let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/auth`, {
             headers: {
                 "Authorization": `Bearer ${accessToken}`
@@ -49,6 +59,12 @@ export default function AddOrderDelivery() {
     useEffect(() => {
         getUserData()
     }, []);
+    let getSelectedClient = (selectedOption) => {
+        setOrders({
+            ...orders,
+            customer_id:selectedOption.value,
+        });
+    };
 
     let [contacts, setContacts] = useState([]);
     useEffect(() => {
@@ -116,12 +132,14 @@ export default function AddOrderDelivery() {
             customer_address: Joi.string().required(),
             customer_phone: Joi.string().required(),
             customer_id: Joi.number().required(),
-            totalAmmount: Joi.number().empty(''),
+            total_ammount: Joi.number().empty(''),
             cost: Joi.number().empty(''),
             notes: Joi.string().empty(''),
         });
         return schema.validate(orders, { abortEarly: false });
     };
+    const [key, setKey] = useState(0);
+
     let submitOrderForm = (e) => {
         setIsLoading(true);
         e.preventDefault();
@@ -130,8 +148,11 @@ export default function AddOrderDelivery() {
         if (!validation.error) {
 
             sendOrderDataToApi();
+            setKey(key + 1);
+            setClientOptions(null);
+        
         } else {
-            console.log('invalid');
+           
             setIsLoading(false);
             try {
                 validation.error.details.map((err) => {
@@ -143,7 +164,7 @@ export default function AddOrderDelivery() {
             }
         }
     };
-    // let [hideInput, setHideInput] = useState(false)
+    
 
     return (
         <>
@@ -158,11 +179,16 @@ export default function AddOrderDelivery() {
 
                         <div className="col-md-4">
                             <label htmlFor="customer_id" className='form-label'>كود العميل أو الاسم</label>
-                            <select name="customer_id" defaultValue={0} className='form-control ' id="customer_id"
-                                onChange={getInputValue}>
-                                <option value={0} hidden disabled>اختر</option>
-                                {clients.map((client) => <option key={client.id} value={client.id} >{client.code} {client.name}</option>)}
-                            </select>
+                            <Select
+                                name="customer_id"
+                                options={clientOptions}
+                                value={clientOptions?.find((opt) => opt.value === orders.customer_id)}
+                            
+                                onChange={getSelectedClient}
+                                isSearchable={true}
+                                placeholder="بحث عن عميل..."
+                                key={key}
+                            />
                         </div>
                         <div className="col-md-4">
                             <label htmlFor="customer_phone" className='form-label'>أرقام الهواتف للعميل</label>
@@ -187,7 +213,7 @@ export default function AddOrderDelivery() {
                         </div>
                         <div className="col-md-4">
                             <label htmlFor="totalAmmount" className='form-label'> إجمالي المبلغ مع الطيار </label>
-                            <input type="number" className='form-control' name="totalAmmount" id="totalAmmount" onChange={getInputValue} />
+                            <input type="number" className='form-control' name="total_ammount" id="totalAmmount" onChange={getInputValue} />
                         </div>
                         <div className="col-md-12">
                             <label htmlFor="notes" className='form-label'>ملاحظات</label>

@@ -19,7 +19,7 @@ export default function EditeDeliveryOrder() {
         customer_address: '',
         customer_phone: '',
         customer_id: '',
-        totalAmmount: '',
+        total_ammount: '',
         cost: '',
         notes: '',
 
@@ -118,7 +118,7 @@ export default function EditeDeliveryOrder() {
             customer_address: Joi.string().required(),
             customer_phone: Joi.string().required(),
             customer_id: Joi.number().required(),
-            totalAmmount: Joi.number().empty(''),
+            total_ammount: Joi.number().empty(''),
             cost: Joi.number().empty(''),
             notes: Joi.string().empty(''),
         });
@@ -178,15 +178,15 @@ export default function EditeDeliveryOrder() {
                         </div>
                         <div className="col-md-4">
                             <label htmlFor="cost" className='form-label'>قيمة الأوردر </label>
-                            <input type="number" className='form-control' name="cost" id="cost" onChange={getInputValue} />
+                            <input type="number" className='form-control' name="cost" id="cost" onChange={getInputValue}  value={orders?.cost} />
                         </div>
                         <div className="col-md-4">
                             <label htmlFor="totalAmmount" className='form-label'> إجمالي المبلغ مع الطيار </label>
-                            <input type="number" className='form-control' name="totalAmmount" id="totalAmmount" onChange={getInputValue} />
+                            <input type="number" className='form-control' name="total_ammount" id="totalAmmount" onChange={getInputValue} value={orders?.total_ammount}  />
                         </div>
                         <div className="col-md-12">
                             <label htmlFor="notes" className='form-label'>ملاحظات</label>
-                            <textarea name="notes" id="notes" className='form-control' onChange={getInputValue} />
+                            <textarea name="notes" id="notes" className='form-control' onChange={getInputValue} value={orders?.notes ??""} />
                         </div>
                         <div className="col-md-3">
                             <button type='submit' className='btn btn-primary form-control fs-5'>

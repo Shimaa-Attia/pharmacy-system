@@ -46,7 +46,7 @@ export default function AddUser() {
             document.getElementById("role").selectedIndex = "0";
 
         }).catch((errors) => {
-            console.log(errors);
+         
             setIsLoading(false);
             const errorList = errors?.response?.data?.error;
             if (errorList !== undefined) {
@@ -63,7 +63,7 @@ export default function AddUser() {
 
     let validateUserForm = () => {
         const schema = Joi.object({
-            name: Joi.string().min(3).max(20).required(),
+            name: Joi.string().min(3).required(),
             code: Joi.string().required(),
             role: Joi.string().required(),
             phone: Joi.string().required().pattern(/^01[0125][0-9]{8}$/).message('رقم الهاتف غير صالح'),
@@ -150,7 +150,7 @@ export default function AddUser() {
                         </div>
                         <div className="col-md-12">
                             <label htmlFor="notes" className='form-label'>ملاحظات</label>
-                            <textarea name="notes" id="notes" className='form-control' onChange={getInputValue} />
+                            <textarea type='text' name="notes" id="notes" className='form-control' onChange={getInputValue} />
                         </div>
                         <div className="col-md-3">
                             <button type='submit' className='btn btn-primary form-control fs-5'>

@@ -19,7 +19,6 @@ export default function DeleteOrder() {
         }
       });
       setOrders(data.data);
-      console.log(data.data);
   };
   useEffect(() => {
     getOrder()
@@ -51,32 +50,32 @@ export default function DeleteOrder() {
       <div className="card w-75 m-auto p-3 ">
         <div className="row">
           <div className=' col-md-6  ' >
-            <div className='text-center rounded p-2' style={{ backgroundColor: ' rgb(160, 200, 240)' }} >
+            <div className='text-center rounded p-2 mt-2' style={{ backgroundColor: ' rgb(160, 200, 240)' }} >
               <h2 > كود الطيار : {orders?.delivery_man?.code} </h2>
             </div>
           </div>
           <div className=' col-md-6  ' >
-            <div className='text-center rounded p-2' style={{ backgroundColor: ' rgb(160, 200, 240)' }} >
+            <div className='text-center rounded p-2 mt-2' style={{ backgroundColor: ' rgb(160, 200, 240)' }} >
               <h3 className='h2' > اسم الطيار  : {orders?.delivery_man?.name} </h3>
             </div>
           </div>
           <div className=' col-md-6  ' >
-            <div className='text-center rounded p-2 my-2' style={{ backgroundColor: ' rgb(160, 200, 240)' }} >
+            <div className='text-center rounded p-2 mt-2' style={{ backgroundColor: ' rgb(160, 200, 240)' }} >
               <h3 className='h2' > كود العميل  : {orders.customer?.code} </h3>
             </div>
           </div>
           <div className=' col-md-6  ' >
-            <div className='text-center rounded p-2 my-2' style={{ backgroundColor: ' rgb(160, 200, 240)' }} >
+            <div className='text-center rounded p-2 mt-2' style={{ backgroundColor: ' rgb(160, 200, 240)' }} >
               <h3 className='h2' > اسم العميل  : {orders.customer?.name} </h3>
             </div>
           </div>
           <div className=' col-md-6  ' >
-            <div className='text-center rounded p-2 my-2' style={{ backgroundColor: ' rgb(160, 200, 240)' }} >
+            <div className='text-center rounded p-2 mt-2' style={{ backgroundColor: ' rgb(160, 200, 240)' }} >
               <h3 className='h2' > قيمة الأوردر   : {orders.cost} </h3>
             </div>
           </div>
           <div className=' col-md-6  ' >
-            <div className='text-center rounded p-2 my-2' style={{ backgroundColor: ' rgb(160, 200, 240)' }} >
+            <div className='text-center rounded p-2 mt-2' style={{ backgroundColor: ' rgb(160, 200, 240)' }} >
               <h3 className='h2' >  إجمالي المبلغ   : {orders.total_ammount} </h3>
             </div>
           </div>

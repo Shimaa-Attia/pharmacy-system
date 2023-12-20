@@ -1,8 +1,8 @@
 import axios from 'axios';
 import React, { useContext, useEffect, useState } from 'react'
-import { Table } from 'react-bootstrap';
+
 import { Helmet } from 'react-helmet';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { AuthContext } from '../../Context/AuthStore';
 
 export default function Clients() {
@@ -47,20 +47,36 @@ export default function Clients() {
         if (clients.length > 0) {
             return (
                 <div className="shadow rounded rounded-4 bg-white mx-3 p-3 ">
-                    <table responsive='md' className='table table-bordered table-hover text-center table-responsive-list  '>
+                    <table dir="rtl" responsive='md' className='table table-bordered table-hover text-center table-responsive-list  '>
                         <thead className='table-primary'>
                             <tr>
-                                <th>خيارات</th>
-                                <th>ملاحظات</th>
-                                <th>العناوين</th>
-                                <th>أرقام الهواتف</th>
-                                <th>الاسم</th>
-                                <th>كود العميل</th>
                                 <th>رقم</th>
+                                <th>كود العميل</th>
+                                <th>الاسم</th>
+                                <th>أرقام الهواتف</th>
+                                <th>العناوين</th>
+                                <th>خيارات</th>
                             </tr>
                         </thead>
                         <tbody>
                             {clients.map((client, index) => <tr key={client.id}>
+                                <td data-label="#">{++index}</td>
+                                <td data-label="كود العميل">{client.code}</td>
+                                <td data-label="اسم العميل">{client.name}</td>
+                                  <td data-label="أرقام الهواتف">
+                                    {client?.contactInfo?.map((contactInfo) => {
+                                        if (contactInfo.name === "phone") {
+                                            return <p key={contactInfo.id}>{contactInfo.value}</p>
+                                        }
+                                    })}
+                                </td>
+                                   <td data-label="العناوين">
+                                    {client?.contactInfo?.map((contactInfo) => {
+                                        if (contactInfo.name === "address") {
+                                            return <p key={contactInfo.id}>{contactInfo.value}</p>
+                                        }
+                                    })}
+                                </td>
                                 <td data-label="خيارات">
                                     <NavLink to={`/clients/delete/${client.id}`}>
                                         <i className='bi bi-trash text-bg-danger p-1 mx-1  rounded'></i>
@@ -71,28 +87,11 @@ export default function Clients() {
                                     <NavLink to={`/clients/details/${client.id}`}>
                                         <i className='bi bi-list-ul text-bg-success mx-1 p-1 rounded'></i>
                                     </NavLink>
-                                </td>
-
-                               
-                                <td data-label="العناوين">
-                                    {client?.contactInfo?.map((contactInfo) => {
-                                        if (contactInfo.name === "address") {
-                                            return <p key={contactInfo.id}>{contactInfo.value}</p>
-                                        }
-                                    })}
-                                </td>
-                                <td data-label="أرقام الهواتف">
-                                    {client?.contactInfo?.map((contactInfo) => {
-                                        if (contactInfo.name === "phone") {
-                                            return <p key={contactInfo.id}>{contactInfo.value}</p>
-                                        }
-                                    })}
-                                </td>
+                                </td>  
+                             
+                              
 
 
-                                <td data-label="اسم العميل">{client.name}</td>
-                                <td data-label="كود العميل">{client.code}</td>
-                                <td data-label="#">{++index}</td>
                             </tr>
                             )}
                         </tbody>

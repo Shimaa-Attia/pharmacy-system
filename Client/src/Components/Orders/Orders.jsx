@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useContext, useEffect, useState } from 'react'
-import { Table } from 'react-bootstrap';
+
 import { Helmet } from 'react-helmet';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../Context/AuthStore';
@@ -41,21 +41,26 @@ export default function Orders() {
     if (orders.length > 0) {
       return (
         <div className="shadow rounded rounded-4 bg-white mx-3 p-3 ">
-          <table responsive='sm' className='table table-bordered table-hover text-center table-responsive-list '>
+          <table dir="rtl"  responsive='sm' className='table table-bordered table-hover text-center table-responsive-list '>
             <thead className='table-primary'>
               <tr>
-                <th>خيارات</th>
-                <th>قيمة الأوردر</th>
-                <th>هاتف العميل</th>
-                <th>اسم العميل</th>
-                <th>هاتف الطيار</th>
-                <th>اسم الطيار</th>
-                {/* <th>كود الطيار</th> */}
                 <th>رقم</th>
+                <th>اسم الطيار</th>
+                <th>هاتف الطيار</th>
+                <th>اسم العميل</th>
+                <th>هاتف العميل</th>
+                <th>قيمة الأوردر</th>
+                <th>خيارات</th>
               </tr>
             </thead>
             <tbody>
               {orders.map((order, index) => <tr key={order.id}>
+                <td data-label="#">{++index}</td>
+                <td data-label="اسم الطيار">{order?.delivery_man?.name}</td>
+                <td data-label="هاتف الطيار">{order?.delivery_man?.phone}</td>
+                <td data-label="اسم العميل">{order?.customer?.name}</td>
+                <td data-label="هاتف العميل">{order?.customer_phone}</td>
+              <td data-label="قيمة الأوردر">{order.cost}</td>
                 <td data-label="خيارات">
                   <NavLink to={`/orders/delete/${order.id}`} >
                     <i className='bi bi-trash text-bg-danger p-1 mx-1 rounded'></i>
@@ -67,13 +72,7 @@ export default function Orders() {
                     <i className='bi bi-list-ul text-bg-success mx-1 p-1 rounded'></i>
                   </NavLink>
                 </td>
-                <td data-label="قيمة الأوردر">{order.cost}</td>
-                <td data-label="هاتف العميل">{order?.customer_phone}</td>
-                <td data-label="اسم العميل">{order?.customer?.name}</td>
-                <td data-label="هاتف الطيار">{order?.delivery_man?.phone}</td>
-                <td data-label="اسم الطيار">{order?.delivery_man?.name}</td>
-              
-                <td data-label="#">{++index}</td>
+            
               </tr>
               )}
             </tbody>

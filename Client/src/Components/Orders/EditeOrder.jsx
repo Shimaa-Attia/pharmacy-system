@@ -5,6 +5,7 @@ import { Helmet } from 'react-helmet';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../../Context/AuthStore';
+import Select from 'react-select';
 
 
 export default function EditeOrder() {
@@ -21,13 +22,12 @@ export default function EditeOrder() {
     customer_address: '',
     customer_phone: '',
     customer_id: '',
-    totalAmmount: '',
+    total_ammount: '',
     cost: '',
     notes: '',
-
   });
 
-  let [orderData, setOrderData] = useState([]);
+  // let [orderData, setOrderData] = useState([]);
   let getOrder = async () => {
 
     let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/show/${id}`, {
@@ -35,14 +35,13 @@ export default function EditeOrder() {
         "Authorization": `Bearer ${accessToken}`
       }
     });
-    console.log(data);
-    setOrderData(data.data);
+    setOrders(data.data);
 
   };
   useEffect(() => {
     getOrder()
   }, []);
-
+  let [userOptions, setUserOptions] = useState([]);
   let getUserData = async () => {
     let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users`);
     let delivery = data.data.filter((user) => user.role === 'delivery');
@@ -51,7 +50,27 @@ export default function EditeOrder() {
   useEffect(() => {
     getUserData()
   }, []);
+  useEffect(() => {
+    let mapUser = users?.map((user) => ({
+      value: `${user.id}`,
+      label: `${user.code}${user.name}`
+    }));
+    setUserOptions(mapUser);
+  }, [users]);
+  let getSelectedUser = (selectedOption) => {
+    setOrders({
+      ...orders,
+      user_id: selectedOption.value,
 
+    });
+  };
+  let getSelectedClient = (selectedOption) => {
+    setOrders({
+      ...orders,
+      customer_id: selectedOption.value,
+    });
+  };
+  let [clientOptions, setClientOptions] = useState([]);
   let getClientData = async () => {
     let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers`, {
       headers: {
@@ -64,6 +83,13 @@ export default function EditeOrder() {
   useEffect(() => {
     getClientData()
   }, []);
+  useEffect(() => {
+    let mapClient = clients?.map((client) => ({
+      value: `${client.id}`,
+      label: `${client.code}${client.name}`
+    }));
+    setClientOptions(mapClient);
+  }, [clients]);
 
   let [contacts, setContacts] = useState([]);
 
@@ -124,7 +150,7 @@ export default function EditeOrder() {
       customer_address: Joi.string().required(),
       customer_phone: Joi.string().required(),
       customer_id: Joi.number().required(),
-      totalAmmount: Joi.number().empty(''),
+      total_ammount: Joi.number().empty(''),
       cost: Joi.number().empty(''),
       notes: Joi.string().empty(''),
     });
@@ -160,19 +186,29 @@ export default function EditeOrder() {
           <div className="row gy-3">
             <div className="col-md-4">
               <label htmlFor="user_id" className='form-label'>كود الطيار أو الاسم</label>
-              <select name="user_id" defaultValue={0} className='form-control ' id="user_id"
-                onChange={getInputValue}>
-                <option value={0} hidden disabled>اختار</option>
-                {users.map((user) => <option key={user.id} value={user?.id} selected={user?.id === orderData?.delivery_man?.id} >{user.code} {user.name}</option>)}
-              </select>
+              <Select
+
+                name="user_id"
+                options={userOptions}
+                value={userOptions?.find((opt) => opt.value === orders.user_id)}
+                onChange={getSelectedUser}
+                isSearchable={true}
+                placeholder="بحث عن طيار..."
+                // selected={orders?.user_id === orderData?.delivery_man?.id} 
+              />
             </div>
             <div className="col-md-4">
               <label htmlFor="customer_id" className='form-label'>كود العميل أو الاسم</label>
-              <select name="customer_id" defaultValue={0} className='form-control ' id="customer_id"
-                onChange={getInputValue}>
-                <option value={0} hidden disabled>اختر</option>
-                {clients.map((client) => <option key={client.id} value={client?.id} selected={client?.id === orderData?.customer?.id}  >{client.code} {client.name}</option>)}
-              </select>
+              <Select
+                name="customer_id"
+                options={clientOptions}
+                value={clientOptions?.find((opt) => opt.value === orders.customer_id)}
+                onChange={getSelectedClient}
+                isSearchable={true}
+                placeholder="بحث عن عميل..."
+           
+              />
+            
             </div>
             <div className="col-md-4">
               <label htmlFor="customer_phone" className='form-label'>أرقام الهواتف للعميل</label>
@@ -185,7 +221,7 @@ export default function EditeOrder() {
             <div className="col-md-4">
               <label htmlFor="customer_address" className='form-label'>عناوين العميل</label>
               <select name="customer_address" defaultValue={0} className='form-control ' id="customer_address"
-                onChange={getInputValue}>
+                onChange={getInputValue} >
                 <option value={0} hidden disabled>اختار</option>
                 {contacts?.addresses ? contacts?.addresses.map((address) => <option key={address.id} value={address?.value}  > {address.value}</option>) : null}
 
@@ -193,17 +229,18 @@ export default function EditeOrder() {
             </div>
             <div className="col-md-4">
               <label htmlFor="cost" className='form-label'>قيمة الأوردر </label>
-              <input type="number" className='form-control' name="cost" id="cost" 
-              onChange={getInputValue}  
+              <input type="number" className='form-control' name="cost" id="cost"
+                onChange={getInputValue} 
+                value={orders?.cost}
               />
             </div>
             <div className="col-md-4">
               <label htmlFor="totalAmmount" className='form-label'> إجمالي المبلغ مع الطيار </label>
-              <input type="number" className='form-control' name="totalAmmount" id="totalAmmount" onChange={getInputValue}  />
+              <input type="number" className='form-control' name="total_ammount" id="totalAmmount" onChange={getInputValue} value={orders?.total_ammount}  />
             </div>
             <div className="col-md-12">
               <label htmlFor="notes" className='form-label'>ملاحظات</label>
-              <textarea name="notes" id="notes" className='form-control' onChange={getInputValue} />
+              <textarea name="notes" id="notes" className='form-control' onChange={getInputValue} value={orders?.notes ??""} />
             </div>
             <div className="col-md-3">
               <button type='submit' className='btn btn-primary form-control fs-5'>

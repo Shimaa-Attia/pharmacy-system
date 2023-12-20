@@ -33,12 +33,12 @@ export default function UserDetails() {
       <div className="card w-75 m-auto  p-5 ">
         <div className="row  ">
           <div className=' col-md-6  ' >
-            <div className='text-center rounded p-2' style={{ backgroundColor: ' rgb(160, 200, 240)' }} >
+            <div className='text-center rounded p-2 mt-2' style={{ backgroundColor: ' rgb(160, 200, 240)' }} >
               <h2 > الاسم : {users.name} </h2>
             </div>
           </div>
           <div className='col-md-6 '>
-            <div className="text-center rounded p-2" style={{ backgroundColor: ' rgb(160, 200, 240)' }} >
+            <div className="text-center rounded p-2 mt-2" style={{ backgroundColor: ' rgb(160, 200, 240)' }} >
               <h3  > كود المستخدم : {users.code}</h3>
             </div>
           </div>

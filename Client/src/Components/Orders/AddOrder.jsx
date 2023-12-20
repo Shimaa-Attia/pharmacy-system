@@ -2,19 +2,16 @@ import axios from 'axios';
 import Joi from 'joi';
 import React, { useContext, useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet';
-import { NavLink, useParams } from 'react-router-dom';
+import { NavLink} from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../../Context/AuthStore';
-
-
+import Select from 'react-select';
 
 export default function AddOrder() {
     let { accessToken } = useContext(AuthContext);
     let formInputs = document.querySelectorAll('form input');
     let formSelects = document.querySelectorAll('form select');
     let textarea = document.querySelector('form textarea');
-
-   
     let [isLoading, setIsLoading] = useState(false);
     let [users, setUsers] = useState([]);
     let [clients, setClients] = useState([]);
@@ -23,38 +20,55 @@ export default function AddOrder() {
         customer_address: '',
         customer_phone: '',
         customer_id: '',
-        totalAmmount: '',
+        total_ammount: '',
         cost: '',
         notes: '',
 
     });
-
+    let [userOptions, setUserOptions] = useState([]);
     let getUserData = async () => {
         let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users`);
-
         let delivery = data.data.filter((user) => user.role === 'delivery');
         setUsers(delivery);
-
     };
+
     useEffect(() => {
         getUserData()
-    }, []);
 
+    }, []);
+    useEffect(() => {
+        let mapUser = users?.map((user) => ({
+            value: `${user.id}`,
+            label: `${user.code}${user.name}`
+        }));
+        setUserOptions(mapUser);
+      }, [users]);
+
+    let [clientOptions, setClientOptions] = useState([]);
     let getClientData = async () => {
         let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers`, {
             headers: {
                 "Authorization": `Bearer ${accessToken}`
             }
         });
-        setClients([...data.data]);
+        setClients([...data.data]); 
+     
     };
 
     useEffect(() => {
         getClientData()
+      
     }, []);
 
-    let [contacts, setContacts] = useState([]);
+  useEffect(() => {
+    let mapClient = clients?.map((client) => ({
+        value: `${client.id}`,
+        label: `${client.code}${client.name}`
+    }));
+    setClientOptions(mapClient);
+      }, [clients]);
 
+    let [contacts, setContacts] = useState([]);
     useEffect(() => {
         if (orders.customer_id === '') {
             return;
@@ -72,10 +86,23 @@ export default function AddOrder() {
 
         setContacts(data);
     };
+    let getSelectedUser = (selectedOption) => {
+        setOrders({
+            ...orders,
+            user_id: selectedOption.value,
+         
+        });
+    };
+    let getSelectedClient = (selectedOption) => {
+        setOrders({
+            ...orders,
+            customer_id:selectedOption.value,
+        });
+    };
 
     let getInputValue = (event) => {
         let myOrders = { ...orders }; //deep copy
-        myOrders[event.target.name] = event.target.value;
+        myOrders[event?.target?.name] = event?.target?.value;
         setOrders(myOrders);
 
     };
@@ -86,7 +113,7 @@ export default function AddOrder() {
                 "Authorization": `Bearer ${accessToken}`
             }
         }).then((res) => {
-           
+
             toast.success(res.data.message, {
                 position: 'top-center'
             });
@@ -121,18 +148,22 @@ export default function AddOrder() {
             customer_address: Joi.string().required(),
             customer_phone: Joi.string().required(),
             customer_id: Joi.number().required(),
-            totalAmmount: Joi.number().empty(''),
+            total_ammount: Joi.number().empty(''),
             cost: Joi.number().empty(''),
             notes: Joi.string().empty(''),
         });
         return schema.validate(orders, { abortEarly: false });
     };
+    const [key, setKey] = useState(0);
     let submitOrderForm = (e) => {
         setIsLoading(true);
         e.preventDefault();
         let validation = validateOrderForm();
         if (!validation.error) {
             sendOrderDataToApi();
+            setKey(key + 1);
+            setUserOptions(null)
+            setClientOptions(null);
         } else {
             setIsLoading(false);
             try {
@@ -144,6 +175,7 @@ export default function AddOrder() {
             }
         }
     };
+
 
 
 
@@ -159,19 +191,29 @@ export default function AddOrder() {
                     <div className="row gy-3">
                         <div className="col-md-4">
                             <label htmlFor="user_id" className='form-label'>كود الطيار أو الاسم</label>
-                            <select name="user_id" defaultValue={0} className='form-control ' id="user_id"
-                                onChange={getInputValue}>
-                                <option value={0} hidden disabled>اختار</option>
-                                {users.map((user) => <option key={user.id} value={user.id} >{user.code} {user.name}</option>)}
-                            </select>
+                            <Select
+                                name="user_id"
+                                options={userOptions}
+                                value={userOptions?.find((opt) => opt.value === orders.user_id)}
+                                onChange={getSelectedUser}
+                                isSearchable={true}
+                                placeholder="بحث عن طيار..."
+                                key={key}
+                            />
+                         
                         </div>
                         <div className="col-md-4">
                             <label htmlFor="customer_id" className='form-label'>كود العميل أو الاسم</label>
-                            <select name="customer_id" defaultValue={0} className='form-control ' id="customer_id"
-                                onChange={getInputValue}>
-                                <option value={0} hidden disabled>اختر</option>
-                                {clients.map((client) => <option key={client.id} value={client.id} >{client.code} {client.name}</option>)}
-                            </select>
+
+                            <Select
+                                name="customer_id"
+                                options={clientOptions}
+                                value={clientOptions?.find((opt) => opt.value === orders.customer_id)}
+                                onChange={getSelectedClient}
+                                isSearchable={true}
+                                placeholder="بحث عن عميل..."
+                                key={key}
+                            />
                         </div>
                         <div className="col-md-4">
                             <label htmlFor="customer_phone" className='form-label'>أرقام الهواتف للعميل</label>
@@ -196,7 +238,7 @@ export default function AddOrder() {
                         </div>
                         <div className="col-md-4">
                             <label htmlFor="totalAmmount" className='form-label'> إجمالي المبلغ مع الطيار </label>
-                            <input type="number" className='form-control' name="totalAmmount" id="totalAmmount" onChange={getInputValue} />
+                            <input type="number" className='form-control' name="total_ammount" id="totalAmmount" onChange={getInputValue} />
                         </div>
                         <div className="col-md-12">
                             <label htmlFor="notes" className='form-label'>ملاحظات</label>

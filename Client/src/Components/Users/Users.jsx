@@ -1,8 +1,6 @@
 import axios from 'axios';
 import React, { useContext, useEffect, useState } from 'react'
-import { NavLink, useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import Table from 'react-bootstrap/Table';
+import { NavLink} from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { AuthContext } from '../../Context/AuthStore';
 
@@ -27,12 +25,12 @@ export default function Users() {
         }
       });
       setUsers(searchResult.data);
-      console.log('Hi from Search ')
+      
 
 
     } else {
       searchResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/users`);
-      console.log('Hi from No Search ');
+      
       setUsers(searchResult.data.data);
     }
 
@@ -44,19 +42,24 @@ export default function Users() {
     if (users.length > 0) {
       return (
         <div className="shadow rounded rounded-4 bg-white mx-3 p-3 border  ">
-          <table responsive='sm' className='table table-bordered  table-hover text-center table-responsive-list '>
+          <table dir="rtl"  responsive='sm' className='table table-bordered   table-hover text-center table-responsive-list '>
             <thead className='table-primary' >
               <tr >
-                <th  >خيارات</th>
-                <th>رقم الهاتف</th>
-                <th>الوظيفة</th>
-                <th>الاسم</th>
-                <th>كود المستخدم</th>
                 <th>رقم</th>
+                <th>كود المستخدم</th>
+                <th>الاسم</th>
+                <th>الوظيفة</th>
+                <th>رقم الهاتف</th>
+                <th>خيارات</th>
               </tr>
             </thead>
             <tbody>
               {users.map((user, index) => <tr key={user.id}>
+                <td  data-label="#">{++index}</td>
+                <td  data-label="كود المستخدم">{user.code}</td>
+                <td  data-label="اسم المستخدم">{user.name}</td>
+                <td data-label="الوظيفة">{user.role}</td>
+                <td  data-label="رقم الهاتف">{user.phone}</td>
                 <td  data-label="خيارات">
                   <NavLink to={`/users/delete/${user.id}`} >
                     <i className='bi bi-trash text-bg-danger p-1 mx-1 rounded'></i>
@@ -68,11 +71,6 @@ export default function Users() {
                     <i className='bi bi-list-ul text-bg-success mx-1 p-1 rounded'></i>
                   </NavLink>
                 </td>
-                <td  data-label="رقم الهاتف">{user.phone}</td>
-                <td data-label="الوظيفة">{user.role}</td>
-                <td  data-label="اسم المستخدم">{user.name}</td>
-                <td  data-label="كود المستخدم">{user.code}</td>
-                <td  data-label="#">{++index}</td>
               </tr>
               )}
             </tbody>

@@ -67,13 +67,14 @@ export default function EditeUser() {
   let validateEditedFrom = () => {
     const schema = Joi.object({
       id:Joi.number().required(),
-      name: Joi.string().min(3).max(20).required(),
+      name: Joi.string().min(3).required(),
       code: Joi.string().required(),
       role: Joi.string().required(),
       phone: Joi.string().required().pattern(/^01[0125][0-9]{8}$/).message('رقم الهاتف غير صالح'),
       hourRate: Joi.number().required(),
       salary: Joi.number().empty(''),
       notes: Joi.string().empty(''),
+     
 
     });
     return schema.validate(users, { abortEarly: false });
@@ -146,8 +147,8 @@ export default function EditeUser() {
             </div>
             <div className="col-md-12">
               <label htmlFor="notes" className='form-label'>ملاحظات</label>
-              <textarea name="notes" id="notes" className='form-control'
-                onChange={getInputValue} value={users?.notes} />
+              <textarea type='text' name="notes" id="notes" className='form-control'
+                onChange={getInputValue}  value={users.notes ??''} />
             </div>
             <div className="col-md-3">
               <button type='submit' className='btn btn-primary form-control fs-5'>

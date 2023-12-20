@@ -3,7 +3,7 @@ import Joi from 'joi';
 import React, { useContext, useEffect, useState } from 'react'
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import {Field, Form, Formik} from "formik";
+import { Field, Form, Formik } from "formik";
 import { Helmet } from 'react-helmet';
 import { AuthContext } from '../../Context/AuthStore';
 
@@ -45,8 +45,8 @@ export default function EditeClient() {
 
   };
 
-  useEffect( () => {
-     getClient()
+  useEffect(() => {
+    getClient()
 
   }, []);
 
@@ -107,10 +107,13 @@ export default function EditeClient() {
     }
   };
 
-
+  let [showInput, setShowInput] = useState(false);
+  let toggleInput = () => {
+    setShowInput(!showInput);
+  }
   return (
     <>
-       <Helmet>
+      <Helmet>
         <meta charSet="utf-8" />
         <title>Edite Client</title>
       </Helmet>
@@ -118,40 +121,48 @@ export default function EditeClient() {
       <div className="mx-5 p-3 rounded rounded-3 bg-white">
 
         <Formik
-        initialValues={clients} enableReinitialize={true} onSubmit={(values) => {
-          editeClientSubmit(values)
-        }}>
+          initialValues={clients} enableReinitialize={true} onSubmit={(values) => {
+            editeClientSubmit(values)
+          }}>
           {
             formik => {
               return (
                 <Form className="row g-3">
                   <div className="col-md-6">
                     <label htmlFor="code" className='form-label'>كود العميل</label>
-                    <Field type="text" className='form-control' name="code" id="code"/>
+                    <Field type="text" className='form-control' name="code" id="code" />
                   </div>
                   <div className="col-md-6">
                     <label htmlFor="name" className='form-label'>الاسم</label>
-                    <Field type="text" className='form-control' name="name" id="name"/>
+                    <Field type="text" className='form-control' name="name" id="name" />
                   </div>
                   <div className="col-md-6">
                     <label htmlFor="phone1" className='form-label'> رقم هاتف</label>
-                    <Field type="tel" className='form-control phone' name="phones[0].value"/>
+                    <Field type="tel" className='form-control phone' name="phones[0].value" />
                   </div>
+
                   <div className="col-md-6">
-                    <label htmlFor="phone2" className='form-label'> رقم هاتف 2 </label>
-                    <Field type="tel" className='form-control phone' name="phones[1].value"/>
+                    <label htmlFor="addresses1" className='form-label'> عنوان</label>
+                    <Field type="text" className='form-control address' name="addresses[0].value" />
                   </div>
-                  <div className="col-md-6">
-                    <label htmlFor="addresses1" className='form-label'> العنوان</label>
-                    <Field type="text" className='form-control address' name="addresses[0].value"/>
+                  {showInput && <div className="col-md-6">
+                    <label htmlFor="phone2" className='form-label'> رقم هاتف آخر </label>
+                    <Field type="text" id="phone2" className='form-control' name="phones[1].value" />
+                  </div>}
+                  {showInput && <div className="col-md-6">
+                    <label htmlFor="addresses2" className='form-label'> عنوان آخر</label>
+
+                    <Field type="text" id="addresses2" className='form-control' name="addresses[1].value" />
+                  </div>}
+                  <div className="col-md-6 ">
+                    <button type='button' className='btn btn-success' onClick={toggleInput} >
+                      {showInput === false ? 'عرض المزيد' : 'إخفاء'}
+                    </button>
                   </div>
-                  <div className="col-md-6">
-                    <label htmlFor="addresses2" className='form-label'> 2العنوان</label>
-                    <Field type="text" className='form-control address' name="addresses[1].value"/>
-                  </div>
+
                   <div className="col-md-12">
                     <label htmlFor="notes" className='form-label'>ملاحظات</label>
-                    <Field type="text" className='form-control' name="notes" id="notes"/>
+                    <Field as="textarea" type="text" className='form-control' name="notes" id="notes" />
                   </div>
                   <div className="col-md-3">
                     <button type='submit' className='btn btn-primary form-control fs-5'>

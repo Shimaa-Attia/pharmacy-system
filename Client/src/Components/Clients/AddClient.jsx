@@ -11,8 +11,7 @@ import { AuthContext } from '../../Context/AuthStore';
 
 export default function AddClient() {
     let { accessToken } = useContext(AuthContext);
-    let formInputs = document.querySelectorAll('.form-control');
-    // let textarea = document.querySelector('form textarea');
+ 
 
     let [isLoading, setIsLoading] = useState(false);
 
@@ -39,7 +38,6 @@ export default function AddClient() {
           setClientData({ ...initialValues });
             resetForm();
         }).catch((errors) => {
-            console.log(errors);
             setIsLoading(false);
             const errorList = errors?.response?.data?.message;
             if (errorList !== undefined) {
@@ -48,9 +46,6 @@ export default function AddClient() {
                         toast.error(err);
                     })
                 });
-            } else {
-                toast.error("حدث خطأ ما");
-
             }
         });
     };
@@ -67,13 +62,14 @@ export default function AddClient() {
         return schema.validate(values, { abortEarly: false });
 
     };
-
-    let submitClientForm = (values,  resetForm ,setFieldValue) => {
+  
+    let submitClientForm = (values) => {
         setIsLoading(true);
         let validation = validateClientForm(values);
         if (!validation.error) {
-            sendClientDataToApi(values, resetForm, setFieldValue);
-
+            sendClientDataToApi(values);
+            setFormKey((prevKey) => prevKey + 1);
+         
         } else {
             setIsLoading(false);
             try {
@@ -92,7 +88,7 @@ export default function AddClient() {
     let toggleInput = () => {
         setShowInput(!showInput);
     }
-
+    const [formKey, setFormKey] = useState(0);
     return (
         <>
             <Helmet>
@@ -102,10 +98,13 @@ export default function AddClient() {
             <h3 className='alert alert-primary text-center mx-5 my-2  fw-bold'>إضافة عميل جديد</h3>
             <div className="mx-5 p-3 rounded rounded-3 bg-white">
 
-                <Formik initialValues={
+                <Formik key={formKey} initialValues={
                     clientData
-                } onSubmit={(values, { resetForm,setFieldValue }) => {
-                    submitClientForm(values, resetForm, setFieldValue);
+                } onSubmit={(values, { resetForm  }) => {
+                    submitClientForm(values );
+                    
+                   
+                  
                 }}>
                     {
                         formik => {
@@ -113,21 +112,21 @@ export default function AddClient() {
                                 <Form className="row g-3">
                                     <div className="col-md-6">
                                         <label htmlFor="code" className='form-label'>كود العميل</label>
-                                        <Field type="text" className='form-control' name="code" id="code"/>
+                                        <Field  type="text" className='form-control' name="code" id="code" />
                                     </div>
                                     <div className="col-md-6">
                                         <label htmlFor="name" className='form-label'>الاسم</label>
-                                        <Field type="text" className='form-control' name="name" id="name"/>
+                                        <Field type="text" className='form-control' name="name" id="name" />
                                     </div>
                                     <div className="col-md-6">
                                         <label htmlFor="phone1" className='form-label'> رقم هاتف</label>
-                                        <Field type="text" id="phone1" className='form-control' name="phones[0]" />
+                                        <Field type="text" id="phone1" className='form-control' name="phones[0]"   />
                                     </div>
 
                                     <div className="col-md-6">
                                         <label htmlFor="addresses1" className='form-label'> عنوان</label>
 
-                                        <Field type="text" id="addresses1" className='form-control' name="addresses[0]" />
+                                        <Field type="text" id="addresses1" className='form-control' name="addresses[0]"  />
                                     </div>
                                     {showInput && <div className="col-md-6">
                                         <label htmlFor="phone2" className='form-label'> رقم هاتف آخر </label>
@@ -136,7 +135,7 @@ export default function AddClient() {
                                     {showInput && <div className="col-md-6">
                                         <label htmlFor="addresses2" className='form-label'> عنوان آخر</label>
 
-                                        <Field type="text" id="addresses2" className='form-control' name="addresses[1]" />
+                                        <Field type="text" id="addresses2" className='form-control' name="addresses[1]"  />
                                     </div>}
                                     <div className="col-md-6 ">
                                         <button type='button' className='btn btn-success' onClick={toggleInput} >

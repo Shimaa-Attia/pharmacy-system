@@ -59,17 +59,17 @@ export default function DeleteClient() {
             <div className="card w-75 m-auto p-3 ">
                 <div className="row">
                     <div className=' col-md-6  ' >
-                        <div className='text-center rounded p-2' style={{ backgroundColor: ' rgb(160, 200, 240)' }} >
+                        <div className='text-center rounded p-2 mt-2' style={{ backgroundColor: ' rgb(160, 200, 240)' }} >
                             <h2 > الاسم : {clients.name} </h2>
                         </div>
                     </div>
                     <div className=' col-md-6  ' >
-                        <div className='text-center rounded p-2' style={{ backgroundColor: ' rgb(160, 200, 240)' }} >
+                        <div className='text-center rounded p-2 mt-2' style={{ backgroundColor: ' rgb(160, 200, 240)' }} >
                             <h3 className='h2' > كود العميل : {clients.code} </h3>
                         </div>
                     </div>
                     <div className=' col-md-6  ' >
-                        <div className='text-center rounded p-2 my-3 ' style={{ backgroundColor: ' rgb(160, 200, 240)' }} >
+                        <div className='text-center rounded p-2 mt-2 ' style={{ backgroundColor: ' rgb(160, 200, 240)' }} >
                             <h4 className='h3'>أرقام الهواتف :{contactInfo.map((info) => {
                                 if (info.name === 'phone') {
                                     return <p key={info.id} >{info.value}</p>
@@ -79,7 +79,7 @@ export default function DeleteClient() {
                         </div>
                     </div>
                     <div className=' col-md-6  ' >
-                        <div className='text-center rounded p-2 my-3 ' style={{ backgroundColor: ' rgb(160, 200, 240)' }} >
+                        <div className='text-center rounded p-2 my-2 ' style={{ backgroundColor: ' rgb(160, 200, 240)' }} >
                             <h4 className='h3'>العناوين  :{contactInfo.map((info) => {
                                 if (info.name === 'address') {
                                     return <p key={info.id} >{info.value}</p>

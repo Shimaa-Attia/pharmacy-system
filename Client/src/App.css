@@ -36,6 +36,7 @@
   z-index: 9999;
 }
 
+
 @media screen and (max-width: 600px) {
   table.table-responsive-list thead {
     display: none;
