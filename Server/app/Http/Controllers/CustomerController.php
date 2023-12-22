@@ -56,24 +56,23 @@ class CustomerController extends Controller
 
     public function store(Request $request)
     {
-
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'code' => 'required|unique:customers,code',
             "phones.*" => 'nullable|min:11|max:11|unique:custom_fields,value',
             "addresses.*" => 'nullable|min:5',
-
         ]);
         if ($validator->fails()) {
             return response()->json([
                 "message" => $validator->errors()], 400);
         }
 
+
         DB::transaction(function () use ($request) {
             $customer = Customer::create([
                 "code" => $request->code,
                 "name" => $request->name,
-                "notes" => $request->notes
+                "notes" => $request->notes ?? null
             ]);
 
             if ($request->has("phones")) {

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\OrderResource;
+use App\Models\Customer;
 use App\Models\Order;
+use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -11,193 +13,212 @@ use Illuminate\Support\Facades\Validator;
 
 class OrdersController extends Controller
 {
-    public function all(){
+    public function all()
+    {
         $orders = Order::all();
         return
-         OrderResource::collection($orders);
+            OrderResource::collection($orders);
     }
 
-    public function show($id){
-        $order =  order::find($id);
-        if($order == null){
-             return response()->json([
-                 "message"=>"هذا الطلب غير موجود",404
-             ]);
-         }
+    public function show($id)
+    {
+        $order = order::find($id);
+        if ($order == null) {
+            return response()->json([
+                "message" => "هذا الطلب غير موجود", 404
+            ]);
+        }
         return new OrderResource($order);
 
     }
 
-    public function store(Request $request){
+    public function store(Request $request)
+    {
 
         if (Auth::user()->role == 'delivery' && Auth::check()) {
-          $request->request->add(['user_id' => Auth::user()->id]);
+            $request->request->add(['user_id' => Auth::user()->id]);
         }
 
-        $validator =  Validator::make($request->all(),[
+        $validator = Validator::make($request->all(), [
             'cost' => 'numeric|required',
             'total_ammount' => 'numeric|required',
-            'customer_id'=>'required|exists:customers,id',
-            'customer_phone'=>'required|regex:/^01[0125][0-9]{8}$/|exists:custom_fields,value',
-            'customer_address'=>'required|exists:custom_fields,value',
-            'user_id'=>'required|exists:users,id'
-          ]);
-        if($validator->fails()){
-           return response()->json([
-             "message"=>$validator->errors()
-           ,409]);
+            'customer_code' => 'required',
+//            'customer_phone'=>'required|regex:/^01[0125][0-9]{8}$/|exists:custom_fields,value',
+//            'customer_address'=>'required|exists:custom_fields,value',
+            'user_id' => 'required|exists:users,id'
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                "message" => $validator->errors()
+                , 409]);
         }
 
-        //create
 
-      $order =  Order::create([
-         "cost"=>$request->cost,
-         "totalAmmount"=>$request->total_ammount,
-         "notes"=>$request->notes,
-         "customer_id"=>$request->customer_id,
-         "customer_phone"=>$request->customer_phone,
-         "customer_address"=>$request->customer_address,
-         "user_id"=>$request->user_id,
-         ]) ;
+        $customer = Customer::where('code', $request->customer_code)->first('id');
+
+        // create customer if not exist
+        if (!$customer) {
+            $customer = Customer::create([
+                "code" => $request->customer_code,
+                "name" => 'غير محدد',
+            ]);
+        }
+        //create
+        $order = Order::create([
+            "cost" => $request->cost,
+            "totalAmmount" => $request->total_ammount,
+            "notes" => $request->notes,
+            "customer_id" => $customer->id,
+            "customer_phone" => $request->customer_phone,
+            "customer_address" => $request->customer_address,
+            "user_id" => $request->user_id,
+        ]);
 
         return response()->json([
-         "message"=>"تم إضافة الطلب",
-         'order'=> $order
-        ],200);
+            "message" => "تم إضافة الطلب",
+            'order' => $order
+        ]);
 
     }
 
-    public function update(Request $request, $id){
- /** @var \App\Models\User $user * */
+    public function update(Request $request, $id)
+    {
+        /** @var \App\Models\User $user * */
         if (Auth::user()->role == 'delivery' && Auth::check()) {
             $request->request->add(['user_id' => Auth::user()->id]);
         }
 
         //check
-         $order =  Order::find($id);
-         if($order == null){
+        $order = Order::find($id);
+        if ($order == null) {
             return response()->json([
-                "message"=>"هذا الطلب غير موجود"
-            ],404);
-         }
-       //validation
-       $validator =  Validator::make($request->all(),[
-        'cost' => 'numeric|required',
-        'total_ammount' => 'numeric|required',
-        'customer_id'=>'required|exists:customers,id',
-        'customer_phone'=>'required|regex:/(01)[0-9]{9}/|exists:custom_fields,value',
-        'customer_address'=>'required|exists:custom_fields,value',
-        'user_id'=>'required|exists:users,id'
+                "message" => "هذا الطلب غير موجود"
+            ], 404);
+        }
+        //validation
+        $validator = Validator::make($request->all(), [
+            'cost' => 'numeric|required',
+            'total_ammount' => 'numeric|required',
+            'customer_id' => 'required|exists:customers,id',
+            'customer_phone' => 'required|regex:/(01)[0-9]{9}/|exists:custom_fields,value',
+            'customer_address' => 'required|exists:custom_fields,value',
+            'user_id' => 'required|exists:users,id'
 
-     ]);
-       if($validator->fails()){
-         return response()->json([
-                 "message"=>$validator->errors()
-               ],409);
-       }
-      //update
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                "message" => $validator->errors()
+            ], 409);
+        }
+        //update
 
-      $order->update([
-        "cost"=>$request->cost,
-         "totalAmmount"=>$request->total_ammount,
-         "notes"=>$request->notes,
-         "customer_id"=>$request->customer_id,
-         "customer_phone"=>$request->customer_phone,
-         "customer_address"=>$request->customer_address,
-         "user_id"=>$request->user_id,
-      ]);
-      //response
-     return response()->json([
-        "message"=>"تم تعديل  الطلب بنجاح","order "=>$order
-       ],200);
+        $order->update([
+            "cost" => $request->cost,
+            "totalAmmount" => $request->total_ammount,
+            "notes" => $request->notes,
+            "customer_id" => $request->customer_id,
+            "customer_phone" => $request->customer_phone,
+            "customer_address" => $request->customer_address,
+            "user_id" => $request->user_id,
+        ]);
+        //response
+        return response()->json([
+            "message" => "تم تعديل  الطلب بنجاح", "order " => $order
+        ], 200);
 
 
-   }
+    }
 
 
     public function destroy($id)
     {
-        $order=Order::find($id);
-        if($order == null){
-        return response()->json([
-            "message"=>"هذا الطلب غير موجود"
-        ],404);
-    }
+        $order = Order::find($id);
+        if ($order == null) {
+            return response()->json([
+                "message" => "هذا الطلب غير موجود"
+            ], 404);
+        }
         $order->delete();
         return response()->json([
-        "message"=>"تم أرشفة الطلب"],200);
+            "message" => "تم أرشفة الطلب"], 200);
     }
 
 
-    public function archive(){
+    public function archive()
+    {
 
         $orders = Order::onlyTrashed()->get();
 
-            return response()->json([
-                'orders' => OrderResource::collection($orders),
-            ]  );
-
-
-    }
-
-    public function restore($id){
-        $order=Order::onlyTrashed()->find($id);
-        if($order == null){
         return response()->json([
-            "message"=>"هذا الطلب غير موجود بالأرشيف"
-        ],404);
+            'orders' => OrderResource::collection($orders),
+        ]);
+
+
     }
+
+    public function restore($id)
+    {
+        $order = Order::onlyTrashed()->find($id);
+        if ($order == null) {
+            return response()->json([
+                "message" => "هذا الطلب غير موجود بالأرشيف"
+            ], 404);
+        }
         $order->restore();
         return response()->json([
-        "message"=>"تم إستعادة الطلب",
-        "order"=>new OrderResource($order)]
-        ,200);
+                "message" => "تم إستعادة الطلب",
+                "order" => new OrderResource($order)]
+            , 200);
     }
 
-    public function deleteArchive($id){
-        $order=Order::onlyTrashed()->find($id);
-        if($order == null){
-        return response()->json([
-            "message"=>" هذا الطلب غير موجود بالأرشيف"
-        ],404);
-    }
+    public function deleteArchive($id)
+    {
+        $order = Order::onlyTrashed()->find($id);
+        if ($order == null) {
+            return response()->json([
+                "message" => " هذا الطلب غير موجود بالأرشيف"
+            ], 404);
+        }
         $order->forceDelete();
         return response()->json([
-        "message"=>"تم الحذف"],200);
+            "message" => "تم الحذف"], 200);
     }
 
-    public function search($key){
-        $orders= Order::where('cost','like',"%$key%")
-        ->orWhereHas('customer',function($query) use ($key){
-            $query->where('name','like',"%$key%")
-            ->OrWhere('code','like',"%$key%");
-        })
-        ->orWhereHas('user',function($query) use ($key){
-            $query->where('name','like',"%$key%")
-            ->OrWhere('code','like',"%$key%");
-        })
-        ->get();
-      return  OrderResource::collection($orders);
-
-    }
-    public function myUser( Request $request,$id){
-
-         if($request->key){
-            $key =$request->key;
-            $orders = Order::where('user_id',$id)
-            ->where(function($query) use ($key){
-                   $query ->where('cost','like',"%$key%")
-                    ->orWhereHas('customer',function($query) use ($key){
-                         $query->where('name','like',"%$key%")
-                         ->OrWhere('code','like',"%$key%");
-                    });
-                })->get();
-            return  OrderResource::collection($orders);
-
-        }else{
-            $orders = Order::where('user_id',$id)
+    public function search($key)
+    {
+        $orders = Order::where('cost', 'like', "%$key%")
+            ->orWhereHas('customer', function ($query) use ($key) {
+                $query->where('name', 'like', "%$key%")
+                    ->OrWhere('code', 'like', "%$key%");
+            })
+            ->orWhereHas('user', function ($query) use ($key) {
+                $query->where('name', 'like', "%$key%")
+                    ->OrWhere('code', 'like', "%$key%");
+            })
             ->get();
-            return  OrderResource::collection($orders);
+        return OrderResource::collection($orders);
+
+    }
+
+    public function myUser(Request $request, $id)
+    {
+
+        if ($request->key) {
+            $key = $request->key;
+            $orders = Order::where('user_id', $id)
+                ->where(function ($query) use ($key) {
+                    $query->where('cost', 'like', "%$key%")
+                        ->orWhereHas('customer', function ($query) use ($key) {
+                            $query->where('name', 'like', "%$key%")
+                                ->OrWhere('code', 'like', "%$key%");
+                        });
+                })->get();
+            return OrderResource::collection($orders);
+
+        } else {
+            $orders = Order::where('user_id', $id)
+                ->get();
+            return OrderResource::collection($orders);
 
         }
 

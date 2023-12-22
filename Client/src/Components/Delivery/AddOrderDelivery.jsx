@@ -5,7 +5,8 @@ import { Helmet } from 'react-helmet';
 import { NavLink, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../../Context/AuthStore';
-import Select from 'react-select';
+import CreatableSelect from 'react-select/creatable';
+
 
 export default function AddOrderDelivery() {
     let { accessToken } = useContext(AuthContext);
@@ -18,9 +19,9 @@ export default function AddOrderDelivery() {
     let [clients, setClients] = useState([]);
     let [users, setUsers] = useState([]);
     let [orders, setOrders] = useState({
-        customer_address: '',
-        customer_phone: '',
-        customer_id: '',
+        // customer_address: '',
+        // customer_phone: '',
+        customer_code: '',
         total_ammount: '',
         cost: '',
         notes: '',
@@ -41,7 +42,7 @@ export default function AddOrderDelivery() {
     }, []);
     useEffect(() => {
         let mapClient = clients?.map((client) => ({
-            value: `${client.id}`,
+            value: `${client.code}`,
             label: `${client.code}${client.name}`
         }));
         setClientOptions(mapClient);
@@ -60,21 +61,22 @@ export default function AddOrderDelivery() {
         getUserData()
     }, []);
     let getSelectedClient = (selectedOption) => {
+        console.log(selectedOption)
         setOrders({
             ...orders,
-            customer_id:selectedOption.value,
+            customer_code:selectedOption?.value,
         });
     };
 
     let [contacts, setContacts] = useState([]);
     useEffect(() => {
-        if (orders.customer_id === '') {
+        if (orders.customer_code === '') {
             return;
         } else {
-            getContactValue(orders.customer_id);
+            getContactValue(orders.customer_code)
         }
 
-    }, [orders.customer_id]);
+    }, [orders.customer_code]);
 
     let getContactValue = async (id) => {
         let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers/contact/${id}`, {
@@ -129,9 +131,9 @@ export default function AddOrderDelivery() {
     };
     let validateOrderForm = () => {
         const schema = Joi.object({
-            customer_address: Joi.string().required(),
-            customer_phone: Joi.string().required(),
-            customer_id: Joi.number().required(),
+            // customer_address: Joi.string().required(),
+            // customer_phone: Joi.string().required(),
+            customer_code: Joi.number().required(),
             total_ammount: Joi.number().empty(''),
             cost: Joi.number().empty(''),
             notes: Joi.string().empty(''),
@@ -179,34 +181,34 @@ export default function AddOrderDelivery() {
 
                         <div className="col-md-4">
                             <label htmlFor="customer_id" className='form-label'>كود العميل أو الاسم</label>
-                            <Select
-                                name="customer_id"
+                            <CreatableSelect
+                                name="customer_code"
+                                isClearable
                                 options={clientOptions}
-                                value={clientOptions?.find((opt) => opt.value === orders.customer_id)}
-                            
+                                value={clientOptions?.find((opt) => opt?.value === orders?.customer_code)}
                                 onChange={getSelectedClient}
                                 isSearchable={true}
                                 placeholder="بحث عن عميل..."
                                 key={key}
                             />
                         </div>
-                        <div className="col-md-4">
-                            <label htmlFor="customer_phone" className='form-label'>أرقام الهواتف للعميل</label>
-                            <select name="customer_phone" defaultValue={0} className='form-control ' id="customer_phone"
-                                onChange={getInputValue}>
-                                <option value={0} hidden disabled>اختار</option>
-                                {contacts?.phones ? contacts?.phones.map((phone) => <option key={phone.id} value={phone.value} > {phone.value}</option>) : null}
-                            </select>
-                        </div>
-                        <div className="col-md-4">
-                            <label htmlFor="customer_address" className='form-label'>عناوين العميل</label>
-                            <select name="customer_address" defaultValue={0} className='form-control ' id="customer_address"
-                                onChange={getInputValue}>
-                                <option value={0} hidden disabled>اختار</option>
-                                {contacts?.addresses ? contacts?.addresses.map((address) => <option key={address.id} value={address.value} > {address.value}</option>) : null}
+                        {/*<div className="col-md-4 ">*/}
+                        {/*    <label htmlFor="customer_phone" className='form-label'>أرقام الهواتف للعميل</label>*/}
+                        {/*    <select name="customer_phone" defaultValue={0} className='form-control ' id="customer_phone"*/}
+                        {/*        onChange={getInputValue}>*/}
+                        {/*        <option value={0} hidden disabled>اختار</option>*/}
+                        {/*        {contacts?.phones ? contacts?.phones.map((phone) => <option key={phone.id} value={phone.value} > {phone.value}</option>) : null}*/}
+                        {/*    </select>*/}
+                        {/*</div>*/}
+                        {/*<div className="col-md-4">*/}
+                        {/*    <label htmlFor="customer_address" className='form-label'>عناوين العميل</label>*/}
+                        {/*    <select name="customer_address" defaultValue={0} className='form-control ' id="customer_address"*/}
+                        {/*        onChange={getInputValue}>*/}
+                        {/*        <option value={0} hidden disabled>اختار</option>*/}
+                        {/*        {contacts?.addresses ? contacts?.addresses.map((address) => <option key={address.id} value={address.value} > {address.value}</option>) : null}*/}
 
-                            </select>
-                        </div>
+                        {/*    </select>*/}
+                        {/*</div>*/}
                         <div className="col-md-4">
                             <label htmlFor="cost" className='form-label'>قيمة الأوردر </label>
                             <input type="number" className='form-control' name="cost" id="cost" onChange={getInputValue} />
