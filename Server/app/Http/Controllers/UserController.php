@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\UserResouce;
+use App\Models\Order;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -275,6 +276,19 @@ class UserController extends Controller
         ->OrWhere('phone','like',"%$key%")
         ->OrWhere('role','like',"%$key%")
         ->get();
+    }
+
+    public function unpaidAmount($id){
+        $orders= Order::where('user_id',$id)
+        ->get();
+        $unpaidAmount =0;
+        foreach($orders as $order){
+            $value = $order->totalAmmount - $order->paid;
+            $unpaidAmount +=$value;
+        }
+        return response()->json([
+            'unpaidAmount'=>$unpaidAmount
+        ]);
     }
 
 }

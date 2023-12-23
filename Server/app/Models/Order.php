@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Monolog\Handler\SamplingHandler;
 
 class Order extends Model
 {
@@ -13,11 +14,13 @@ class Order extends Model
     protected $fillable = [
         'cost',
         'totalAmmount',
+        'paid',
         'notes',
         'customer_id',
         'customer_phone',
         'customer_address',
         'user_id',
+        'sale_point_id'
     ];
 
     public function customer(){
@@ -25,5 +28,8 @@ class Order extends Model
     }
     public function user(){
         return $this->belongsTo(User::class,'user_id');
+    }
+    public function sale_point(){
+        return $this->belongsTo(Sale_point::class,'sale_point_id');
     }
 }

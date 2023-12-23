@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\OrdersController;
+use App\Http\Controllers\SalePointController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -49,8 +50,8 @@ Route::middleware(['auth:api'])->group(function(){
         Route::delete('/deleteArchive/{id}',[UserController::class,'deleteArchive']);
         //search user
         Route::get('/search/{key}',[UserController::class,'search']);
-
-
+       //get user's unpaidAmount
+        Route::get('/unpaid/{id}',[UserController::class,'unpaidAmount']);
     });
 
 
@@ -92,6 +93,25 @@ Route::middleware(['auth:api'])->group(function(){
          Route::get('/search/{key}',[OrdersController::class,'search']);
          //get orders of an user
         Route::get('/user/{id}',[OrdersController::class,'myUser']);
+
+    });
+
+    Route::group(['prefix'=>'points','as'=>'points.'],function(){
+        //select all points
+        Route::get('/',[SalePointController::class,'all']);
+        //select one point
+        Route::get('/show/{id}',[SalePointController::class,'show']);
+        //create point
+        Route::post('/',[SalePointController::class,'store']);
+        //update point
+        Route::put('/{id}',[SalePointController::class,'update']);
+        //point soft delete
+        Route::delete('/delete/{id}',[SalePointController::class,'destroy']);
+        Route::get('/archive',[SalePointController::class,'archive']);
+        Route::post('/restore/{id}',[SalePointController::class,'restore']);
+        Route::delete('/deleteArchive/{id}',[SalePointController::class,'deleteArchive']);
+         //search points
+         Route::get('/search/{key}',[SalePointController::class,'search']);
 
     });
 

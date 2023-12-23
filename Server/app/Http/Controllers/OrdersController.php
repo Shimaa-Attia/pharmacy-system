@@ -16,6 +16,7 @@ class OrdersController extends Controller
     public function all()
     {
         $orders = Order::all();
+        // return $orders;
         return
             OrderResource::collection($orders);
     }
@@ -42,10 +43,12 @@ class OrdersController extends Controller
         $validator = Validator::make($request->all(), [
             'cost' => 'numeric|required',
             'total_ammount' => 'numeric|required',
+            // 'paid' => 'numeric',
             'customer_code' => 'required',
-//            'customer_phone'=>'required|regex:/^01[0125][0-9]{8}$/|exists:custom_fields,value',
-//            'customer_address'=>'required|exists:custom_fields,value',
-            'user_id' => 'required|exists:users,id'
+        //    'customer_phone'=>'required|regex:/^01[0125][0-9]{8}$/|exists:custom_fields,value',
+        //    'customer_address'=>'required|exists:custom_fields,value',
+            'user_id' => 'required|exists:users,id',
+            'sale_point_id' => 'required|exists:sale_points,id'
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -68,10 +71,12 @@ class OrdersController extends Controller
             "cost" => $request->cost,
             "totalAmmount" => $request->total_ammount,
             "notes" => $request->notes,
+            // 'paid'=>$request->paid,
             "customer_id" => $customer->id,
             "customer_phone" => $request->customer_phone,
             "customer_address" => $request->customer_address,
             "user_id" => $request->user_id,
+            "sale_point_id"=>$request->sale_point_id
         ]);
 
         return response()->json([
@@ -99,27 +104,41 @@ class OrdersController extends Controller
         $validator = Validator::make($request->all(), [
             'cost' => 'numeric|required',
             'total_ammount' => 'numeric|required',
-            'customer_id' => 'required|exists:customers,id',
-            'customer_phone' => 'required|regex:/(01)[0-9]{9}/|exists:custom_fields,value',
-            'customer_address' => 'required|exists:custom_fields,value',
-            'user_id' => 'required|exists:users,id'
-
+            // 'paid' => 'numeric',
+            'customer_code' => 'required',
+            // 'customer_id' => 'required|exists:customers,id',
+            // 'customer_phone' => 'required|regex:/(01)[0-9]{9}/|exists:custom_fields,value',
+            // 'customer_address' => 'required|exists:custom_fields,value',
+            'user_id' => 'required|exists:users,id',
+            'sale_point_id' => 'required|exists:sale_points,id'
         ]);
         if ($validator->fails()) {
             return response()->json([
                 "message" => $validator->errors()
             ], 409);
         }
+        $customer = Customer::where('code', $request->customer_code)->first('id');
+
+        // create customer if not exist
+        if (!$customer) {
+            $customer = Customer::create([
+                "code" => $request->customer_code,
+                "name" => 'غير محدد',
+            ]);
+        }
         //update
 
         $order->update([
             "cost" => $request->cost,
             "totalAmmount" => $request->total_ammount,
+            // 'paid'=>$request->paid,
             "notes" => $request->notes,
-            "customer_id" => $request->customer_id,
+            "customer_id" => $customer->id,
             "customer_phone" => $request->customer_phone,
             "customer_address" => $request->customer_address,
             "user_id" => $request->user_id,
+            "sale_point_id"=>$request->sale_point_id
+
         ]);
         //response
         return response()->json([
