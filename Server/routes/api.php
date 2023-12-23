@@ -25,15 +25,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 //login
 Route::post('/login',[UserController::class,'login']);
-//select all users
-Route::get('users',[UserController::class,'all']);
-//select one user
-Route::get('users/show/{id}',[UserController::class,'show']);
-//create user(register)
-Route::post('/users',[UserController::class,'create']);
-
-
-
 
 Route::middleware(['auth:api'])->group(function(){
     //checke auth
@@ -41,7 +32,13 @@ Route::middleware(['auth:api'])->group(function(){
     //logout
     Route::post('/logout',[UserController::class,'logout']);
     Route::group(['prefix'=>'users','as'=>'users.'],function(){
-       //update user
+        //select all users
+        Route::get('/',[UserController::class,'all']);
+        //select one user
+        Route::get('/show/{id}',[UserController::class,'show']);
+        //create user(register)
+        Route::post('/',[UserController::class,'create']);
+        //update user
         Route::put('/{id}',[UserController::class,'update']);
         //usersoft delete
         Route::delete('/delete/{id}',[UserController::class,'destroy']);
@@ -52,6 +49,8 @@ Route::middleware(['auth:api'])->group(function(){
         Route::get('/search/{key}',[UserController::class,'search']);
        //get user's unpaidAmount
         Route::get('/unpaid/{id}',[UserController::class,'unpaidAmount']);
+        //get orders of an user  in a specific period
+        Route::post('/specificOrders/{id}',[UserController::class,'ordersInSpecificTime']);
     });
 
 
@@ -93,6 +92,8 @@ Route::middleware(['auth:api'])->group(function(){
          Route::get('/search/{key}',[OrdersController::class,'search']);
          //get orders of an user
         Route::get('/user/{id}',[OrdersController::class,'myUser']);
+        //pay for an order
+        Route::post('/pay/{id}',[OrdersController::class,'pay']);
 
     });
 

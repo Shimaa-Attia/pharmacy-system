@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\OrderResource;
 use App\Http\Resources\UserResouce;
 use App\Models\Order;
 use App\Models\User;
@@ -279,6 +280,12 @@ class UserController extends Controller
     }
 
     public function unpaidAmount($id){
+        $user = User::find($id);
+        if ($user == null) {
+            return response()->json([
+                "message" => "هذا المستخدم غير موجود"
+            ], 404);
+        }
         $orders= Order::where('user_id',$id)
         ->get();
         $unpaidAmount =0;
@@ -288,6 +295,36 @@ class UserController extends Controller
         }
         return response()->json([
             'unpaidAmount'=>$unpaidAmount
+        ]);
+    }
+
+    public function ordersInSpecificTime(Request $request, $id){
+        $user = User::find($id);
+        if ($user == null) {
+            return response()->json([
+                "message" => "هذا المستخدم غير موجود"
+            ], 404);
+        }
+        $validator = Validator::make($request->all(), [
+            'start_date' => 'required|date_format:Y-m-d H:i:s',
+            'end_date' => 'required|date_format:Y-m-d H:i:s',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                "message" => $validator->errors()
+            ], 409);
+        }
+
+        $orders = Order::where('user_id', $id)
+         ->where(function ($query) use ($request)  {
+           $query->whereBetween('created_at',[$request->start_date, $request->end_date]);
+
+        })->orderBy('created_at', 'DESC')->get();
+
+           $numOfOrders = count($orders);
+           return response()->json([
+            "numOfOrders" => $numOfOrders,
+            "orders"=>OrderResource::collection($orders)
         ]);
     }
 

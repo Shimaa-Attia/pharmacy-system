@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use PhpParser\Node\Stmt\Return_;
 
 class OrdersController extends Controller
 {
@@ -43,7 +44,6 @@ class OrdersController extends Controller
         $validator = Validator::make($request->all(), [
             'cost' => 'numeric|required',
             'total_ammount' => 'numeric|required',
-            // 'paid' => 'numeric',
             'customer_code' => 'required',
         //    'customer_phone'=>'required|regex:/^01[0125][0-9]{8}$/|exists:custom_fields,value',
         //    'customer_address'=>'required|exists:custom_fields,value',
@@ -71,7 +71,6 @@ class OrdersController extends Controller
             "cost" => $request->cost,
             "totalAmmount" => $request->total_ammount,
             "notes" => $request->notes,
-            // 'paid'=>$request->paid,
             "customer_id" => $customer->id,
             "customer_phone" => $request->customer_phone,
             "customer_address" => $request->customer_address,
@@ -104,7 +103,6 @@ class OrdersController extends Controller
         $validator = Validator::make($request->all(), [
             'cost' => 'numeric|required',
             'total_ammount' => 'numeric|required',
-            // 'paid' => 'numeric',
             'customer_code' => 'required',
             // 'customer_id' => 'required|exists:customers,id',
             // 'customer_phone' => 'required|regex:/(01)[0-9]{9}/|exists:custom_fields,value',
@@ -131,7 +129,6 @@ class OrdersController extends Controller
         $order->update([
             "cost" => $request->cost,
             "totalAmmount" => $request->total_ammount,
-            // 'paid'=>$request->paid,
             "notes" => $request->notes,
             "customer_id" => $customer->id,
             "customer_phone" => $request->customer_phone,
@@ -239,6 +236,43 @@ class OrdersController extends Controller
                 ->get();
             return OrderResource::collection($orders);
 
+        }
+
+    }
+
+    public function pay(Request $request, $id){
+        $order = Order::find($id);
+        if ($order == null) {
+            return response()->json([
+                "message" => "هذا الطلب غير موجود"
+            ], 404);
+        }
+        $validator = Validator::make($request->all(), [
+            'paid_value' => 'numeric|required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                "message" => $validator->errors()
+                , 409]);
+        }
+
+        $unpaid =$order->totalAmmount - $order->paid;
+        $newPaid= $request->paid_value + $order->paid;
+        if($unpaid == 0 ){
+            return response()->json([
+            "message" => "كامل المبلغ مُسدد بالفعل"
+            ]);
+        }elseif ($newPaid > $order->totalAmmount){
+            return response()->json([
+                "message" => "مبلغ اكبر من المطلوب"
+            ]);
+        }else{
+           Order::where('id', $id)->update(array('paid' => $newPaid));
+           $order = Order::find($id);
+            $unpaid =$order->totalAmmount - $order->paid;
+            return response()->json([
+                "message" => "تم تسديد المبلغ المطلوب، متبقي من اجمالي المبلغ $unpaid جنيهًا"
+            ]);
         }
 
     }
