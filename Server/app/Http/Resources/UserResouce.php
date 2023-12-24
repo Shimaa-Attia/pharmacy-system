@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -14,6 +15,13 @@ class UserResouce extends JsonResource
      */
     public function toArray(Request $request): array
     {
+
+          $orders =  $this->orders;
+          $unpaidAmount = 0;
+          foreach ($orders as $order){
+            $unpaid = $order->totalAmmount -$order->paid;
+            $unpaidAmount += $unpaid;
+          }
         return [
             'id'=>$this->id,
             'name'=>$this->name,
@@ -23,6 +31,7 @@ class UserResouce extends JsonResource
             'hourRate'=>$this->hourRate,
             'salary'=>$this->salary,
             'notes'=>$this->notes,
+            'unpaidAmount'=>$unpaidAmount
         ];
     }
 
