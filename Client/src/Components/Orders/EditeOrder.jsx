@@ -5,7 +5,7 @@ import { Helmet } from 'react-helmet';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../../Context/AuthStore';
-import Select from 'react-select';
+import CreatableSelect from 'react-select/creatable';
 
 
 export default function EditeOrder() {
@@ -19,17 +19,18 @@ export default function EditeOrder() {
   let [clients, setClients] = useState([]);
   let [orders, setOrders] = useState({
     user_id: '',
-    customer_address: '',
-    customer_phone: '',
-    customer_id: '',
+    // customer_address: '',
+    // customer_phone: '',
+ 
+    customer_code: '',
     total_ammount: '',
     cost: '',
     notes: '',
+    sale_point_id:''
   });
 
   // let [orderData, setOrderData] = useState([]);
   let getOrder = async () => {
-
     let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/show/${id}`, {
       headers: {
         "Authorization": `Bearer ${accessToken}`
@@ -43,9 +44,13 @@ export default function EditeOrder() {
   }, []);
   let [userOptions, setUserOptions] = useState([]);
   let getUserData = async () => {
-    let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users`);
-    let delivery = data.data.filter((user) => user.role === 'delivery');
-    setUsers(delivery);
+    let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users`,{
+      headers: {
+        "Authorization": `Bearer ${accessToken}`
+      }
+    });
+    setUsers(data.data)
+ 
   };
   useEffect(() => {
     getUserData()
@@ -53,7 +58,7 @@ export default function EditeOrder() {
   useEffect(() => {
     let mapUser = users?.map((user) => ({
       value: `${user.id}`,
-      label: `${user.code}${user.name}`
+      label: `${user.code}`
     }));
     setUserOptions(mapUser);
   }, [users]);
@@ -67,7 +72,7 @@ export default function EditeOrder() {
   let getSelectedClient = (selectedOption) => {
     setOrders({
       ...orders,
-      customer_id: selectedOption.value,
+      customer_code: selectedOption.value,
     });
   };
   let [clientOptions, setClientOptions] = useState([]);
@@ -86,30 +91,30 @@ export default function EditeOrder() {
   useEffect(() => {
     let mapClient = clients?.map((client) => ({
       value: `${client.id}`,
-      label: `${client.code}${client.name}`
+      label: `${client.code}`
     }));
     setClientOptions(mapClient);
   }, [clients]);
 
-  let [contacts, setContacts] = useState([]);
+  // let [contacts, setContacts] = useState([]);
+  // useEffect(() => {
+  //   if (orders.customer_id === '') {
+  //     return;
+  //   } else {
+  //     getContactValue(orders.customer_id);
+  //   }
 
-  useEffect(() => {
-    if (orders.customer_id === '') {
-      return;
-    } else {
-      getContactValue(orders.customer_id);
-    }
+  // }, [orders.customer_id]);
+  // let getContactValue = async (id) => {
+  //   let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers/contact/${id}`, {
+  //     headers: {
+  //       "Authorization": `Bearer ${accessToken}`
+  //     }
+  //   });
 
-  }, [orders.customer_id]);
-  let getContactValue = async (id) => {
-    let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers/contact/${id}`, {
-      headers: {
-        "Authorization": `Bearer ${accessToken}`
-      }
-    });
+  //   setContacts(data);
+  // };
 
-    setContacts(data);
-  };
   let getInputValue = (event) => {
     let myOrders = { ...orders }; //deep copy
     myOrders[event.target.name] = event.target.value;
@@ -147,12 +152,14 @@ export default function EditeOrder() {
     const schema = Joi.object({
 
       user_id: Joi.number().required(),
-      customer_address: Joi.string().required(),
-      customer_phone: Joi.string().required(),
-      customer_id: Joi.number().required(),
-      total_ammount: Joi.number().empty(''),
-      cost: Joi.number().empty(''),
+      // customer_address: Joi.string().required(),
+      // customer_phone: Joi.string().required(),
+      customer_code: Joi.number().required(),
+      total_ammount: Joi.number().required(),
+      cost: Joi.number().required(),
+      sale_point_id: Joi.string().required(),
       notes: Joi.string().empty(''),
+   
     });
     return schema.validate(orders, { abortEarly: false });
   };
@@ -173,6 +180,19 @@ export default function EditeOrder() {
       }
     }
   };
+  let [salePoints, setSalePoints] = useState([]);
+  let getSalePointsData = async () => {
+    let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/points`, {
+      headers: {
+        "Authorization": `Bearer ${accessToken}`
+      }
+    });
+    setSalePoints(data.data);
+
+  };
+  useEffect(() => {
+    getSalePointsData()
+  }, []);
 
   return (
     <>
@@ -185,8 +205,8 @@ export default function EditeOrder() {
         <form onSubmit={editedOrederSubmit} >
           <div className="row gy-3">
             <div className="col-md-4">
-              <label htmlFor="user_id" className='form-label'>كود الطيار أو الاسم</label>
-              <Select
+              <label htmlFor="user_id" className='form-label'>كود  الموظف </label>
+              <CreatableSelect
 
                 name="user_id"
                 options={userOptions}
@@ -198,11 +218,11 @@ export default function EditeOrder() {
               />
             </div>
             <div className="col-md-4">
-              <label htmlFor="customer_id" className='form-label'>كود العميل أو الاسم</label>
-              <Select
-                name="customer_id"
+              <label htmlFor="customer_code" className='form-label'>كود العميل  </label>
+              <CreatableSelect
+                name="customer_code"
                 options={clientOptions}
-                value={clientOptions?.find((opt) => opt.value === orders.customer_id)}
+                value={clientOptions?.find((opt) => opt.value === orders.customer_code)}
                 onChange={getSelectedClient}
                 isSearchable={true}
                 placeholder="بحث عن عميل..."
@@ -210,7 +230,7 @@ export default function EditeOrder() {
               />
             
             </div>
-            <div className="col-md-4">
+            {/* <div className="col-md-4">
               <label htmlFor="customer_phone" className='form-label'>أرقام الهواتف للعميل</label>
               <select name="customer_phone" defaultValue={0} className='form-control ' id="customer_phone"
                 onChange={getInputValue}>
@@ -226,7 +246,15 @@ export default function EditeOrder() {
                 {contacts?.addresses ? contacts?.addresses.map((address) => <option key={address.id} value={address?.value}  > {address.value}</option>) : null}
 
               </select>
-            </div>
+            </div> */}
+               <div className="col-md-4">
+                            <label htmlFor="sale_point_id" className='form-label'>نقطة البيع </label>
+                            <select name="sale_point_id" defaultValue={0} className='form-control' id="sale_point_id"
+                                onChange={getInputValue}>
+                                     <option value={0} hidden selected disabled>اختار</option>
+                                  {salePoints.map((point)=> <option key={point.id} value={point.id}>{point.name}</option>)} 
+                            </select>
+                        </div>
             <div className="col-md-4">
               <label htmlFor="cost" className='form-label'>قيمة الأوردر </label>
               <input type="number" className='form-control' name="cost" id="cost"

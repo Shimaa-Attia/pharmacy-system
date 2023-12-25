@@ -1,17 +1,22 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { AuthContext } from '../../Context/AuthStore';
 
 export default function UserDetails() {
- 
+  let { accessToken } = useContext(AuthContext);
   let [users, setUsers] = useState([]);
   let { id } = useParams();
 
   let getUserDetails = async () => {
     try {
-      let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/show/${id}`);
+      let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/show/${id}`,{
+        headers: {
+          "Authorization": `Bearer ${accessToken}`
+        }
+      });
       setUsers(data.data);
 
     } catch (error) {
