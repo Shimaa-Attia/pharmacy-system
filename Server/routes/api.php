@@ -4,6 +4,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\OrdersController;
 use App\Http\Controllers\SalePointController;
 use App\Http\Controllers\UserController;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -49,8 +50,7 @@ Route::middleware(['auth:api'])->group(function(){
         Route::get('/search/{key}',[UserController::class,'search']);
        //get user's unpaidAmount
         Route::get('/unpaid/{id}',[UserController::class,'unpaidAmount']);
-        //get orders of an user  in a specific period
-        Route::post('/specificOrders/{id}',[UserController::class,'ordersInSpecificTime']);
+
     });
 
 
@@ -94,6 +94,8 @@ Route::middleware(['auth:api'])->group(function(){
         Route::get('/user/{id}',[OrdersController::class,'myUser']);
         //pay for an order
         Route::post('/pay/{id}',[OrdersController::class,'pay']);
+         //get orders in a specific period
+         Route::post('/specificOrders',[OrdersController::class,'ordersInSpecificTime']);
 
     });
 
@@ -113,7 +115,7 @@ Route::middleware(['auth:api'])->group(function(){
         Route::delete('/deleteArchive/{id}',[SalePointController::class,'deleteArchive']);
          //search points
          Route::get('/search/{key}',[SalePointController::class,'search']);
-         
+
 
 
     });

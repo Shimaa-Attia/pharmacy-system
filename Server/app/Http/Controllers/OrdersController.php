@@ -72,8 +72,8 @@ class OrdersController extends Controller
             "totalAmmount" => $request->total_ammount,
             "notes" => $request->notes,
             "customer_id" => $customer->id,
-            "customer_phone" => $request->customer_phone,
-            "customer_address" => $request->customer_address,
+            // "customer_phone" => $request->customer_phone,
+            // "customer_address" => $request->customer_address,
             "user_id" => $request->user_id,
             "sale_point_id"=>$request->sale_point_id
         ]);
@@ -131,8 +131,8 @@ class OrdersController extends Controller
             "totalAmmount" => $request->total_ammount,
             "notes" => $request->notes,
             "customer_id" => $customer->id,
-            "customer_phone" => $request->customer_phone,
-            "customer_address" => $request->customer_address,
+            // "customer_phone" => $request->customer_phone,
+            // "customer_address" => $request->customer_address,
             "user_id" => $request->user_id,
             "sale_point_id"=>$request->sale_point_id
 
@@ -276,4 +276,24 @@ class OrdersController extends Controller
         }
 
     }
+
+    public function ordersInSpecificTime(Request $request){
+        $validator = Validator::make($request->all(), [
+               'start_date' => 'required|date_format:Y-m-d H:i:s',
+               'end_date' => 'required|date_format:Y-m-d H:i:s',
+           ]);
+           if ($validator->fails()) {
+               return response()->json([
+                   "message" => $validator->errors()
+               ], 409);
+           }
+
+           $orders = Order::whereBetween('created_at',[$request->start_date, $request->end_date])
+                   ->get();  //->orderBy('created_at', 'DESC')
+
+              $numOfOrders = count($orders);
+              return response()->json([
+               "numOfOrders" => $numOfOrders,
+           ]);
+       }
 }

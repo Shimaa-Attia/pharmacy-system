@@ -298,35 +298,7 @@ class UserController extends Controller
         ]);
     }
 
-    public function ordersInSpecificTime(Request $request, $id){
-        $user = User::find($id);
-        if ($user == null) {
-            return response()->json([
-                "message" => "هذا المستخدم غير موجود"
-            ], 404);
-        }
-        $validator = Validator::make($request->all(), [
-            'start_date' => 'required|date_format:Y-m-d H:i:s',
-            'end_date' => 'required|date_format:Y-m-d H:i:s',
-        ]);
-        if ($validator->fails()) {
-            return response()->json([
-                "message" => $validator->errors()
-            ], 409);
-        }
-
-        $orders = Order::where('user_id', $id)
-         ->where(function ($query) use ($request)  {
-           $query->whereBetween('created_at',[$request->start_date, $request->end_date]);
-
-        })->get();  //->orderBy('created_at', 'DESC')
-
-           $numOfOrders = count($orders);
-           return response()->json([
-            "numOfOrders" => $numOfOrders,
-            "orders"=>OrderResource::collection($orders)
-        ]);
-    }
+   
 
 
 
