@@ -279,10 +279,10 @@ class OrdersController extends Controller
 
 
     public function ordersInSpecificTime(Request $request){
-        
+
         $validator = Validator::make($request->all(), [
-               'start_date' => 'required|date_format:Y-m-d H:i:s',
-               'end_date' => 'required|date_format:Y-m-d H:i:s',
+               'start_date' => 'required|date_format:Y-m-d',
+               'end_date' => 'required|date_format:Y-m-d',
            ]);
            if ($validator->fails()) {
                return response()->json([
