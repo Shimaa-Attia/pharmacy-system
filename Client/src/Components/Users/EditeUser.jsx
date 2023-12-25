@@ -28,7 +28,11 @@ export default function EditeUser() {
 
   let getUser = async () => {
     try {
-      let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/show/${id}`);
+      let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/show/${id}`,{
+        headers: {
+          "Authorization": `Bearer ${accessToken}`
+        }
+      });
       setUsers(data.data);
 
     } catch (error) {

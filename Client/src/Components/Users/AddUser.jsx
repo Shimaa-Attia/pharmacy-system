@@ -1,17 +1,16 @@
 import axios from 'axios';
 import Joi from 'joi';
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { AuthContext } from '../../Context/AuthStore';
 
 
 export default function AddUser() {
     let formElement = document.querySelectorAll('form input');
     let textarea = document.querySelector('form textarea');
-
-
-    let navigate = useNavigate();
+    let { accessToken } = useContext(AuthContext);
     let [isLoading, setIsLoading] = useState(false);
 
     let initUsers = {
@@ -33,7 +32,11 @@ export default function AddUser() {
         setUsers(myUsers);
     };
     let sendUserDataToApi = async () => {
-        await axios.post(`${process.env.REACT_APP_API_URL}/api/users`, users).then((res) => {
+        await axios.post(`${process.env.REACT_APP_API_URL}/api/users`, users ,{
+            headers: {
+                "Authorization": `Bearer ${accessToken}`
+              }
+        }).then((res) => {
             toast.success(res.data.message, {
                 position: 'top-center'
             });

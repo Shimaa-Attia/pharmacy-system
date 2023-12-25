@@ -5,7 +5,7 @@ import { Helmet } from 'react-helmet';
 import { NavLink} from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../../Context/AuthStore';
-import Select from 'react-select';
+import CreatableSelect from 'react-select/creatable';
 
 export default function AddOrder() {
     let { accessToken } = useContext(AuthContext);
@@ -17,30 +17,34 @@ export default function AddOrder() {
     let [clients, setClients] = useState([]);
     let [orders, setOrders] = useState({
         user_id: '',
-        customer_address: '',
-        customer_phone: '',
-        customer_id: '',
+        // customer_address: '',
+        // customer_phone: '',
+        customer_code: '',
         total_ammount: '',
         cost: '',
         notes: '',
+        sale_point_id:''
 
     });
     let [userOptions, setUserOptions] = useState([]);
     let getUserData = async () => {
-        let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users`);
-        let delivery = data.data.filter((user) => user.role === 'delivery');
-        setUsers(delivery);
+        let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users`,{
+            headers: {
+                "Authorization": `Bearer ${accessToken}`
+              }
+        });
+        setUsers(data.data);
+        
     };
-
     useEffect(() => {
         getUserData()
-
     }, []);
     useEffect(() => {
         let mapUser = users?.map((user) => ({
             value: `${user.id}`,
-            label: `${user.code}${user.name}`
+            label: `${user.code}`
         }));
+       
         setUserOptions(mapUser);
       }, [users]);
 
@@ -52,40 +56,38 @@ export default function AddOrder() {
             }
         });
         setClients([...data.data]); 
-     
     };
 
     useEffect(() => {
         getClientData()
-      
     }, []);
 
   useEffect(() => {
     let mapClient = clients?.map((client) => ({
         value: `${client.id}`,
-        label: `${client.code}${client.name}`
+        label: `${client.code}`
     }));
     setClientOptions(mapClient);
       }, [clients]);
+//get contac info (phones and adresess)
+    // let [contacts, setContacts] = useState([]);
+    // useEffect(() => {
+    //     if (orders.customer_id === '') {
+    //         return;
+    //     } else {
+    //         getContactValue(orders.customer_id);
+    //     }
 
-    let [contacts, setContacts] = useState([]);
-    useEffect(() => {
-        if (orders.customer_id === '') {
-            return;
-        } else {
-            getContactValue(orders.customer_id);
-        }
+    // }, [orders.customer_id]);
+    // let getContactValue = async (id) => {
+    //     let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers/contact/${id}`, {
+    //         headers: {
+    //             "Authorization": `Bearer ${accessToken}`
+    //         }
+    //     });
 
-    }, [orders.customer_id]);
-    let getContactValue = async (id) => {
-        let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers/contact/${id}`, {
-            headers: {
-                "Authorization": `Bearer ${accessToken}`
-            }
-        });
-
-        setContacts(data);
-    };
+    //     setContacts(data);
+    // };
     let getSelectedUser = (selectedOption) => {
         setOrders({
             ...orders,
@@ -96,7 +98,7 @@ export default function AddOrder() {
     let getSelectedClient = (selectedOption) => {
         setOrders({
             ...orders,
-            customer_id:selectedOption.value,
+            customer_code:selectedOption.value,
         });
     };
 
@@ -145,11 +147,12 @@ export default function AddOrder() {
         const schema = Joi.object({
 
             user_id: Joi.number().required(),
-            customer_address: Joi.string().required(),
-            customer_phone: Joi.string().required(),
-            customer_id: Joi.number().required(),
-            total_ammount: Joi.number().empty(''),
-            cost: Joi.number().empty(''),
+            // customer_address: Joi.string().required(),
+            // customer_phone: Joi.string().required(),
+            customer_code: Joi.number().required(),
+            total_ammount: Joi.number().required(),
+            cost: Joi.number().required(),
+            sale_point_id: Joi.string().required(),
             notes: Joi.string().empty(''),
         });
         return schema.validate(orders, { abortEarly: false });
@@ -175,6 +178,19 @@ export default function AddOrder() {
             }
         }
     };
+    let [salePoints, setSalePoints] = useState([]);
+    let getSalePointsData = async () => {
+      let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/points`, {
+        headers: {
+          "Authorization": `Bearer ${accessToken}`
+        }
+      });
+      setSalePoints(data.data);
+  
+    };
+    useEffect(() => {
+      getSalePointsData()
+    }, []);
 
 
 
@@ -190,32 +206,34 @@ export default function AddOrder() {
                 <form onSubmit={submitOrderForm} >
                     <div className="row gy-3">
                         <div className="col-md-4">
-                            <label htmlFor="user_id" className='form-label'>كود الطيار أو الاسم</label>
-                            <Select
+                            <label htmlFor="user_id" className='form-label'>كود الموظف   </label>
+                            <CreatableSelect
                                 name="user_id"
+                                isClearable
                                 options={userOptions}
-                                value={userOptions?.find((opt) => opt.value === orders.user_id)}
+                                value={userOptions?.find((opt) => opt?.value === orders.user_id )}
+                                
                                 onChange={getSelectedUser}
                                 isSearchable={true}
-                                placeholder="بحث عن طيار..."
+                                placeholder="إضافة موظف"
                                 key={key}
                             />
                          
                         </div>
                         <div className="col-md-4">
-                            <label htmlFor="customer_id" className='form-label'>كود العميل أو الاسم</label>
-
-                            <Select
-                                name="customer_id"
+                            <label htmlFor="customer_id" className='form-label'>كود العميل  </label>
+                            <CreatableSelect
+                                name="customer_code"
+                                isClearable
                                 options={clientOptions}
-                                value={clientOptions?.find((opt) => opt.value === orders.customer_id)}
+                                value={clientOptions?.find((opt) => opt.value === orders.customer_code)}
                                 onChange={getSelectedClient}
                                 isSearchable={true}
                                 placeholder="بحث عن عميل..."
                                 key={key}
                             />
                         </div>
-                        <div className="col-md-4">
+                        {/* <div className="col-md-4">
                             <label htmlFor="customer_phone" className='form-label'>أرقام الهواتف للعميل</label>
                             <select name="customer_phone" defaultValue={0} className='form-control ' id="customer_phone"
                                 onChange={getInputValue}>
@@ -230,6 +248,14 @@ export default function AddOrder() {
                                 <option value={0} hidden disabled>اختار</option>
                                 {contacts?.addresses ? contacts?.addresses.map((address) => <option key={address.id} value={address.value} > {address.value}</option>) : null}
 
+                            </select>
+                        </div> */}
+                        <div className="col-md-4">
+                            <label htmlFor="sale_point_id" className='form-label'>نقطة البيع </label>
+                            <select name="sale_point_id" defaultValue={0} className='form-control' id="sale_point_id"
+                                onChange={getInputValue}>
+                                     <option value={0} hidden selected disabled>اختار</option>
+                                  {salePoints.map((point)=> <option key={point.id} value={point.id}>{point.name}</option>)} 
                             </select>
                         </div>
                         <div className="col-md-4">

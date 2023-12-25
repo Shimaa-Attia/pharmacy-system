@@ -11,7 +11,7 @@ import AddUser from '../Users/AddUser';
 import DeleteUser from '../Users/DeleteUser';
 import EditeUser from '../Users/EditeUser';
 import UserDetails from '../Users/UserDetails';
-import { useContext, useEffect, useState } from 'react';
+import { useContext} from 'react';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 import AddClient from '../Clients/AddClient';
 import EditeClient from '../Clients/EditeClient';
@@ -28,7 +28,7 @@ import { AuthContext } from '../../Context/AuthStore';
 import DeliveryLayout from '../Layouts/DeliveryLayout';
 import AddOrderDelivery from '../Delivery/AddOrderDelivery'
 import DeliveryOrders from '../Delivery/DeliveryOrders';
-import EditeDeliveryOrder from '../Delivery/EditeDeliveryOrder';
+import SalePoints from '../SalePoints/SalePoints';
 
 
 
@@ -59,12 +59,12 @@ function App() {
             <Route path='orders/edite/:id' element={<ProtectedRoute userData={userData} ><EditeOrder /></ProtectedRoute>} ></Route>
             <Route path='orders/details/:id' element={<ProtectedRoute userData={userData} ><OrderDetails /></ProtectedRoute>} ></Route>
             <Route path='settings' element={<ProtectedRoute userData={userData} ><Settings /></ProtectedRoute>} ></Route>
+            <Route path='salepoints' element={<ProtectedRoute userData={userData} ><SalePoints /></ProtectedRoute>} ></Route>
             <Route path='*' element={<ProtectedRoute userData={userData} ><NotFound /></ProtectedRoute>} ></Route>
           </Route>
           <Route path='deliverylayout' element={<ProtectedRoute><DeliveryLayout/></ProtectedRoute>}>
             <Route path='deliveryOrders/:id' element={<ProtectedRoute><DeliveryOrders/></ProtectedRoute>}></Route>
             <Route path='add/:id' element={<ProtectedRoute><AddOrderDelivery/></ProtectedRoute>}></Route>
-            <Route path='edite/:id' element={<ProtectedRoute><EditeDeliveryOrder/></ProtectedRoute>}></Route>
             <Route path='*' element={<ProtectedRoute userData={userData} ><NotFound /></ProtectedRoute>}></Route>
 
           </Route>

@@ -13,7 +13,6 @@ export default function DeliveryOrders() {
   let [searchText, setSearchText] = useState('');
   function handleSearchChange(event) {
     setSearchText(event.target.value)
-
   };
   let getOrderData = async () => {
     let searchResult;
@@ -23,8 +22,6 @@ export default function DeliveryOrders() {
           "Authorization": `Bearer ${accessToken}`
         }
       });
-      console.log('search');
-      console.log(searchResult);
       setOrders(searchResult.data.data);
     } else {
       searchResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/user/${id}`, {
@@ -32,14 +29,25 @@ export default function DeliveryOrders() {
           "Authorization": `Bearer ${accessToken}`
         }
       });
-      console.log('no search');
-      console.log(searchResult);
-
       setOrders(searchResult.data.data);
 
     }
   };
   useEffect(() => { getOrderData() }, [searchText]);
+
+    //get total money with the delivery from all orders
+   let [unpaidAmount , setUnpaidAmmount] = useState([]);
+    let getUnpiadAmmountForDelivery = async () => {
+      let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/unpaid/${id}` , {
+        headers: {
+          "Authorization": `Bearer ${accessToken}`
+        }
+      });
+      setUnpaidAmmount(data)
+    };
+  useEffect(()=>{
+    getUnpiadAmmountForDelivery()
+  },[]);
   let showOrders = () => {
     if (orders.length > 0) {
       return (
@@ -50,10 +58,11 @@ export default function DeliveryOrders() {
                 <th>رقم</th>
                 <th>كود العميل</th>
                 <th>اسم العميل</th>
-                <th>هاتف العميل</th>
                 <th>قيمة الأوردر</th>
                 <th>إجمالي المبلغ</th>
-                <th>خيارات</th>
+                <th>نقطة البيع</th>
+                <th>المطلوب سداده</th>
+                
               </tr>
             </thead>
             <tbody>
@@ -61,22 +70,13 @@ export default function DeliveryOrders() {
                 <td data-label="#">{++index}</td>
                 <td data-label="كود العميل">{order?.customer?.code}</td>
                 <td data-label="اسم العميل">{order?.customer?.name}</td>
-                <td data-label="هاتف العميل">{order?.customer_phone}</td>
                 <td data-label="قيمة الأوردر">{order?.cost}</td>
                 <td data-label=" إجمالي المبلغ">{order?.total_ammount}</td>
-
-                <td data-label="خيارات">
-                
-                  <NavLink to={`/deliverylayout/edite/${order.id}`} >
-                    <i className='bi bi-pencil-square text-bg-primary  p-1 rounded'></i>
-                  </NavLink>
-               
-                </td>
-
+                <td data-label="نقطة البيع">{order?.sale_point?.name}</td>
+                <td data-label="المطلوب سداده">{order?.unpaid}</td>
               </tr>
               )}
             </tbody>
-
           </table>
         </div>
       )
@@ -88,19 +88,25 @@ export default function DeliveryOrders() {
 
     }
   };
+
   return (
     <>
       <Helmet>
         <meta charSet="utf-8" />
         <title>Delivery Orders</title>
       </Helmet>
+      
       <div className='container'>
         <div className=" my-3 text-center row   ">
-          <div className="col-md-6 ">
+          <div className="col-md-4 ">
             <NavLink to={`/deliverylayout/add/${id}`} className='btn btn-primary mb-1' >إضافة أوردر</NavLink>
           </div>
           <div className="col-md-4">
             <input type="text" className='form-control text-end mt-1 ' placeholder=' ...بحث عن أوردر ' onChange={handleSearchChange} />
+          </div>
+          <div className="col-3 m-auto bg-secondary-subtle mt-1 rounded">
+            <p className=' text-bg-danger rounded p-1 fw-bolder ' >إجمالي المبلغ المطلوب سداده</p>
+            <p className='fw-bolder '>{unpaidAmount?.unpaidAmount}</p>
           </div>
         </div>
       </div>

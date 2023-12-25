@@ -45,6 +45,12 @@ export default function Sidebar({ userData }) {
                                                 <i className="bi bi-people-fill"></i>
                                             </NavLink>
                                         </li>
+                                        <li className="nav-item my-1 ">
+                                            <NavLink to='salepoints' className="nav-link  fw-bolder" >
+                                                <span className='me-3 d-none d-sm-inline'>نقاط البيع</span>
+                                                <i className="bi bi-geo-alt-fill"></i>
+                                            </NavLink>
+                                        </li>
 
                                     </ul>
                                 </div>

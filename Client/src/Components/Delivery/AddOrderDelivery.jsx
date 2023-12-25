@@ -25,8 +25,9 @@ export default function AddOrderDelivery() {
         total_ammount: '',
         cost: '',
         notes: '',
+        sale_point_id: ''
     });
-   
+
     let [clientOptions, setClientOptions] = useState([]);
     let getClientData = async () => {
         let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers`, {
@@ -46,8 +47,8 @@ export default function AddOrderDelivery() {
             label: `${client.code}${client.name}`
         }));
         setClientOptions(mapClient);
-          }, [clients]);
-  
+    }, [clients]);
+
     let getUserData = async () => {
         let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/auth`, {
             headers: {
@@ -64,7 +65,7 @@ export default function AddOrderDelivery() {
         console.log(selectedOption)
         setOrders({
             ...orders,
-            customer_code:selectedOption?.value,
+            customer_code: selectedOption?.value,
         });
     };
 
@@ -93,14 +94,13 @@ export default function AddOrderDelivery() {
         setOrders(myOrders);
 
     };
-  
+
     let sendOrderDataToApi = async () => {
         await axios.post(`${process.env.REACT_APP_API_URL}/api/orders`, orders, {
             headers: {
                 "Authorization": `Bearer ${accessToken}`
             }
         }).then((res) => {
-          
             toast.success(res.data.message, {
                 position: 'top-center'
             });
@@ -115,7 +115,8 @@ export default function AddOrderDelivery() {
 
 
         }).catch((errors) => {
-       
+            console.log(errors);
+            console.log("error");
             setIsLoading(false);
             const errorList = errors?.response?.data?.message;
             if (errorList !== undefined) {
@@ -133,30 +134,31 @@ export default function AddOrderDelivery() {
         const schema = Joi.object({
             // customer_address: Joi.string().required(),
             // customer_phone: Joi.string().required(),
-            customer_code: Joi.number().required(),
-            total_ammount: Joi.number().empty(''),
-            cost: Joi.number().empty(''),
+            customer_code: Joi.string().required(),
+            total_ammount: Joi.number().required(),
+            cost: Joi.number().required(),
             notes: Joi.string().empty(''),
+            sale_point_id: Joi.string().required(),
         });
         return schema.validate(orders, { abortEarly: false });
     };
+    //the key for making render for reset the form بصي على الفانكشن ال بتبعت الداتا للapi عشان نشيل الكي)
     const [key, setKey] = useState(0);
-
     let submitOrderForm = (e) => {
         setIsLoading(true);
         e.preventDefault();
-       
         let validation = validateOrderForm();
         if (!validation.error) {
-
+            console.log('no error');
             sendOrderDataToApi();
             setKey(key + 1);
             setClientOptions(null);
-        
+
         } else {
-           
+
             setIsLoading(false);
             try {
+                console.log('validate error');
                 validation.error.details.map((err) => {
 
                     toast.error(err.message);
@@ -166,7 +168,19 @@ export default function AddOrderDelivery() {
             }
         }
     };
-    
+    let [salePoints, setSalePoints] = useState([]);
+    let getSalePointsData = async () => {
+      let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/points`, {
+        headers: {
+          "Authorization": `Bearer ${accessToken}`
+        }
+      });
+      setSalePoints(data.data);
+  
+    };
+    useEffect(() => {
+      getSalePointsData()
+    }, []);
 
     return (
         <>
@@ -180,7 +194,7 @@ export default function AddOrderDelivery() {
                     <div className="row gy-3">
 
                         <div className="col-md-4">
-                            <label htmlFor="customer_id" className='form-label'>كود العميل أو الاسم</label>
+                            <label htmlFor="customer_code" className='form-label'>كود العميل  </label>
                             <CreatableSelect
                                 name="customer_code"
                                 isClearable
@@ -209,6 +223,15 @@ export default function AddOrderDelivery() {
 
                         {/*    </select>*/}
                         {/*</div>*/}
+
+                        <div className="col-md-4">
+                            <label htmlFor="sale_point_id" className='form-label'>نقطة البيع </label>
+                            <select name="sale_point_id" defaultValue={0} className='form-control' id="sale_point_id"
+                                onChange={getInputValue}>
+                                     <option value={0} hidden selected disabled>اختار</option>
+                                  {salePoints.map((point)=> <option key={point.id} value={point.id}>{point.name}</option>)} 
+                            </select>
+                        </div>
                         <div className="col-md-4">
                             <label htmlFor="cost" className='form-label'>قيمة الأوردر </label>
                             <input type="number" className='form-control' name="cost" id="cost" onChange={getInputValue} />
