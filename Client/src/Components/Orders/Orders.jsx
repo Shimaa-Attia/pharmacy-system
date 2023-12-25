@@ -9,7 +9,7 @@ import Joi from 'joi';
 
 export default function Orders() {
   let { accessToken } = useContext(AuthContext);
-  let formInput = document.getElementById('pointName');
+  let formInput = document.getElementById('paid');
 
   let [orders, setOrders] = useState([]);
 
@@ -41,7 +41,7 @@ export default function Orders() {
  
   };
   useEffect(() => { getOrderData() }, [searchText]);
-
+let [orderId , setOrderId] = useState('');
   let showOrders = () => {
     if (orders.length > 0) {
       return (
@@ -73,7 +73,10 @@ export default function Orders() {
                 <td data-label="الإجمالي">{order.total_ammount}</td>
                 <td data-label="المدفوع">{order.paid}</td>
                 <td data-label="الباقي">{order.unpaid}</td>
-                <td data-label="سداد" ><i className="bi bi-safe p-1 mx-1 rounded text-white" onClick={() => openModal()} style={{ backgroundColor: '#2a55a3' }}></i></td>
+                <td data-label="سداد" ><i className="bi bi-safe p-1 mx-1 rounded text-white" onClick={() =>{ 
+                  openModal() 
+                  setOrderId(order.id)
+                  }} style={{ backgroundColor: '#2a55a3' }}></i></td>
 
                 <td data-label="خيارات">
                   <NavLink to={`/orders/delete/${order.id}`} >
@@ -110,11 +113,6 @@ export default function Orders() {
   function closeModal() {
     paidModal.style.display = 'none';
   };
-
-
-
-
-
   let [paid, setPaid] = useState({
     paid_value: '',
   });
@@ -138,17 +136,7 @@ export default function Orders() {
       console.log('error');
       console.log(errors);
       toast.error(errors?.response?.data?.message);
-      // toast.error(errors.response.data.message)
-      // const errorList = errors?.response?.data?.message;
-      // if (errorList !== undefined) {
-      //   Object.keys(errorList).map((err) => {
-      //     errorList[err].map((err) => {
-      //       toast.error(err);
-      //     })
-      //   });
-      // } else {
-      //   toast.error("حدث خطأ ما");
-      // }
+      
     })
   };
   let validatePaidsForm = () => {
@@ -162,7 +150,7 @@ export default function Orders() {
     e.preventDefault();
     let validation = validatePaidsForm();
     if (!validation.error) {
-      // sendUnpaidAmountToApi(15)
+      sendUnpaidAmountToApi(orderId)
     } else {
       try {
         validation.error.details.map((err) => {

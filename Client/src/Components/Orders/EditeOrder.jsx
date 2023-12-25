@@ -9,7 +9,6 @@ import CreatableSelect from 'react-select/creatable';
 
 
 export default function EditeOrder() {
-
   let { accessToken } = useContext(AuthContext);
 
   let { id } = useParams();
@@ -29,6 +28,7 @@ export default function EditeOrder() {
     sale_point_id:''
   });
 
+  // let[orderData , setOrderData] = useState([])
   // let [orderData, setOrderData] = useState([]);
   let getOrder = async () => {
     let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/show/${id}`, {
@@ -206,29 +206,11 @@ export default function EditeOrder() {
           <div className="row gy-3">
             <div className="col-md-4">
               <label htmlFor="user_id" className='form-label'>كود  الموظف </label>
-              <CreatableSelect
-
-                name="user_id"
-                options={userOptions}
-                value={userOptions?.find((opt) => opt.value === orders.user_id)}
-                onChange={getSelectedUser}
-                isSearchable={true}
-                placeholder="بحث عن طيار..."
-                // selected={orders?.user_id === orderData?.delivery_man?.id} 
-              />
+              <input type="number" name="user_id" id="user_id"  className='form-control' />
             </div>
             <div className="col-md-4">
               <label htmlFor="customer_code" className='form-label'>كود العميل  </label>
-              <CreatableSelect
-                name="customer_code"
-                options={clientOptions}
-                value={clientOptions?.find((opt) => opt.value === orders.customer_code)}
-                onChange={getSelectedClient}
-                isSearchable={true}
-                placeholder="بحث عن عميل..."
-           
-              />
-            
+              <input type="number" name="customer_code" id="customer_code"  className='form-control' />
             </div>
             {/* <div className="col-md-4">
               <label htmlFor="customer_phone" className='form-label'>أرقام الهواتف للعميل</label>

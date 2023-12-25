@@ -77,7 +77,7 @@ export default function SalePoints() {
   useEffect(() => {
     getSalePointsData()
   }, []);
-
+let [pointId , setPointId] = useState('');
   let showSalePoints = () => {
     if (salePoints.length > 0) {
       return (
@@ -90,7 +90,11 @@ export default function SalePoints() {
               <div className='bg-body-secondary p-2 rounded my-1'>{point.today_sales}</div>
               <div className='my-1 ms-3 ' >
                 <button className='btn btn-outline-danger btn-sm mx-2' onClick={() => { deleteSalePoint(point.id) }} ><i className='bi bi-trash'></i> حذف </button>
-                <button className='btn btn-outline-primary btn-sm' onClick={()=>{getInputInfo(index)}}><i className='bi bi-pencil-square'></i> تعديل  </button>
+                <button className='btn btn-outline-primary btn-sm' onClick={()=>{
+                  getInputInfo(index)
+                  console.log(point.id);
+                  setPointId(point.id)
+                  }}><i className='bi bi-pencil-square'></i> تعديل  </button>
               </div>
             </div>
           </div>)}
@@ -157,7 +161,7 @@ export default function SalePoints() {
   let submitEditedPointsForm = (e) => {
     let validation = validateEditedPointForm();
     if (!validation.error) {
-      sendEditedPointsDataToApi(7)
+      sendEditedPointsDataToApi(pointId)
     } else {
       try {
         validation.error.details.map((err) => {

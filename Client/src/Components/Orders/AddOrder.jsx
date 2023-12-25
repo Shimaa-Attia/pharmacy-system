@@ -145,7 +145,6 @@ export default function AddOrder() {
     };
     let validateOrderForm = () => {
         const schema = Joi.object({
-
             user_id: Joi.number().required(),
             // customer_address: Joi.string().required(),
             // customer_phone: Joi.string().required(),
