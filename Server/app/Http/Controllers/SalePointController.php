@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\SalePointRecource;
+use App\Models\Order;
 use App\Models\Sale_point;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -144,5 +145,5 @@ class SalePointController extends Controller
         return SalePointRecource::collection($points);
 
     }
-
+    
 }

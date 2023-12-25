@@ -16,12 +16,12 @@ class UserResouce extends JsonResource
     public function toArray(Request $request): array
     {
 
-          $orders =  $this->orders;
-          $unpaidAmount = 0;
-          foreach ($orders as $order){
+        $orders =  $this->orders;
+        $unpaidAmount = 0;
+        foreach ($orders as $order){
             $unpaid = $order->totalAmmount -$order->paid;
             $unpaidAmount += $unpaid;
-          }
+        }
         return [
             'id'=>$this->id,
             'name'=>$this->name,

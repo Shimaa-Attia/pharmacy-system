@@ -319,7 +319,7 @@ class UserController extends Controller
          ->where(function ($query) use ($request)  {
            $query->whereBetween('created_at',[$request->start_date, $request->end_date]);
 
-        })->orderBy('created_at', 'DESC')->get();
+        })->get();  //->orderBy('created_at', 'DESC')
 
            $numOfOrders = count($orders);
            return response()->json([
@@ -327,5 +327,7 @@ class UserController extends Controller
             "orders"=>OrderResource::collection($orders)
         ]);
     }
+
+
 
 }

@@ -113,6 +113,8 @@ Route::middleware(['auth:api'])->group(function(){
         Route::delete('/deleteArchive/{id}',[SalePointController::class,'deleteArchive']);
          //search points
          Route::get('/search/{key}',[SalePointController::class,'search']);
+         
+
 
     });
 

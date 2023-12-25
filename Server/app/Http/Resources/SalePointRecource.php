@@ -15,17 +15,22 @@ class SalePointRecource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        //   $orders =  Order::where('sale_point_id', $this->id)->get();
-        //   $total = 0;
-        //   foreach ($orders as $order){
-        //     $total += $order->cost;
-        //   }
+        $todayDate = date("Y-m-d");
+          $orders =  Order::where('sale_point_id', $this->id)
+         ->where('created_at', 'like', "$todayDate%")
+          ->get();
+          $total = 0;
+          foreach ($orders as $order){
+            $total += $order->cost;
+          }
+
+
         return [
             'id'=>$this->id,
             'name'=>$this->name,
+            'today_sales'=>$total,
+            'created_at'=>$this->created_at,
             'orders'=>$this->orders,
-            // 'total'=>$total,
-            'created_at'=>$this->created_at
         ];
     }
 }
