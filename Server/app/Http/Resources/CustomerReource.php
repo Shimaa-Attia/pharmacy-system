@@ -20,8 +20,10 @@ class CustomerReource extends JsonResource
             'id'=>$this->id,
             'code'=>$this->code,
             'name'=>$this->name,
-            'contactInfo'=>$this->customFields,
             'notes'=>$this->notes,
+            'created_at'=>$this->created_at->format('Y-m-d H:i'),
+            'contactInfo'=>$this->customFields,
+
         ];
     }
 }

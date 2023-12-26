@@ -48,9 +48,6 @@ Route::middleware(['auth:api'])->group(function(){
         Route::delete('/deleteArchive/{id}',[UserController::class,'deleteArchive']);
         //search user
         Route::get('/search/{key}',[UserController::class,'search']);
-       //get user's unpaidAmount
-        Route::get('/unpaid/{id}',[UserController::class,'unpaidAmount']);
-
     });
 
 

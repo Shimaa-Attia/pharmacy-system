@@ -92,7 +92,7 @@ class UserController extends Controller
 
         return response()->json([
             "message" => "تم اضافة المستخدم",
-            'user' => $user,
+            'user' => new UserResouce($user) ,
         ], 200);
 
     }
@@ -143,7 +143,7 @@ class UserController extends Controller
 
     public function all()
     {
-        $users = User::all();
+        $users = User::all()->sortByDesc("created_at");
         return UserResouce::collection($users);
     }
 
@@ -202,7 +202,7 @@ class UserController extends Controller
         ]);
         //response
         return response()->json([
-            "message" => "تم تعديل بيانات المستخدم بنجاح", "new data " => $user
+            "message" => "تم تعديل بيانات المستخدم بنجاح", "new data " => new UserResouce($user)
         ], 200);
 
 
@@ -226,9 +226,9 @@ class UserController extends Controller
     public function archive()
     {
 
-        $users = User::onlyTrashed()->get();
+        $users = User::onlyTrashed()->orderBy('created_at', 'DESC')->get();
         return response()->json([
-            'users' => $users,
+            'users' =>UserResouce::collection($users),
         ]);
     }
 
@@ -243,7 +243,7 @@ class UserController extends Controller
         $user->restore();
         return response()->json([
             "message" => "تم إستعادة المستخدم",
-            "user" => $user
+            "user" => new UserResouce($user)
         ], 200);
     }
 
@@ -276,30 +276,7 @@ class UserController extends Controller
         ->OrWhere('code','like',"%$key%")
         ->OrWhere('phone','like',"%$key%")
         ->OrWhere('role','like',"%$key%")
-        ->get();
+        ->orderBy('created_at', 'DESC')->get();
     }
-
-    public function unpaidAmount($id){
-        $user = User::find($id);
-        if ($user == null) {
-            return response()->json([
-                "message" => "هذا المستخدم غير موجود"
-            ], 404);
-        }
-        $orders= Order::where('user_id',$id)
-        ->get();
-        $unpaidAmount =0;
-        foreach($orders as $order){
-            $value = $order->totalAmmount - $order->paid;
-            $unpaidAmount +=$value;
-        }
-        return response()->json([
-            'unpaidAmount'=>$unpaidAmount
-        ]);
-    }
-
-   
-
-
 
 }

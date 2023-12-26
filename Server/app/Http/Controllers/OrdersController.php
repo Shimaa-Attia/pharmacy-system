@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\OrderResource;
 use App\Models\Customer;
 use App\Models\Order;
+use App\Models\User;
 use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,7 +17,7 @@ class OrdersController extends Controller
 {
     public function all()
     {
-        $orders = Order::all();
+        $orders = Order::all()->sortByDesc("created_at");
         // return $orders;
         return
             OrderResource::collection($orders);
@@ -125,7 +126,7 @@ class OrdersController extends Controller
             ]);
         }
         //update
-          
+
         $order->update([
             "cost" => $request->cost,
             "totalAmmount" => $request->total_ammount,
@@ -164,7 +165,7 @@ class OrdersController extends Controller
     public function archive()
     {
 
-        $orders = Order::onlyTrashed()->get();
+        $orders = Order::onlyTrashed()->orderBy('created_at', 'DESC')->get();
 
         return response()->json([
             'orders' => OrderResource::collection($orders),
@@ -212,7 +213,7 @@ class OrdersController extends Controller
                 $query->where('name', 'like', "%$key%")
                     ->OrWhere('code', 'like', "%$key%");
             })
-            ->get();
+            ->orderBy('created_at', 'DESC')->get();
         return OrderResource::collection($orders);
 
     }
@@ -229,12 +230,12 @@ class OrdersController extends Controller
                             $query->where('name', 'like', "%$key%")
                                 ->OrWhere('code', 'like', "%$key%");
                         });
-                })->get();
+                })->orderBy('created_at', 'DESC')->get();
             return OrderResource::collection($orders);
 
         } else {
             $orders = Order::where('user_id', $id)
-                ->get();
+            ->orderBy('created_at', 'DESC')->get();
             return OrderResource::collection($orders);
 
         }
@@ -291,12 +292,28 @@ class OrdersController extends Controller
                ], 409);
            }
 
-           $orders = Order::whereBetween('created_at',[$request->start_date, $request->end_date])
-                   ->get();  //->orderBy('created_at', 'DESC')
+        $users = User::where('role','delivery')
+        ->OrWhere('role','doctor')->get();
+        $result =[];
+        foreach ($users  as $user){
+            $orders = Order::where('user_id', $user->id)
+            ->where(function ($query) use ($request)  {
+              $query->whereBetween('created_at',[$request->start_date, $request->end_date]);
+
+           })->orderBy('created_at', 'DESC')->get();
 
               $numOfOrders = count($orders);
-              return response()->json([
-               "numOfOrders" => $numOfOrders,
-           ]);
+
+              $result []=
+              [
+                "user_id"=>$user->id,
+                "user_code"=>$user->code,
+                "user_name"=>$user->name,
+                "numOfOrders"=>$numOfOrders
+              ];
+         }
+
+         return $result;
+
        }
 }

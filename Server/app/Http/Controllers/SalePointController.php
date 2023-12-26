@@ -12,7 +12,7 @@ class SalePointController extends Controller
 {
     public function all()
     {
-        $points = Sale_point::all();
+        $points = Sale_point::all()->sortByDesc("created_at");
         return
             SalePointRecource::collection($points);
     }
@@ -103,7 +103,7 @@ class SalePointController extends Controller
     public function archive()
     {
 
-        $points = Sale_point::onlyTrashed()->get();
+        $points = Sale_point::onlyTrashed()->orderBy('created_at', 'DESC')->get();
 
         return  SalePointRecource::collection($points);
 
@@ -141,9 +141,9 @@ class SalePointController extends Controller
     public function search($key)
     {
         $points = Sale_point::where('name', 'like', "%$key%")
-            ->get();
+        ->orderBy('created_at', 'DESC')->get();
         return SalePointRecource::collection($points);
 
     }
-    
+
 }

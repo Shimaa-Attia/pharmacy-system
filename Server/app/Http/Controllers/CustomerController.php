@@ -15,7 +15,7 @@ class CustomerController extends Controller
 {
     public function all()
     {
-        $customers = Customer::all();
+        $customers = Customer::all()->sortByDesc("created_at");
         return
             CustomerReource::collection($customers);
     }
@@ -173,7 +173,7 @@ class CustomerController extends Controller
     function archive()
     {
 
-        $customers = Customer::onlyTrashed()->get();
+        $customers = Customer::onlyTrashed()->orderBy('created_at', 'DESC')->get();
         return response()->json([
             'customers' =>  CustomerReource::collection($customers),
         ]);
@@ -218,7 +218,7 @@ class CustomerController extends Controller
             ->orWhereHas('customFields', function ($query) use ($key) {
                 $query->where('value', 'like', "%$key%");
             })
-            ->get();
+            ->orderBy('created_at', 'DESC')->get();
         return CustomerReource::collection($customers);
 
     }
