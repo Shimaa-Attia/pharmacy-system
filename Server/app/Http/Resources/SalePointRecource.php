@@ -17,7 +17,6 @@ class SalePointRecource extends JsonResource
     public function toArray(Request $request): array
     {
         $todayDate = date("Y-m-d");
-        // $todayDate = Carbon::now();;
           $orders =  Order::where('sale_point_id', $this->id)
          ->where('created_at', 'like', "$todayDate%")
           ->get();

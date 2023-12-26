@@ -103,6 +103,7 @@ class OrdersController extends Controller
         $validator = Validator::make($request->all(), [
             'cost' => 'numeric|required',
             'total_ammount' => 'numeric|required',
+            'paid' => 'numeric|required',
             'customer_code' => 'required',
             // 'customer_id' => 'required|exists:customers,id',
             // 'customer_phone' => 'required|regex:/(01)[0-9]{9}/|exists:custom_fields,value',
@@ -125,10 +126,11 @@ class OrdersController extends Controller
             ]);
         }
         //update
-
+          
         $order->update([
             "cost" => $request->cost,
             "totalAmmount" => $request->total_ammount,
+            "paid" => $request->paid,
             "notes" => $request->notes,
             "customer_id" => $customer->id,
             // "customer_phone" => $request->customer_phone,
