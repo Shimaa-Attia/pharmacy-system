@@ -7,6 +7,8 @@ import { AuthContext } from '../../Context/AuthStore';
 
 
 export default function DeliveryOrders() {
+  
+
   let { accessToken } = useContext(AuthContext);
   let { id } = useParams();
   let [orders, setOrders] = useState([]);
@@ -30,20 +32,20 @@ export default function DeliveryOrders() {
         }
       });
       setOrders(searchResult.data.data);
-
     }
+    
   };
   useEffect(() => { getOrderData() }, [searchText]);
 
     //get total money with the delivery from all orders
    let [unpaidAmount , setUnpaidAmmount] = useState([]);
     let getUnpiadAmmountForDelivery = async () => {
-      let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/unpaid/${id}` , {
+      let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/show/${id}` , {
         headers: {
           "Authorization": `Bearer ${accessToken}`
         }
       });
-      setUnpaidAmmount(data)
+      setUnpaidAmmount(data.data)
     };
   useEffect(()=>{
     getUnpiadAmmountForDelivery()
@@ -56,6 +58,7 @@ export default function DeliveryOrders() {
             <thead className='table-primary'>
               <tr>
                 <th>رقم</th>
+                <th>تاريخ الإنشاء</th>
                 <th>كود العميل</th>
                 <th>اسم العميل</th>
                 <th>قيمة الأوردر</th>
@@ -67,7 +70,9 @@ export default function DeliveryOrders() {
             </thead>
             <tbody>
               {orders.map((order, index) => <tr key={order.id}>
+          
                 <td data-label="#">{++index}</td>
+                <td data-lable="تاريخ الإنشاء" >{order?.created_at}</td>
                 <td data-label="كود العميل">{order?.customer?.code}</td>
                 <td data-label="اسم العميل">{order?.customer?.name}</td>
                 <td data-label="قيمة الأوردر">{order?.cost}</td>

@@ -44,7 +44,7 @@ export default function AddOrderDelivery() {
     useEffect(() => {
         let mapClient = clients?.map((client) => ({
             value: `${client.code}`,
-            label: `${client.code}${client.name}`
+            label: `${client.code}`
         }));
         setClientOptions(mapClient);
     }, [clients]);
@@ -115,8 +115,7 @@ export default function AddOrderDelivery() {
 
 
         }).catch((errors) => {
-            console.log(errors);
-            console.log("error");
+          
             setIsLoading(false);
             const errorList = errors?.response?.data?.message;
             if (errorList !== undefined) {
@@ -135,8 +134,8 @@ export default function AddOrderDelivery() {
             // customer_address: Joi.string().required(),
             // customer_phone: Joi.string().required(),
             customer_code: Joi.string().required(),
-            total_ammount: Joi.number().required(),
-            cost: Joi.number().required(),
+            total_ammount: Joi.string().required(),
+            cost: Joi.string().required(),
             notes: Joi.string().empty(''),
             sale_point_id: Joi.string().required(),
         });
@@ -149,7 +148,6 @@ export default function AddOrderDelivery() {
         e.preventDefault();
         let validation = validateOrderForm();
         if (!validation.error) {
-            console.log('no error');
             sendOrderDataToApi();
             setKey(key + 1);
             setClientOptions(null);
@@ -206,23 +204,6 @@ export default function AddOrderDelivery() {
                                 key={key}
                             />
                         </div>
-                        {/*<div className="col-md-4 ">*/}
-                        {/*    <label htmlFor="customer_phone" className='form-label'>أرقام الهواتف للعميل</label>*/}
-                        {/*    <select name="customer_phone" defaultValue={0} className='form-control ' id="customer_phone"*/}
-                        {/*        onChange={getInputValue}>*/}
-                        {/*        <option value={0} hidden disabled>اختار</option>*/}
-                        {/*        {contacts?.phones ? contacts?.phones.map((phone) => <option key={phone.id} value={phone.value} > {phone.value}</option>) : null}*/}
-                        {/*    </select>*/}
-                        {/*</div>*/}
-                        {/*<div className="col-md-4">*/}
-                        {/*    <label htmlFor="customer_address" className='form-label'>عناوين العميل</label>*/}
-                        {/*    <select name="customer_address" defaultValue={0} className='form-control ' id="customer_address"*/}
-                        {/*        onChange={getInputValue}>*/}
-                        {/*        <option value={0} hidden disabled>اختار</option>*/}
-                        {/*        {contacts?.addresses ? contacts?.addresses.map((address) => <option key={address.id} value={address.value} > {address.value}</option>) : null}*/}
-
-                        {/*    </select>*/}
-                        {/*</div>*/}
 
                         <div className="col-md-4">
                             <label htmlFor="sale_point_id" className='form-label'>نقطة البيع </label>
@@ -234,11 +215,11 @@ export default function AddOrderDelivery() {
                         </div>
                         <div className="col-md-4">
                             <label htmlFor="cost" className='form-label'>قيمة الأوردر </label>
-                            <input type="number" className='form-control' name="cost" id="cost" onChange={getInputValue} />
+                            <input type="text" className='form-control' name="cost" id="cost" onChange={getInputValue} />
                         </div>
                         <div className="col-md-4">
                             <label htmlFor="totalAmmount" className='form-label'> إجمالي المبلغ مع الطيار </label>
-                            <input type="number" className='form-control' name="total_ammount" id="totalAmmount" onChange={getInputValue} />
+                            <input type="text" className='form-control' name="total_ammount" id="totalAmmount" onChange={getInputValue} />
                         </div>
                         <div className="col-md-12">
                             <label htmlFor="notes" className='form-label'>ملاحظات</label>

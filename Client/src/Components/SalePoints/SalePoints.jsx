@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { toast } from 'react-toastify';
 import { AuthContext } from '../../Context/AuthStore';
 import Joi from 'joi';
+import styles from '../SalePoints/SalePoints.module.css'
 
 export default function SalePoints() {
   //Adding sale point
@@ -70,32 +71,39 @@ export default function SalePoints() {
         "Authorization": `Bearer ${accessToken}`
       }
     });
-    
+
     setSalePoints(data.data);
 
   };
   useEffect(() => {
     getSalePointsData()
   }, []);
-let [pointId , setPointId] = useState('');
+  let [pointId, setPointId] = useState('');
   let showSalePoints = () => {
     if (salePoints.length > 0) {
       return (
-        <div  >
-          {salePoints.map((point ,index) => <div key={point.id}>
-            <div className='d-flex justify-content-between' >
-              <div className=' bg-secondary-subtle d-inline p-2 rounded me-3  my-1'> اسم نقطة البيع : </div>
-              <div className='bg-body-secondary p-2 rounded my-1'>{point.name}</div>
-                   <div className=' bg-secondary-subtle d-inline p-2 rounded me-3  my-1'>  إجمالي المبيعات اليوم : </div>
-              <div className='bg-body-secondary p-2 rounded my-1'>{point.today_sales}</div>
-              <div className='my-1 ms-3 ' >
-                <button className='btn btn-outline-danger btn-sm mx-2' onClick={() => { deleteSalePoint(point.id) }} ><i className='bi bi-trash'></i> حذف </button>
-                <button className='btn btn-outline-primary btn-sm' onClick={()=>{
-                  getInputInfo(index)
-                  console.log(point.id);
-                  setPointId(point.id)
-                  }}><i className='bi bi-pencil-square'></i> تعديل  </button>
+        <div className='w-100 ' >
+          {salePoints.map((point, index) => <div key={point.id}>
+
+
+            <div className={`row ${styles.bgGray}`}>
+              <div className="col-md-4 d-flex">
+                <p className='bg-secondary-subtle p-1 ms-2 rounded' >اسم نقطة البيع</p>
+                <p className='bg-body-secondary p-1 rounded'>{point?.name}</p>
               </div>
+              <div className="col-md-4  d-flex">
+                <p className=' bg-secondary-subtle ms-2  p-1 rounded '> رصيد نقطة البيع </p>
+                <p className='bg-body-secondary p-1 rounded '>{point?.unpaid_balance}</p>
+              </div>
+              <div className="col-md-4 d-flex">
+                <p>
+                  <button className='btn btn-outline-danger btn-sm ms-3' onClick={() => { deleteSalePoint(point.id) }} ><i className='bi bi-trash'></i> حذف </button> </p>
+                <p> <button className='btn btn-outline-primary btn-sm' onClick={() => {
+                  getInputInfo(index)
+                  setPointId(point.id)
+                }}><i className='bi bi-pencil-square'></i> تعديل  </button></p>
+              </div>
+
             </div>
           </div>)}
 
@@ -130,15 +138,20 @@ let [pointId , setPointId] = useState('');
 
   //Edite Sale Point 
   let sendEditedPointsDataToApi = async (pointId) => {
+
     await axios.put(`${process.env.REACT_APP_API_URL}/api/points/${pointId}`, points, {
       headers: {
         "Authorization": `Bearer ${accessToken}`
       }
     }).then((res) => {
+      console.log('res');
+      console.log(res);
       toast.success(res.data.message);
       formInput.value = '';
 
     }).catch((errors) => {
+      console.log('err');
+      console.log(errors);
       const errorList = errors?.response?.data?.message;
       if (errorList !== undefined) {
         Object.keys(errorList).map((err) => {
@@ -177,18 +190,18 @@ let [pointId , setPointId] = useState('');
     e.preventDefault();
     if (mainBtn.innerHTML === 'إضافة') {
       submitPointsForm()
-      
+
     } else {
       submitEditedPointsForm()
-        mainBtn.innerHTML='إضافة'
-        mainBtn.classList.remove('btn-outline-danger');
+      mainBtn.innerHTML = 'إضافة'
+      mainBtn.classList.remove('btn-outline-danger');
     }
   }
-let pointNameInput = document.getElementById('pointName')
-  let getInputInfo=(index)=>{
+  let pointNameInput = document.getElementById('pointName')
+  let getInputInfo = (index) => {
     pointNameInput.value = salePoints[index]?.name;
     pointNameInput.focus();
-    mainBtn.innerHTML='تعديل';
+    mainBtn.innerHTML = 'تعديل';
     mainBtn.classList.add('btn-outline-danger');
   }
 
@@ -196,7 +209,7 @@ let pointNameInput = document.getElementById('pointName')
     <>
       <div className="container-fluid my-2 ">
         <div className='row gx-1 '>
-          <div className="col-md-5">
+          <div className="col-md-4">
             <h4 className='alert alert-primary text-center'>إضافة نقطة بيع</h4>
             <form onSubmit={submitPointOrEditedPoint}>
               <div className='w-75 m-auto'>
@@ -207,7 +220,7 @@ let pointNameInput = document.getElementById('pointName')
             </form>
 
           </div>
-          <div className="col-md-7 card  p-2 mt-5">
+          <div className="col-md-8 card  p-2 mt-5">
             <h4 className='text-center text-bg-secondary py-2 rounded' >نقاط البيع</h4>
             {showSalePoints()}
           </div>
