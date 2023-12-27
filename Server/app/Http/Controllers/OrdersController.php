@@ -203,8 +203,13 @@ class OrdersController extends Controller
     }
 
     public function search($key)
-    {
-        $orders = Order::where('cost', 'like', "%$key%")
+    { // $query->where(DB::raw('emb_quota - emb_units_sold'), '>=', $embroidery);
+        $orders = Order::where('cost', 'like', "$key.%")
+                 ->OrWhere('totalAmmount', 'like', "$key.%")
+                 ->OrWhere('paid', 'like', "$key.%")
+                 ->OrWhere(function ($query) use($key){
+                    $query->where(Order::raw('totalAmmount - paid'), 'like', "$key.%");
+               })
             ->orWhereHas('customer', function ($query) use ($key) {
                 $query->where('name', 'like', "%$key%")
                     ->OrWhere('code', 'like', "%$key%");
@@ -212,6 +217,8 @@ class OrdersController extends Controller
             ->orWhereHas('user', function ($query) use ($key) {
                 $query->where('name', 'like', "%$key%")
                     ->OrWhere('code', 'like', "%$key%");
+            }) ->orWhereHas('sale_point', function ($query) use ($key) {
+                $query->where('name', 'like', "%$key%");
             })
             ->orderBy('created_at', 'DESC')->get();
         return OrderResource::collection($orders);
@@ -225,10 +232,17 @@ class OrdersController extends Controller
             $key = $request->key;
             $orders = Order::where('user_id', $id)
                 ->where(function ($query) use ($key) {
-                    $query->where('cost', 'like', "%$key%")
+                    $query->where('cost', 'like', "$key.%")
+                       ->OrWhere('totalAmmount', 'like', "$key.%")
+                       ->OrWhere('paid', 'like', "$key.%")
+                       ->OrWhere(function ($query) use($key){
+                          $query->where(Order::raw('totalAmmount - paid'), 'like', "$key.%");
+                        })
                         ->orWhereHas('customer', function ($query) use ($key) {
                             $query->where('name', 'like', "%$key%")
                                 ->OrWhere('code', 'like', "%$key%");
+                        }) ->orWhereHas('sale_point', function ($query) use ($key) {
+                            $query->where('name', 'like', "%$key%");
                         });
                 })->orderBy('created_at', 'DESC')->get();
             return OrderResource::collection($orders);
@@ -295,6 +309,7 @@ class OrdersController extends Controller
         $users = User::where('role','delivery')
         ->OrWhere('role','doctor')->get();
         $result =[];
+        $totalNumOfOrders=0;
         foreach ($users  as $user){
             $orders = Order::where('user_id', $user->id)
             ->where(function ($query) use ($request)  {
@@ -303,17 +318,21 @@ class OrdersController extends Controller
            })->orderBy('created_at', 'DESC')->get();
 
               $numOfOrders = count($orders);
-
+              $totalNumOfOrders += $numOfOrders;
               $result []=
               [
                 "user_id"=>$user->id,
                 "user_code"=>$user->code,
                 "user_name"=>$user->name,
+                "user_role"=>$user->role,
                 "numOfOrders"=>$numOfOrders
               ];
          }
 
-         return $result;
+         return response()->json([
+            "totalNumOfOrders" =>$totalNumOfOrders,
+            "users" =>$result
+         ]) ;
 
        }
 }
