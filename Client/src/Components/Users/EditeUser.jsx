@@ -19,13 +19,11 @@ export default function EditeUser() {
   });
   let { id } = useParams();
   let navigate = useNavigate();
-
   let getInputValue = (event) => {
     let myUsers = { ...users }; //deep copy
     myUsers[event.target.name] = event.target.value;
     setUsers(myUsers);
   };
-
   let getUser = async () => {
     try {
       let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/show/${id}`,{
@@ -34,7 +32,6 @@ export default function EditeUser() {
         }
       });
       setUsers(data.data);
-
     } catch (error) {
       toast.error('حدث خطأ ما، حاول مرة أخرى')
     }
@@ -76,8 +73,8 @@ export default function EditeUser() {
       role: Joi.string().required(),
       phone: Joi.string().required().pattern(/^01[0125][0-9]{8}$/).message('رقم الهاتف غير صالح'),
       hourRate: Joi.number().required(),
-      salary: Joi.number().empty(''),
-      notes: Joi.string().empty(''),
+      salary: Joi.number().empty(""),
+      notes: Joi.string().empty(""),
      
 
     });
@@ -152,7 +149,7 @@ export default function EditeUser() {
             <div className="col-md-12">
               <label htmlFor="notes" className='form-label'>ملاحظات</label>
               <textarea type='text' name="notes" id="notes" className='form-control'
-                onChange={getInputValue}  value={users.notes ??''} />
+                onChange={getInputValue}  value={users.notes ??""} />
             </div>
             <div className="col-md-3">
               <button type='submit' className='btn btn-primary form-control fs-5'>

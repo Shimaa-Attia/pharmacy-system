@@ -6,6 +6,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../Context/AuthStore';
 import { toast } from 'react-toastify';
 import Joi from 'joi';
+import Select from 'react-select';
 
 export default function Orders() {
   let { accessToken } = useContext(AuthContext);
@@ -13,11 +14,49 @@ export default function Orders() {
 
   let [orders, setOrders] = useState([]);
 
+  let [salePoints, setSalePoints] = useState([]);
+  let getSalePointsData = async () => {
+    let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/points`, {
+      headers: {
+        "Authorization": `Bearer ${accessToken}`
+      }
+    });
+    setSalePoints(data.data);
+  };
+  useEffect(() => {
+    getSalePointsData()
+  }, []);
+  let [users, setUsers] = useState([]);
+  let [userOptions, setUserOptions] = useState([]);
+  let getUsersData = async () => {
+    let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users`, {
+      headers: {
+        "Authorization": `Bearer ${accessToken}`
+      }
+    });
+    setUsers(data.data);
+    console.log(data.data);
+  };
+  useEffect(() => {
+    getUsersData()
+  }, []);
+  useEffect(() => {
+    let mapUser = users?.map((user) => ({
+      // value: `${user.id}`,
+      label: `${user.code}`
+    }));
+    setUserOptions(mapUser);
+  }, [users]);
+
   let [searchText, setSearchText] = useState('');
   function handleSearchChange(event) {
     setSearchText(event.target.value)
 
   };
+  let [filterPointId, setFilterPointId] = useState(0);
+  function handlePointChange(event) {
+    setFilterPointId(Number(event.target.value));
+  }
 
   let getOrderData = async () => {
     let searchResult;
@@ -34,14 +73,15 @@ export default function Orders() {
           "Authorization": `Bearer ${accessToken}`
         }
       });
-     
+
       setOrders(searchResult.data.data);
+      // console.log(searchResult.data.data);
 
     }
- 
+
   };
   useEffect(() => { getOrderData() }, [searchText]);
-let [orderId , setOrderId] = useState('');
+  let [orderId, setOrderId] = useState('');
   let showOrders = () => {
     if (orders.length > 0) {
       return (
@@ -50,10 +90,11 @@ let [orderId , setOrderId] = useState('');
             <thead className='table-primary'>
               <tr>
                 <th>رقم</th>
-                <th>كود الموظف</th>
-                <th>هاتف الموظف</th>
+                <th> تاريخ الإنشاء</th>
+                <th> نقطة اليبع</th>
+                <th>اسم الموظف</th>
                 <th>كود العميل</th>
-                {/* <th>هاتف العميل</th> */}
+
                 <th>قيمة الأوردر</th>
                 <th>الإجمالي</th>
                 <th>المدفوع</th>
@@ -65,18 +106,19 @@ let [orderId , setOrderId] = useState('');
             <tbody>
               {orders.map((order, index) => <tr key={order.id}>
                 <td data-label="#">{++index}</td>
-                <td data-label="كود الطيار">{order?.delivery_man?.code}</td>
-                <td data-label="هاتف الطيار">{order?.delivery_man?.phone}</td>
+                <td data-label="تاريخ الإنشاء"  >{order.created_at}</td>
+                <td data-label="نقطة البيع">{order?.sale_point?.name}</td>
+                <td data-label="اسم الموظف">{order?.delivery_man?.name}</td>
                 <td data-label="اسم العميل">{order?.customer?.code}</td>
                 {/* <td data-label="هاتف العميل">{order?.customer_phone}</td> */}
                 <td data-label="قيمة الأوردر">{order.cost}</td>
                 <td data-label="الإجمالي">{order.total_ammount}</td>
                 <td data-label="المدفوع">{order.paid}</td>
                 <td data-label="الباقي">{order.unpaid}</td>
-                <td data-label="سداد" ><i className="bi bi-safe p-1 mx-1 rounded text-white" onClick={() =>{ 
-                  openModal() 
+                <td data-label="سداد" ><i className="bi bi-safe p-1 mx-1 rounded text-white" onClick={() => {
+                  openModal()
                   setOrderId(order.id)
-                  }} style={{ backgroundColor: '#2a55a3' }}></i></td>
+                }} style={{ backgroundColor: '#2a55a3' }}></i></td>
 
                 <td data-label="خيارات">
                   <NavLink to={`/orders/delete/${order.id}`} >
@@ -128,20 +170,16 @@ let [orderId , setOrderId] = useState('');
         "Authorization": `Bearer ${accessToken}`
       }
     }).then((res) => {
-      console.log('res');
-      console.log(res);
       toast.success(res.data.message);
       formInput.value = '';
     }).catch((errors) => {
-      console.log('error');
-      console.log(errors);
       toast.error(errors?.response?.data?.message);
-      
+
     })
   };
   let validatePaidsForm = () => {
     const schema = Joi.object({
-      paid_value: Joi.number().required(),
+      paid_value: Joi.string().required(),
     });
     return schema.validate(paid, { abortEarly: false });
   };
@@ -171,11 +209,34 @@ let [orderId , setOrderId] = useState('');
         <meta charSet="utf-8" />
         <title>Orders</title>
       </Helmet>
-      <div className=" my-3 text-center row mx-2  ">
-        <div className="col-md-6">
+      <div className=" my-3 text-center row mx-2  " dir='rtl'>
+        <div className="col-md-3 mb-1">
+            <Select
+              options={userOptions}
+              isSearchable={true}
+              placeholder="بحث عن موظف..."
+            />
+        </div>
+        <div className="col-md-3 mb-1">
+          <select name="role" defaultValue={0} className='form-control' id="role"
+            onChange={getInputValue}>
+            <option value={0} hidden disabled>اختر مسدد أو غير مسدد </option>
+            <option >مسدد</option>
+            <option >غير مسدد</option>
+          </select>
+        </div>
+        <div className="col-md-3 mb-1">
+          <select name="sale_point_id" defaultValue={0} className='form-control' id="sale_point_id"
+          onChange={handlePointChange}
+          >
+            <option value={0} hidden disabled>اختر نقطة بيع</option>
+            {salePoints.map((point) => <option key={point.id} value={point.id} >{point.name}</option>)}
+          </select>
+        </div>
+        <div className="col-md-3">
           <NavLink to='/orders/add' className='btn btn-primary mb-1' >إضافة أوردر</NavLink>
         </div>
-        <div className="col-md-4">
+        <div className="col-md-9 m-auto " >
           <input type="text" className='form-control text-end mt-1 ' placeholder=' ...بحث عن أوردر ' onChange={handleSearchChange} />
         </div>
       </div>

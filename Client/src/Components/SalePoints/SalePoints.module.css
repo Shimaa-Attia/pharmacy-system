@@ -1,0 +1,10 @@
+@media screen and (max-width: 600px) {
+    .bgGray {
+        background-color: rgb(179, 183, 186);
+        width: 80%;
+        margin: auto;
+        padding-top: 10px;
+        margin-bottom: 15px;
+        border-radius: 5px;
+    }
+}

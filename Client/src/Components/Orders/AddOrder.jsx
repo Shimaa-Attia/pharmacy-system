@@ -148,10 +148,10 @@ export default function AddOrder() {
             user_id: Joi.number().required(),
             // customer_address: Joi.string().required(),
             // customer_phone: Joi.string().required(),
-            customer_code: Joi.number().required(),
-            total_ammount: Joi.number().required(),
-            cost: Joi.number().required(),
-            sale_point_id: Joi.string().required(),
+            customer_code: Joi.string().required(),
+            total_ammount: Joi.string().required(),
+            cost: Joi.string().required(),
+            sale_point_id: Joi.number().required(),
             notes: Joi.string().empty(''),
         });
         return schema.validate(orders, { abortEarly: false });
@@ -205,7 +205,7 @@ export default function AddOrder() {
                 <form onSubmit={submitOrderForm} >
                     <div className="row gy-3">
                         <div className="col-md-4">
-                            <label htmlFor="user_id" className='form-label'>كود الموظف   </label>
+                            <label htmlFor="user_id" className='form-label' >كود الموظف   </label>
                             <CreatableSelect
                                 name="user_id"
                                 isClearable
@@ -259,11 +259,11 @@ export default function AddOrder() {
                         </div>
                         <div className="col-md-4">
                             <label htmlFor="cost" className='form-label'>قيمة الأوردر </label>
-                            <input type="number" className='form-control' name="cost" id="cost" onChange={getInputValue} />
+                            <input type="text" className='form-control' name="cost" id="cost" onChange={getInputValue} />
                         </div>
                         <div className="col-md-4">
                             <label htmlFor="totalAmmount" className='form-label'> إجمالي المبلغ مع الطيار </label>
-                            <input type="number" className='form-control' name="total_ammount" id="totalAmmount" onChange={getInputValue} />
+                            <input type="text" className='form-control' name="total_ammount" id="totalAmmount" onChange={getInputValue} />
                         </div>
                         <div className="col-md-12">
                             <label htmlFor="notes" className='form-label'>ملاحظات</label>
