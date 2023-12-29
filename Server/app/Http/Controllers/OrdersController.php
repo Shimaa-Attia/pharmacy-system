@@ -306,8 +306,7 @@ class OrdersController extends Controller
                ], 409);
            }
 
-        $users = User::where('role','delivery')
-        ->OrWhere('role','doctor')->get();
+        $users = User::all();
         $result =[];
         $totalNumOfOrders=0;
         foreach ($users  as $user){
@@ -319,6 +318,7 @@ class OrdersController extends Controller
 
               $numOfOrders = count($orders);
               $totalNumOfOrders += $numOfOrders;
+              if($numOfOrders >0){
               $result []=
               [
                 "user_id"=>$user->id,
@@ -327,6 +327,7 @@ class OrdersController extends Controller
                 "user_role"=>$user->role,
                 "numOfOrders"=>$numOfOrders
               ];
+            }
          }
 
          return response()->json([
