@@ -13,12 +13,12 @@ export default function Home() {
     start_date: '',
     end_date: ''
   })
-  let [ordersNumbers , setOrdersNumbers] = useState('')
+  let [ordersNumbers, setOrdersNumbers] = useState('');
+  let [users, setUsers] = useState([]);
   let getInputValue = (event) => {
     let myDate = { ...anyDate };
     myDate[event?.target?.name] = event?.target?.value;
     setAnyDate(myDate);
-   
   }
   let sendDateToApi = async () => {
     await axios.post(`${process.env.REACT_APP_API_URL}/api/orders/specificOrders`, anyDate, {
@@ -26,11 +26,13 @@ export default function Home() {
         "Authorization": `Bearer ${accessToken}`
       }
     }).then((res) => {
-      setOrdersNumbers(res.data.numOfOrders);
-     
+      setOrdersNumbers(res?.data?.totalNumOfOrders);
+      setUsers(res?.data?.users);
+
+
     }).catch((errors) => {
       toast.error(errors.response?.data?.message);
-    
+
     })
   }
   let validateDateForm = () => {
@@ -56,7 +58,7 @@ export default function Home() {
     }
   };
 
- 
+
 
   return (
     <>
@@ -64,7 +66,7 @@ export default function Home() {
         <meta charSet="utf-8" />
         <title>Home</title>
       </Helmet>
-      <div className='container  w-75  my-4' >
+      <div className='container my-4' >
         <div className='alert text-center fs-4 text-white ' style={{ backgroundColor: 'rgb(100, 100, 128)' }} > أعداد الأوردرات</div>
         <form onSubmit={submitDateForm}>
           <div className=' row' dir='rtl' >
@@ -81,15 +83,28 @@ export default function Home() {
             </div>
           </div>
         </form>
-        {ordersNumbers ?  <div className="row" dir='rtl' >
-          <div className="col-md-3 card text-center py-3 ">
-            <div className='fs-1' >{ordersNumbers}</div>
-            <span className=" lead ">أوردر</span>
+        <div>
+          {ordersNumbers ?
+            <div className="col-md-3 card text-center   m-auto py-4">
+              <div className='fs-1' >{ordersNumbers}</div>
+              <span className=" lead ">عدد الأوردرات</span>
+            </div>
+            : ''}
+        </div>
+        <div className="row " dir='rtl' >
+          {users.map((user) => <div key={user.user_id} className='col-md-3 m-auto my-2  text-center '>
+            <div className=' card p-1'>
+              <div className='bg-secondary-subtle rounded' >{user?.user_name}</div>
+                <div className='bg-secondary-subtle rounded my-1 ' >{user?.user_code}</div>
+                <div className='bg-secondary-subtle rounded' >{user?.user_role}</div>
+                <div className='fs-2' >{user?.numOfOrders}</div>
+                <div className=" lead">عدد الأوردرات</div>
+              </div>
+
+
+              </div>)}
+            </div>
           </div>
-         
-        </div> :''}
-       
-      </div>
 
 
 

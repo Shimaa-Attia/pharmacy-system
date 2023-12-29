@@ -27,6 +27,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 //login
 Route::post('/login',[UserController::class,'login']);
 
+
 Route::middleware(['auth:api'])->group(function(){
     //checke auth
     Route::get("/users/auth", [UserController::class,'checkAuth']);
