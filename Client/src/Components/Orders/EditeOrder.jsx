@@ -1,6 +1,6 @@
 import axios from 'axios';
 import Joi from 'joi';
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Helmet } from 'react-helmet';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -13,6 +13,8 @@ export default function EditeOrder() {
   let { id } = useParams();
   let navigate = useNavigate();
   let [isLoading, setIsLoading] = useState(false);
+  let[orderData , setOrderData] = useState([])
+
   let [users, setUsers] = useState([]);
   let [clients, setClients] = useState([]);
   let [orders, setOrders] = useState({
@@ -22,7 +24,8 @@ export default function EditeOrder() {
     cost: '',
     notes: '',
     sale_point_id: '',
-    paid:''
+    paid:'',
+ 
   });
   let getInputValue = (event) => {
     let myOrders = { ...orders }; 
@@ -30,23 +33,24 @@ export default function EditeOrder() {
     setOrders(myOrders);
   };
 
-  let[orderData , setOrderData] = useState([])
+
   let getOrder = async () => {
     let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/show/${id}`, {
       headers: {
         "Authorization": `Bearer ${accessToken}`
       }
     });
-    setOrderData(data.data)
-    
-    console.log(data.data.cost);
-   
+ 
+    setOrderData(data.data) 
+    setOrders({
+      ...orders,
+      user_id:data?.data?.delivery_man?.id
+    }) 
   };
   useEffect(() => {
     getOrder()
   }, []);
 
-  let [inputValue, setInputValue] = useState(orderData.cost)
 
   let getUserData = async () => {
     let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users`, {
@@ -110,6 +114,7 @@ export default function EditeOrder() {
       sale_point_id: Joi.number().required(),
       paid:Joi.string().empty(''),
       notes: Joi.string().empty(""),
+     
     });
     return schema.validate(orders, { abortEarly: false });
   };
@@ -147,6 +152,16 @@ export default function EditeOrder() {
     getSalePointsData()
   }, []);
 
+
+
+
+
+
+
+
+
+
+
   return (
     <>
       <Helmet>
@@ -158,33 +173,33 @@ export default function EditeOrder() {
         <form onSubmit={editedOrederSubmit} >
           <div className="row gy-3">
             <div className="col-md-4">
-              <label htmlFor="user_id" className='form-label'>كود  الموظف </label>
-              <input type="text" name="user_id" id="user_id" className='form-control'
-                onChange={getInputValue}
-                
-              
+              <label htmlFor="user_code" className='form-label'>كود  الموظف </label>
+              <input type="text" name="user_code" id="user_code" className='form-control'
+                defaultValue={orderData?.delivery_man?.code}
                  />
             </div>
             <div className="col-md-4">
               <label htmlFor="customer_code" className='form-label'>كود العميل  </label>
               <input type="text" name="customer_code" id="customer_code" className='form-control'
                 onChange={getInputValue}
-                
-                 />
+               defaultValue={orderData?.customer?.code}
+             
+                  />
             </div>
             <div className="col-md-4">
               <label htmlFor="sale_point_id" className='form-label'>نقطة البيع </label>
               <select name="sale_point_id" defaultValue={0} className='form-control' id="sale_point_id"
-                onChange={getInputValue}>
+                onChange={getInputValue}>   
                   <option value={0} hidden disabled>اختار</option>
-                {salePoints.map((point) => <option key={point.id}  value={point.id}>{point.name}</option>)}
+                {salePoints.map((point) => <option key={point.id} value={point?.id} selected={orderData?.sale_point?.id}  >{point.name}</option>)}
               </select>
             </div>
             <div className="col-md-4">
               <label htmlFor="cost" className='form-label'>قيمة الأوردر </label>
               <input type="text" className='form-control' name="cost" id="cost"
-                onChange={getInputValue}
+                onFocus={getInputValue}
                 defaultValue={orderData?.cost}
+              
               />
             </div>
             <div className="col-md-4">
@@ -199,13 +214,15 @@ export default function EditeOrder() {
               <input type="text" className='form-control' name="paid" id="paid"
                 onChange={getInputValue}
                 defaultValue={orderData?.paid}
+             
                 />
             </div>
             <div className="col-md-12">
               <label htmlFor="notes" className='form-label'>ملاحظات</label>
               <textarea type='text' name="notes" id="notes" className='form-control'
                 onChange={getInputValue}
-                defaultValue={orderData?.notes}
+                defaultValue={orderData.notes !== null ? orderData.notes :"" }
+               
                  />
             </div>
             <div className="col-md-3">

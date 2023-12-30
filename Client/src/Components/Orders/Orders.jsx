@@ -35,53 +35,145 @@ export default function Orders() {
       }
     });
     setUsers(data.data);
-    console.log(data.data);
   };
   useEffect(() => {
     getUsersData()
   }, []);
   useEffect(() => {
     let mapUser = users?.map((user) => ({
-      // value: `${user.id}`,
+      value: `${user.id}`,
       label: `${user.code}`
     }));
     setUserOptions(mapUser);
+
   }, [users]);
 
   let [searchText, setSearchText] = useState('');
   function handleSearchChange(event) {
-    setSearchText(event.target.value)
+    setSearchText(event?.target?.value)
 
   };
-  let [filterPointId, setFilterPointId] = useState(0);
+  let [filterPointId, setFilterPointId] = useState('');
   function handlePointChange(event) {
-    setFilterPointId(Number(event.target.value));
+    setFilterPointId(event?.target?.value);
+
+  }
+  let [filterUsertId, setFilterUserId] = useState('');
+  function handleUserChange(selectedOption) {
+    console.log(selectedOption.value);
+    setFilterUserId(selectedOption.value)
+  }
+  let [filterIsPaid, setFilterIsPaid] = useState('');
+  function handleIsPaidChange(event) {
+    setFilterIsPaid(event?.target?.value);
+    console.log(event.target.value);
   }
 
   let getOrderData = async () => {
-    let searchResult;
-    if (searchText !== undefined && searchText.trim().length > 0) {
-      searchResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/search/${searchText.trim()}`, {
+    let orderResult;
+    if (filterPointId !== undefined && filterPointId.length > 0
+      && (filterUsertId === undefined || filterUsertId === '')
+      && (filterIsPaid === undefined || filterIsPaid === '')) {
+      console.log('filter point only ');
+      orderResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/filter?point_id=${filterPointId}`, {
         headers: {
           "Authorization": `Bearer ${accessToken}`
         }
       });
-      setOrders(searchResult.data.data);
-    } else {
-      searchResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders`, {
+      setOrders(orderResult.data.data);
+    } else if (searchText !== undefined && searchText.trim().length > 0) {
+      console.log('search only');
+      orderResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/search/${searchText.trim()}`, {
+        headers: {
+          "Authorization": `Bearer ${accessToken}`
+        }
+      });
+      setOrders(orderResult.data.data);
+
+    } else if (filterUsertId !== undefined && filterUsertId.length > 0
+      && (filterPointId === undefined || filterPointId === '')
+      && (filterIsPaid === undefined || filterIsPaid === '')) {
+      console.log('filter user only ');
+      orderResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/filter?user_id=${filterUsertId}`, {
+        headers: {
+          "Authorization": `Bearer ${accessToken}`
+        }
+      });
+      setOrders(orderResult.data.data)
+
+    } else if (filterIsPaid !== undefined && filterIsPaid.length > 0
+      && (filterUsertId === undefined || filterUsertId === '')
+      && (filterPointId === undefined || filterPointId === '')
+      ) {
+      console.log('filter is paid only ');
+      orderResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/filter?is_paid=${filterIsPaid}`, {
         headers: {
           "Authorization": `Bearer ${accessToken}`
         }
       });
 
-      setOrders(searchResult.data.data);
-      // console.log(searchResult.data.data);
+      setOrders(orderResult.data.data)
 
+    } else if (filterPointId !== undefined && filterPointId.length > 0
+      && (filterUsertId !== undefined && filterUsertId.length >0)
+      && (filterIsPaid === undefined || filterIsPaid === '')) {
+      console.log('filter point and users');
+      orderResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/filter?point_id=${filterPointId}&user_id=${filterUsertId}`, {
+        headers: {
+          "Authorization": `Bearer ${accessToken}`
+        }
+      });
+      setOrders(orderResult.data.data);
+
+     }  else if (filterPointId !== undefined && filterPointId.length > 0
+      && (filterIsPaid !== undefined && filterIsPaid.length > 0)
+      && (filterUsertId === undefined || filterUsertId === '')) {
+      console.log('filter point and paids');
+      orderResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/filter?point_id=${filterPointId}&is_paid=${filterIsPaid}`, {
+        headers: {
+          "Authorization": `Bearer ${accessToken}`
+        }
+      });
+      setOrders(orderResult.data.data);
+
+     }
+     else if (filterIsPaid !== undefined && filterIsPaid.length > 0
+      && (filterUsertId !== undefined && filterUsertId.length > 0)
+      && (filterPointId === undefined || filterPointId === '')) {
+      console.log('filter users and paids');
+      orderResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/filter?user_id=${filterUsertId}&is_paid=${filterIsPaid}`, {
+        headers: {
+          "Authorization": `Bearer ${accessToken}`
+        }
+      });
+      setOrders(orderResult.data.data);
+
+     }
+     else if (filterIsPaid !== undefined && filterIsPaid.length > 0
+      && (filterUsertId !== undefined && filterUsertId.length > 0)
+      && (filterPointId !== undefined && filterPointId.length > 0)) {
+      console.log('filter all');
+      orderResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/filter?user_id=${filterUsertId}&is_paid=${filterIsPaid}&point_id=${filterPointId}`, {
+        headers: {
+          "Authorization": `Bearer ${accessToken}`
+        }
+      });
+      setOrders(orderResult.data.data);
+
+     }
+     else {
+      orderResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders`, {
+        headers: {
+          "Authorization": `Bearer ${accessToken}`
+        }
+      });
     }
-
+    setOrders(orderResult.data.data);
   };
-  useEffect(() => { getOrderData() }, [searchText]);
+  useEffect(() => { getOrderData() }, [searchText, filterPointId, filterUsertId,filterIsPaid]);
+
   let [orderId, setOrderId] = useState('');
+
   let showOrders = () => {
     if (orders.length > 0) {
       return (
@@ -211,24 +303,25 @@ export default function Orders() {
       </Helmet>
       <div className=" my-3 text-center row mx-2  " dir='rtl'>
         <div className="col-md-3 mb-1">
-            <Select
-              options={userOptions}
-              isSearchable={true}
-              placeholder="بحث عن موظف..."
-            />
+
+          <Select
+            options={userOptions}
+            onChange={handleUserChange}
+            isSearchable={true}
+            placeholder="اختر موظف"
+          />
         </div>
         <div className="col-md-3 mb-1">
-          <select name="role" defaultValue={0} className='form-control' id="role"
-            onChange={getInputValue}>
+          <select name="is_paid" defaultValue={0} className='form-control' id="role"
+            onChange={handleIsPaidChange}>
             <option value={0} hidden disabled>اختر مسدد أو غير مسدد </option>
-            <option >مسدد</option>
-            <option >غير مسدد</option>
+            <option value={"paid"} >مسدد</option>
+            <option value={"unpaid"} >غير مسدد</option>
           </select>
         </div>
         <div className="col-md-3 mb-1">
-          <select name="sale_point_id" defaultValue={0} className='form-control' id="sale_point_id"
-          onChange={handlePointChange}
-          >
+          <select name="point_id" defaultValue={0} className='form-control' id="point_id"
+            onChange={handlePointChange}>
             <option value={0} hidden disabled>اختر نقطة بيع</option>
             {salePoints.map((point) => <option key={point.id} value={point.id} >{point.name}</option>)}
           </select>
@@ -237,7 +330,7 @@ export default function Orders() {
           <NavLink to='/orders/add' className='btn btn-primary mb-1' >إضافة أوردر</NavLink>
         </div>
         <div className="col-md-9 m-auto " >
-          <input type="text" className='form-control text-end mt-1 ' placeholder=' ...بحث عن أوردر ' onChange={handleSearchChange} />
+          <input type="text" className='form-control text-end mt-1 ' placeholder='بحث عن أوردر...' onChange={handleSearchChange} />
         </div>
       </div>
       <div id="paidModal" className={`${styles.modal} `}>

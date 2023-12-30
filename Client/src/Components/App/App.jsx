@@ -29,6 +29,9 @@ import DeliveryLayout from '../Layouts/DeliveryLayout';
 import AddOrderDelivery from '../Delivery/AddOrderDelivery'
 import DeliveryOrders from '../Delivery/DeliveryOrders';
 import SalePoints from '../SalePoints/SalePoints';
+import DoctorLayout from '../Layouts/DoctorLayout';
+import DoctorOrders from '../Doctor/DoctorOrders';
+import AddOrderDoctor from '../Doctor/AddOrderDoctor';
 
 
 
@@ -62,11 +65,15 @@ function App() {
             <Route path='salepoints' element={<ProtectedRoute userData={userData} ><SalePoints /></ProtectedRoute>} ></Route>
             <Route path='*' element={<ProtectedRoute userData={userData} ><NotFound /></ProtectedRoute>} ></Route>
           </Route>
-          <Route path='deliverylayout' element={<ProtectedRoute><DeliveryLayout/></ProtectedRoute>}>
-            <Route path='deliveryOrders/:id' element={<ProtectedRoute><DeliveryOrders/></ProtectedRoute>}></Route>
-            <Route path='add/:id' element={<ProtectedRoute><AddOrderDelivery/></ProtectedRoute>}></Route>
+          <Route path='deliverylayout' element={<ProtectedRoute userData={userData}><DeliveryLayout/></ProtectedRoute>}>
+            <Route path='deliveryOrders/:id' element={<ProtectedRoute userData={userData}><DeliveryOrders/></ProtectedRoute>}></Route>
+            <Route path='add/:id' element={<ProtectedRoute userData={userData}><AddOrderDelivery/></ProtectedRoute>}></Route>
             <Route path='*' element={<ProtectedRoute userData={userData} ><NotFound /></ProtectedRoute>}></Route>
-
+          </Route>
+          <Route path='doctorlayout' element={<ProtectedRoute userData={userData}><DoctorLayout/></ProtectedRoute>}>
+            <Route path='doctorOrders/:id' element={<ProtectedRoute userData={userData}><DoctorOrders/></ProtectedRoute>}></Route>
+            <Route path='add/:id' element={<ProtectedRoute userData={userData}><AddOrderDoctor/></ProtectedRoute>}></Route>
+            <Route path='*' element={<ProtectedRoute userData={userData} ><NotFound /></ProtectedRoute>}></Route>
           </Route>
         </Routes>
       </BrowserRouter>

@@ -52,7 +52,7 @@ export default function Login({ saveUserData }) {
                     navigate(`/deliverylayout/deliveryOrders/${data.user.id}`);
                     break;
                 case 'doctor':
-                    navigate("/doctor");
+                    navigate(`/doctorlayout/doctorOrders/${data.user.id}`);
                     break;
 
                 default:

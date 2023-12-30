@@ -16,6 +16,8 @@ export default function EditeUser() {
     code: '',
     hourRate: '',
     notes: '',
+    unpaidAmount:'',
+    created_at:'',
   });
   let { id } = useParams();
   let navigate = useNavigate();
@@ -31,6 +33,7 @@ export default function EditeUser() {
           "Authorization": `Bearer ${accessToken}`
         }
       });
+      console.log(data.data);
       setUsers(data.data);
     } catch (error) {
       toast.error('حدث خطأ ما، حاول مرة أخرى')
@@ -74,9 +77,9 @@ export default function EditeUser() {
       phone: Joi.string().required().pattern(/^01[0125][0-9]{8}$/).message('رقم الهاتف غير صالح'),
       hourRate: Joi.number().required(),
       salary: Joi.number().empty(""),
-      notes: Joi.string().empty(""),
-     
-
+      notes: Joi.any().empty(""),
+      unpaidAmount:Joi.any().empty(""),
+      created_at:Joi.any().empty("")
     });
     return schema.validate(users, { abortEarly: false });
 
@@ -139,17 +142,17 @@ export default function EditeUser() {
             <div className="col-md-4">
               <label htmlFor="hourRate" className='form-label'>سعر الساعة </label>
               <input type="number" className='form-control' name="hourRate" id="hourRate"
-                onChange={getInputValue} value={users?.hourRate} />
+                onChange={getInputValue} value={users.hourRate !== null ? users.hourRate :'' } />
             </div>
             <div className="col-md-4">
               <label htmlFor="salary" className='form-label'>الراتب</label>
               <input type="number" className='form-control' name="salary" id="salary"
-                onChange={getInputValue} value={users?.salary} />
+                onChange={getInputValue} value={users.salary !== null ? users.salary :'' } />
             </div>
             <div className="col-md-12">
               <label htmlFor="notes" className='form-label'>ملاحظات</label>
               <textarea type='text' name="notes" id="notes" className='form-control'
-                onChange={getInputValue}  value={users.notes ??""} />
+                onChange={getInputValue}  value={users.notes !== null ? users.notes :""} />
             </div>
             <div className="col-md-3">
               <button type='submit' className='btn btn-primary form-control fs-5'>

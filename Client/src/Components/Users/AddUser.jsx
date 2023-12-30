@@ -49,7 +49,6 @@ export default function AddUser() {
             document.getElementById("role").selectedIndex = "0";
 
         }).catch((errors) => {
-console.log(errors);
             setIsLoading(false);
             const errorList = errors?.response?.data?.error;
             if (errorList !== undefined) {
