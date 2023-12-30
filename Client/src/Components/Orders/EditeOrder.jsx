@@ -184,28 +184,28 @@ export default function EditeOrder() {
               <label htmlFor="cost" className='form-label'>قيمة الأوردر </label>
               <input type="text" className='form-control' name="cost" id="cost"
                 onChange={getInputValue}
-               value={inputValue}
+                defaultValue={orderData?.cost}
               />
             </div>
             <div className="col-md-4">
               <label htmlFor="total_ammount" className='form-label'> إجمالي المبلغ مع الطيار </label>
               <input type="text" className='form-control' name="total_ammount" id="total_ammount"
                 onChange={getInputValue}
-                
+                defaultValue={orderData?.total_ammount}
                 />
             </div>
             <div className="col-md-4">
               <label htmlFor="paid" className='form-label'>القيمة المسددة </label>
               <input type="text" className='form-control' name="paid" id="paid"
                 onChange={getInputValue}
-           
+                defaultValue={orderData?.paid}
                 />
             </div>
             <div className="col-md-12">
               <label htmlFor="notes" className='form-label'>ملاحظات</label>
               <textarea type='text' name="notes" id="notes" className='form-control'
                 onChange={getInputValue}
-            
+                defaultValue={orderData?.notes}
                  />
             </div>
             <div className="col-md-3">
