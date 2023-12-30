@@ -44,7 +44,7 @@ class OrdersController extends Controller
 
         $validator = Validator::make($request->all(), [
             'cost' => 'numeric|required',
-            'total_ammount' => 'numeric|required',
+            'total_ammount' => 'numeric|required|gte:cost',
             'customer_code' => 'required',
         //    'customer_phone'=>'required|regex:/^01[0125][0-9]{8}$/|exists:custom_fields,value',
         //    'customer_address'=>'required|exists:custom_fields,value',
@@ -97,8 +97,8 @@ class OrdersController extends Controller
         //validation
         $validator = Validator::make($request->all(), [
             'cost' => 'numeric|required',
-            'total_ammount' => 'numeric|required',
-            'paid' => 'numeric|required',
+            'total_ammount' => 'numeric|required|gte:cost',
+            'paid' => 'numeric|required|lte:total_ammount',
             'customer_code' => 'required',
             // 'customer_id' => 'required|exists:customers,id',
             // 'customer_phone' => 'required|regex:/(01)[0-9]{9}/|exists:custom_fields,value',
@@ -106,12 +106,13 @@ class OrdersController extends Controller
             'user_code' => 'required|exists:users,code',
             'sale_point_id' => 'required|exists:sale_points,id'
         ]);
-      
+
         if ($validator->fails()) {
             return response()->json([
                 "message" => $validator->errors()
             ], 409);
         }
+
         $user =User::where('code',$request->user_code)->first('id');
         $customer = Customer::where('code', $request->customer_code)->first('id');
 
@@ -304,9 +305,9 @@ class OrdersController extends Controller
             $order_query->where('user_id',$request->user_id);
         }
        $orders =$order_query->orderBy('created_at', 'DESC')->get();
-     
+
         return OrderResource::collection($orders);
-           
+
 
 
         }

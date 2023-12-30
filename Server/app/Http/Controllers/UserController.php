@@ -27,7 +27,7 @@ class UserController extends Controller
             'role' => 'required|in:delivery,admin,doctor',
             'code' => 'required',
             'hourRate' => 'numeric|nullable',
-            'salary' => 'numeric',
+            'salary' => 'numeric|nullable',
         ]);
 
         if ($validator->fails()) {
@@ -174,8 +174,8 @@ class UserController extends Controller
             'phone' => "required|regex:/^01[0125][0-9]{8}$/|unique:users,phone,$user->id",
             'role' => 'required|in:doctor,delivery,admin',
             'code' => 'required|unique:users,code,' . $user->id,
-            'hourRate' => 'numeric',
-            'salary' => 'numeric',
+            'hourRate' => 'numeric|nullable',
+            'salary' => 'numeric|nullable',
             'password' => 'min:6',
         ]);
         if ($validator->fails()) {
