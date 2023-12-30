@@ -93,6 +93,8 @@ Route::middleware(['auth:api'])->group(function(){
         Route::post('/pay/{id}',[OrdersController::class,'pay']);
          //get orders in a specific period
          Route::post('/specificOrders',[OrdersController::class,'ordersInSpecificTime']);
+        //filter
+         Route::post('/filter',[OrdersController::class,'filter']);
 
     });
 

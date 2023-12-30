@@ -38,7 +38,7 @@ class OrdersController extends Controller
     public function store(Request $request)
     {
 
-        if (Auth::user()->role == 'delivery' && Auth::check()) {
+        if ((Auth::user()->role == 'delivery'||Auth::user()->role == 'doctor') && Auth::check()) {
             $request->request->add(['user_id' => Auth::user()->id]);
         }
 
@@ -87,11 +87,6 @@ class OrdersController extends Controller
 
     public function update(Request $request, $id)
     {
-        /** @var \App\Models\User $user * */
-        if (Auth::user()->role == 'delivery' && Auth::check()) {
-            $request->request->add(['user_id' => Auth::user()->id]);
-        }
-
         //check
         $order = Order::find($id);
         if ($order == null) {
@@ -108,14 +103,17 @@ class OrdersController extends Controller
             // 'customer_id' => 'required|exists:customers,id',
             // 'customer_phone' => 'required|regex:/(01)[0-9]{9}/|exists:custom_fields,value',
             // 'customer_address' => 'required|exists:custom_fields,value',
-            'user_id' => 'required|exists:users,id',
+            'user_code' => 'required|exists:users,code',
             'sale_point_id' => 'required|exists:sale_points,id'
         ]);
+      
         if ($validator->fails()) {
             return response()->json([
                 "message" => $validator->errors()
             ], 409);
         }
+        $user =User::where('code',$request->user_code)->first('id');
+        // return $user->id;
         $customer = Customer::where('code', $request->customer_code)->first('id');
 
         // create customer if not exist
@@ -135,7 +133,7 @@ class OrdersController extends Controller
             "customer_id" => $customer->id,
             // "customer_phone" => $request->customer_phone,
             // "customer_address" => $request->customer_address,
-            "user_id" => $request->user_id,
+            "user_id" => $user->id,
             "sale_point_id"=>$request->sale_point_id
 
         ]);
@@ -292,6 +290,27 @@ class OrdersController extends Controller
         }
 
     }
+
+    public function filter(Request $request){
+        $order_query = Order::with(['user','customer','sale_point']);
+        if($request->is_paid =="paid"){
+           $order_query->whereColumn('paid','totalAmmount');
+        }elseif($request->is_paid =="unpaid"){
+            $order_query->whereColumn('paid',"!=",'totalAmmount');
+        }
+        if($request->point_id){
+            $order_query->where('sale_point_id',$request->point_id);
+        }
+        if($request->user_id){
+            $order_query->where('user_id',$request->user_id);
+        }
+       $orders =$order_query->orderBy('created_at', 'DESC')->get();
+     
+        return OrderResource::collection($orders);
+           
+
+
+        }
 
 
     public function ordersInSpecificTime(Request $request){
