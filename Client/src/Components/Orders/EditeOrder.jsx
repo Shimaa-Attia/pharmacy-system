@@ -18,7 +18,7 @@ export default function EditeOrder() {
   let [users, setUsers] = useState([]);
   let [clients, setClients] = useState([]);
   let [orders, setOrders] = useState({
-    user_id: '',
+    user_code: '',
     customer_code: '',
     total_ammount: '',
     cost: '',
@@ -29,10 +29,10 @@ export default function EditeOrder() {
   });
   let getInputValue = (event) => {
     let myOrders = { ...orders }; 
-    myOrders[event.target.name] = event.target.value;
+    myOrders[event?.target?.name] = event?.target?.value;
     setOrders(myOrders);
-  };
 
+  };
 
   let getOrder = async () => {
     let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/show/${id}`, {
@@ -40,12 +40,18 @@ export default function EditeOrder() {
         "Authorization": `Bearer ${accessToken}`
       }
     });
- 
-    setOrderData(data.data) 
+    setOrderData(data.data);
     setOrders({
-      ...orders,
-      user_id:data?.data?.delivery_man?.id
-    }) 
+      user_code: data.data?.delivery_man?.code,
+      customer_code: data.data?.customer?.code,
+      total_ammount: data.data?.total_ammount,
+      cost: data.data?.cost,
+      notes: data.data?.notes,
+      sale_point_id: data.data?.sale_point?.id,
+      paid:data.data?.paid,
+   
+    });
+ 
   };
   useEffect(() => {
     getOrder()
@@ -83,14 +89,12 @@ export default function EditeOrder() {
         "Authorization": `Bearer ${accessToken}`
       }
     }).then((res) => {
-      console.log(res);
       toast.success(res.data.message, {
         position: 'top-center'
       });
       setIsLoading(false);
       navigate('/orders')
     }).catch((errors) => {
-      console.log(errors);
       setIsLoading(false);
       const errorList = errors?.response?.data?.message;
       if (errorList !== undefined) {
@@ -107,22 +111,22 @@ export default function EditeOrder() {
 
   let validateEditedFrom = () => {
     const schema = Joi.object({
-      user_id: Joi.number().required(),
+      user_code: Joi.number().required(),
       customer_code: Joi.string().required(),
       total_ammount: Joi.number().required(),
       cost: Joi.number().required(),
       sale_point_id: Joi.number().required(),
       paid:Joi.string().empty(''),
-      notes: Joi.string().empty(""),
+      notes: Joi.any().empty(""),
      
     });
     return schema.validate(orders, { abortEarly: false });
   };
+
   let editedOrederSubmit = (e) => {
     setIsLoading(true);
     e.preventDefault();
     sendEditedDataToApi();
-
     let validation = validateEditedFrom();
     if (!validation.error) {
       sendEditedDataToApi();
@@ -153,15 +157,6 @@ export default function EditeOrder() {
   }, []);
 
 
-
-
-
-
-
-
-
-
-
   return (
     <>
       <Helmet>
@@ -174,13 +169,14 @@ export default function EditeOrder() {
           <div className="row gy-3">
             <div className="col-md-4">
               <label htmlFor="user_code" className='form-label'>كود  الموظف </label>
-              <input type="text" name="user_code" id="user_code" className='form-control'
+              <input type="text" name="user_code" id="user_code"   className='form-control '
                 defaultValue={orderData?.delivery_man?.code}
+                onChange={getInputValue}
                  />
             </div>
             <div className="col-md-4">
               <label htmlFor="customer_code" className='form-label'>كود العميل  </label>
-              <input type="text" name="customer_code" id="customer_code" className='form-control'
+              <input type="text" name="customer_code" id="customer_code" className='form-control '
                 onChange={getInputValue}
                defaultValue={orderData?.customer?.code}
              
@@ -188,7 +184,7 @@ export default function EditeOrder() {
             </div>
             <div className="col-md-4">
               <label htmlFor="sale_point_id" className='form-label'>نقطة البيع </label>
-              <select name="sale_point_id" defaultValue={0} className='form-control' id="sale_point_id"
+              <select name="sale_point_id" defaultValue={0} className='form-control ' id="sale_point_id"
                 onChange={getInputValue}>   
                   <option value={0} hidden disabled>اختار</option>
                 {salePoints.map((point) => <option key={point.id} value={point?.id} selected={orderData?.sale_point?.id}  >{point.name}</option>)}
@@ -196,7 +192,7 @@ export default function EditeOrder() {
             </div>
             <div className="col-md-4">
               <label htmlFor="cost" className='form-label'>قيمة الأوردر </label>
-              <input type="text" className='form-control' name="cost" id="cost"
+              <input type="text" className='form-control ' name="cost" id="cost"
                 onFocus={getInputValue}
                 defaultValue={orderData?.cost}
               
@@ -204,14 +200,14 @@ export default function EditeOrder() {
             </div>
             <div className="col-md-4">
               <label htmlFor="total_ammount" className='form-label'> إجمالي المبلغ مع الطيار </label>
-              <input type="text" className='form-control' name="total_ammount" id="total_ammount"
+              <input type="text" className='form-control ' name="total_ammount" id="total_ammount"
                 onChange={getInputValue}
                 defaultValue={orderData?.total_ammount}
                 />
             </div>
             <div className="col-md-4">
               <label htmlFor="paid" className='form-label'>القيمة المسددة </label>
-              <input type="text" className='form-control' name="paid" id="paid"
+              <input type="text" className='form-control ' name="paid" id="paid"
                 onChange={getInputValue}
                 defaultValue={orderData?.paid}
              
@@ -219,7 +215,7 @@ export default function EditeOrder() {
             </div>
             <div className="col-md-12">
               <label htmlFor="notes" className='form-label'>ملاحظات</label>
-              <textarea type='text' name="notes" id="notes" className='form-control'
+              <textarea type='text' name="notes" id="notes" className='form-control editedElement'
                 onChange={getInputValue}
                 defaultValue={orderData.notes !== null ? orderData.notes :"" }
                
