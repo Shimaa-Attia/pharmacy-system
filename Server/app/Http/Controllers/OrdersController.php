@@ -113,7 +113,6 @@ class OrdersController extends Controller
             ], 409);
         }
         $user =User::where('code',$request->user_code)->first('id');
-        // return $user->id;
         $customer = Customer::where('code', $request->customer_code)->first('id');
 
         // create customer if not exist
