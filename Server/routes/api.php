@@ -95,7 +95,7 @@ Route::middleware(['auth:api'])->group(function(){
          //get orders in a specific period
          Route::post('/specificOrders',[OrdersController::class,'ordersInSpecificTime']);
         //filter
-         Route::post('/filter',[OrdersController::class,'filter']);
+         Route::get('/filter',[OrdersController::class,'filter']);
 
     });
 
