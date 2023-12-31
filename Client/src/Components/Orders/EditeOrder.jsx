@@ -98,7 +98,7 @@ export default function EditeOrder() {
       setIsLoading(false);
       const errorList = errors?.response?.data?.message;
       if (errorList !== undefined) {
-        Object.keys(errorList).map((err) => {
+        Object.keys(errorList)?.map((err) => {
           errorList[err].map((err) => {
             toast.error(err);
           })
@@ -111,7 +111,7 @@ export default function EditeOrder() {
 
   let validateEditedFrom = () => {
     const schema = Joi.object({
-      user_code: Joi.number().required(),
+      user_code: Joi.string().required(),
       customer_code: Joi.string().required(),
       total_ammount: Joi.number().required(),
       cost: Joi.number().required(),

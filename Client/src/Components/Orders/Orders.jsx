@@ -11,7 +11,6 @@ import Select from 'react-select';
 export default function Orders() {
   let { accessToken } = useContext(AuthContext);
   let formInput = document.getElementById('paid');
-
   let [orders, setOrders] = useState([]);
 
   let [salePoints, setSalePoints] = useState([]);
@@ -60,13 +59,13 @@ export default function Orders() {
   }
   let [filterUsertId, setFilterUserId] = useState('');
   function handleUserChange(selectedOption) {
-    console.log(selectedOption.value);
+   
     setFilterUserId(selectedOption.value)
   }
   let [filterIsPaid, setFilterIsPaid] = useState('');
   function handleIsPaidChange(event) {
     setFilterIsPaid(event?.target?.value);
-    console.log(event.target.value);
+
   }
 
   let getOrderData = async () => {
@@ -186,7 +185,6 @@ export default function Orders() {
                 <th> نقطة اليبع</th>
                 <th>اسم الموظف</th>
                 <th>كود العميل</th>
-
                 <th>قيمة الأوردر</th>
                 <th>الإجمالي</th>
                 <th>المدفوع</th>
@@ -202,7 +200,6 @@ export default function Orders() {
                 <td data-label="نقطة البيع">{order?.sale_point?.name}</td>
                 <td data-label="اسم الموظف">{order?.delivery_man?.name}</td>
                 <td data-label="اسم العميل">{order?.customer?.code}</td>
-                {/* <td data-label="هاتف العميل">{order?.customer_phone}</td> */}
                 <td data-label="قيمة الأوردر">{order.cost}</td>
                 <td data-label="الإجمالي">{order.total_ammount}</td>
                 <td data-label="المدفوع">{order.paid}</td>
@@ -211,7 +208,6 @@ export default function Orders() {
                   openModal()
                   setOrderId(order.id)
                 }} style={{ backgroundColor: '#2a55a3' }}></i></td>
-
                 <td data-label="خيارات">
                   <NavLink to={`/orders/delete/${order.id}`} >
                     <i className='bi bi-trash text-bg-danger p-1 mx-1 rounded'></i>
@@ -235,7 +231,10 @@ export default function Orders() {
     } else {
       return (
         <div className=' d-flex justify-content-center  height-calc-70 align-items-center' >
-          <i className='fa fa-spinner fa-spin  fa-5x'></i>
+         {orders.length <= 0 && searchText.length <= 0 && filterPointId.length <= 0 && filterUsertId.length <= 0 && filterIsPaid.length <= 0 ?
+            <i className='fa fa-spinner fa-spin  fa-5x'></i>
+            : <div className='alert alert-danger w-50 text-center'>لا يوجد أوردرات</div>
+          }
         </div>)
     }
   };
@@ -302,7 +301,6 @@ export default function Orders() {
       </Helmet>
       <div className=" my-3 text-center row mx-2  " dir='rtl'>
         <div className="col-md-3 mb-1">
-
           <Select
             options={userOptions}
             onChange={handleUserChange}

@@ -16,8 +16,6 @@ export default function EditeUser() {
     code: '',
     hourRate: '',
     notes: '',
-    unpaidAmount:'',
-    created_at:'',
   });
   let { id } = useParams();
   let navigate = useNavigate();
@@ -26,21 +24,30 @@ export default function EditeUser() {
     myUsers[event.target.name] = event.target.value;
     setUsers(myUsers);
   };
+  let [userData , setUserData] = useState([])
   let getUser = async () => {
     try {
       let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/show/${id}`,{
         headers: {
           "Authorization": `Bearer ${accessToken}`
         }
-      });
-      console.log(data.data);
-      setUsers(data.data);
+      });  
+      setUserData(data.data);
+      setUsers({
+        name: data?.data?.name,
+        role:data?.data?.role,
+        phone: data?.data?.phone,
+        salary: data?.data?.salary,
+        code: data?.data?.code,
+        hourRate: data?.data?.hourRate,
+        notes:data?.data?.notes,
+
+      })
     } catch (error) {
       toast.error('حدث خطأ ما، حاول مرة أخرى')
     }
   };
   useEffect(() => { getUser() }, []);
-
 
   let sendEditedDataToApi = async () => {
     await axios.put(`${process.env.REACT_APP_API_URL}/api/users/${id}`, users, {
@@ -70,16 +77,14 @@ export default function EditeUser() {
   };
   let validateEditedFrom = () => {
     const schema = Joi.object({
-      id:Joi.number().required(),
       name: Joi.string().min(3).required(),
       code: Joi.string().required(),
       role: Joi.string().required(),
       phone: Joi.string().required().pattern(/^01[0125][0-9]{8}$/).message('رقم الهاتف غير صالح'),
-      hourRate: Joi.number().required(),
-      salary: Joi.number().empty(""),
+      hourRate: Joi.any().empty(""),
+      salary: Joi.any().empty(""),
       notes: Joi.any().empty(""),
-      unpaidAmount:Joi.any().empty(""),
-      created_at:Joi.any().empty("")
+    
     });
     return schema.validate(users, { abortEarly: false });
 
@@ -110,24 +115,24 @@ export default function EditeUser() {
         <meta charSet="utf-8" />
         <title>Edite User</title>
       </Helmet>
-      <h4 className='alert alert-primary mx-5 my-2 text-center' >تعديل بيانات ({users?.name})</h4>
+      <h4 className='alert alert-primary mx-5 my-2 text-center' >تعديل بيانات ({userData?.name})</h4>
       <div className="mx-5 p-3 rounded rounded-3 bg-white">
         <form onSubmit={editeUserSubmit} >
           <div className="row gy-3">
             <div className="col-md-4">
               <label htmlFor="code" className='form-label'>كود المستخدم</label>
               <input type="text" className='form-control' name="code" id="code"
-                onChange={getInputValue} value={users?.code} />
+                onChange={getInputValue} defaultValue={userData?.code} />
             </div>
             <div className="col-md-4">
               <label htmlFor="name" className='form-label'>الاسم</label>
               <input type="text" className='form-control' name="name" id="name"
-                onChange={getInputValue} value={users?.name} />
+                onChange={getInputValue} defaultValue={userData?.name} />
             </div>
             <div className="col-md-4">
               <label htmlFor="role" className='form-label'>الوظيفة</label>
               <select name="role" className='form-control' id="role"
-                onChange={getInputValue} value={users?.role} >
+                onChange={getInputValue} defaultValue={userData?.role} >
                 <option value={0} hidden disabled>اختار</option>
                 <option value="مشرف">مشرف</option>
                 <option value="صيدلي">صيدلي</option>
@@ -137,22 +142,22 @@ export default function EditeUser() {
             <div className="col-md-4">
               <label htmlFor="phone" className='form-label'>رقم الهاتف</label>
               <input type="tel" className='form-control' name="phone" id="phone"
-                onChange={getInputValue} value={users?.phone} />
+                onChange={getInputValue} defaultValue={userData?.phone} />
             </div>
             <div className="col-md-4">
               <label htmlFor="hourRate" className='form-label'>سعر الساعة </label>
               <input type="number" className='form-control' name="hourRate" id="hourRate"
-                onChange={getInputValue} value={users.hourRate !== null ? users.hourRate :'' } />
+                onChange={getInputValue} defaultValue={userData?.hourRate} />
             </div>
             <div className="col-md-4">
               <label htmlFor="salary" className='form-label'>الراتب</label>
               <input type="number" className='form-control' name="salary" id="salary"
-                onChange={getInputValue} value={users.salary !== null ? users.salary :'' } />
+                onChange={getInputValue} defaultValue={userData?.salary } />
             </div>
             <div className="col-md-12">
               <label htmlFor="notes" className='form-label'>ملاحظات</label>
               <textarea type='text' name="notes" id="notes" className='form-control'
-                onChange={getInputValue}  value={users.notes !== null ? users.notes :""} />
+                onChange={getInputValue}  defaultValue={userData?.notes} />
             </div>
             <div className="col-md-3">
               <button type='submit' className='btn btn-primary form-control fs-5'>
