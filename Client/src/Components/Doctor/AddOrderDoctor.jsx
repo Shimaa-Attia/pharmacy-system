@@ -215,7 +215,7 @@ export default function AddOrderDoctor() {
                             <input type="text" className='form-control' name="cost" id="cost" onChange={getInputValue} />
                         </div>
                         <div className="col-md-4">
-                            <label htmlFor="totalAmmount" className='form-label'> إجمالي المبلغ مع الطيار </label>
+                            <label htmlFor="totalAmmount" className='form-label'> إجمالي المبلغ </label>
                             <input type="text" className='form-control' name="total_ammount" id="totalAmmount" onChange={getInputValue} />
                         </div>
                         <div className="col-md-12">
