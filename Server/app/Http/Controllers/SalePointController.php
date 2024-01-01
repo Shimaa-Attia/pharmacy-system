@@ -35,6 +35,7 @@ class SalePointController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:255',
         ]);
+        
         if ($validator->fails()) {
             return response()->json([
                 "message" => $validator->errors()
