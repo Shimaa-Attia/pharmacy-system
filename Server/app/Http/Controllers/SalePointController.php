@@ -38,7 +38,7 @@ class SalePointController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 "message" => $validator->errors()
-                , 409]);
+                ], 409);
         }
 
 
@@ -70,7 +70,7 @@ class SalePointController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 "message" => $validator->errors()
-                , 409]);
+                ],409);
         }
         //update
 

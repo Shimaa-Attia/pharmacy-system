@@ -53,7 +53,7 @@ class OrdersController extends Controller
         ]);
         if ($validator->fails()) {
             return response()->json([
-                "message" => $validator->errors(),409]);
+                "message" => $validator->errors()],409);
         }
 
 
@@ -267,7 +267,7 @@ class OrdersController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 "message" => $validator->errors()
-                , 409]);
+                ], 409);
         }
 
         $unpaid =$order->totalAmmount - $order->paid;
