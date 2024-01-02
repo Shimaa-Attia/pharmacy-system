@@ -39,7 +39,7 @@ export default function AddOrder() {
         } catch (error) {
             toast.error('حدث خطأ ما.')
         }
-   
+
 
     };
     useEffect(() => {
@@ -62,7 +62,7 @@ export default function AddOrder() {
             });
             setClients([...data.data]);
         } catch (error) {
-            toast.error('حدث خطأ ما.')    
+            toast.error('حدث خطأ ما.')
         }
     };
 
@@ -139,9 +139,10 @@ export default function AddOrder() {
             if (errorList !== undefined) {
                 Object.keys(errorList)?.map((err) => {
                     errorList[err]?.map((err) => {
-                        toast.error(err); 
+                        toast.error(err);
                     })
                 });
+
             } else {
                 toast.error("حدث خطأ ما");
             }
@@ -150,10 +151,23 @@ export default function AddOrder() {
     let validateOrderForm = () => {
         const schema = Joi.object({
             user_id: Joi.number().required(),
-            customer_code: Joi.string().required(),
-            total_ammount: Joi.string().required(),
-            cost: Joi.string().required(),
-            sale_point_id: Joi.number().required(),
+            customer_code: Joi.string().alphanum().required().messages({
+                'string.empty': 'كود العميل مطلوب',
+                'any.required': 'كود العميل مطلوب',
+                'string.alphanum':'كود العميل يجب أن يكون أرقام أو حروف، لا يحتوي على رموز'
+            }),
+            cost: Joi.string().required().messages({
+                'string.empty': 'قيمة الأوردر مطلوبة',
+                'any.required': 'قيمة الأوردر مطلوبة',
+            }),
+            total_ammount: Joi.string().required().messages({
+                'string.empty': 'إجمالي المبلغ مطلوب',
+                'any.required': 'إجمالي المبلغ مطلوب',
+            }),
+            sale_point_id: Joi.string().required().messages({
+                'string.empty': 'نقطة البيع مطلوبة',
+                'any.required': 'نقطة البيع مطلوبة',
+            }),
             notes: Joi.string().empty(''),
         });
         return schema.validate(orders, { abortEarly: false });
@@ -212,7 +226,7 @@ export default function AddOrder() {
                                 // value={userOptions?.find((opt) => opt?.value === orders.user_id )} 
                                 onChange={getSelectedUser}
                                 isSearchable={true}
-                                placeholder="إضافة موظف" 
+                                placeholder="إضافة موظف"
                             />
 
                         </div>
@@ -226,7 +240,7 @@ export default function AddOrder() {
                                 onChange={getSelectedClient}
                                 isSearchable={true}
                                 placeholder="بحث عن عميل..."
-                               
+
                             />
                         </div>
                         {/* <div className="col-md-4">
