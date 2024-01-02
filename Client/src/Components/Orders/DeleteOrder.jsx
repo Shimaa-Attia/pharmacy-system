@@ -12,13 +12,17 @@ export default function DeleteOrder() {
   let navigate = useNavigate();
   let [orders, setOrders] = useState([]);
   let getOrder = async () => {
-
-      let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/show/${id}`,{
-        headers: {
-          "Authorization": `Bearer ${accessToken}`
-        }
-      });
-      setOrders(data.data);
+try {
+  let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/show/${id}`,{
+    headers: {
+      "Authorization": `Bearer ${accessToken}`
+    }
+  });
+  setOrders(data.data);
+} catch (error) {
+  toast.error('حدث خطأ ما')
+}
+  
   };
   useEffect(() => {
     getOrder()

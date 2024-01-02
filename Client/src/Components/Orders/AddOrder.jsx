@@ -6,6 +6,7 @@ import { NavLink } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../../Context/AuthStore';
 import CreatableSelect from 'react-select/creatable';
+import Select from 'react-select';
 
 export default function AddOrder() {
     let { accessToken } = useContext(AuthContext);
@@ -28,12 +29,17 @@ export default function AddOrder() {
     });
     let [userOptions, setUserOptions] = useState([]);
     let getUserData = async () => {
-        let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users`, {
-            headers: {
-                "Authorization": `Bearer ${accessToken}`
-            }
-        });
-        setUsers(data.data);
+        try {
+            let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users`, {
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`
+                }
+            });
+            setUsers(data.data);
+        } catch (error) {
+            toast.error('حدث خطأ ما.')
+        }
+   
 
     };
     useEffect(() => {
@@ -44,18 +50,20 @@ export default function AddOrder() {
             value: `${user.id}`,
             label: `${user.code}`
         }));
-
         setUserOptions(mapUser);
     }, [users]);
-
     let [clientOptions, setClientOptions] = useState([]);
     let getClientData = async () => {
-        let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers`, {
-            headers: {
-                "Authorization": `Bearer ${accessToken}`
-            }
-        });
-        setClients([...data.data]);
+        try {
+            let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers`, {
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`
+                }
+            });
+            setClients([...data.data]);
+        } catch (error) {
+            toast.error('حدث خطأ ما.')    
+        }
     };
 
     useEffect(() => {
@@ -64,8 +72,8 @@ export default function AddOrder() {
 
     useEffect(() => {
         let mapClient = clients?.map((client) => ({
-            value: `${client.id}`,
-            label: `${client.code}`
+            value: `${client?.id}`,
+            label: `${client?.code}`
         }));
         setClientOptions(mapClient);
     }, [clients]);
@@ -91,14 +99,13 @@ export default function AddOrder() {
     let getSelectedUser = (selectedOption) => {
         setOrders({
             ...orders,
-            user_id: selectedOption.value,
-
+            user_id: selectedOption?.value,
         });
     };
     let getSelectedClient = (selectedOption) => {
         setOrders({
             ...orders,
-            customer_code: selectedOption.value,
+            customer_code: selectedOption?.value,
         });
     };
 
@@ -110,13 +117,12 @@ export default function AddOrder() {
     };
 
     let sendOrderDataToApi = async () => {
-        let { data } = await axios.post(`${process.env.REACT_APP_API_URL}/api/orders`, orders, {
+        await axios.post(`${process.env.REACT_APP_API_URL}/api/orders`, orders, {
             headers: {
                 "Authorization": `Bearer ${accessToken}`
             }
-        })
-        if (data.message == "تم إضافة الطلب") {
-            toast.success(data.message, {
+        }).then((res) => {
+            toast.success(res.data.message, {
                 position: 'top-center'
             });
             setIsLoading(false);
@@ -127,25 +133,23 @@ export default function AddOrder() {
                 el.selectedIndex = '0';
             });
             textarea.value = '';
-        } else {
+        }).catch((errors) => {
             setIsLoading(false);
-            const errorList = data?.message;
+            const errorList = errors?.response?.data?.message;
             if (errorList !== undefined) {
-                Object.keys(errorList).map((err) => {
-                    errorList[err].map((err) => {
-                        toast.error(err);
+                Object.keys(errorList)?.map((err) => {
+                    errorList[err]?.map((err) => {
+                        toast.error(err); 
                     })
                 });
             } else {
                 toast.error("حدث خطأ ما");
             }
-        }
+        });
     };
     let validateOrderForm = () => {
         const schema = Joi.object({
             user_id: Joi.number().required(),
-            // customer_address: Joi.string().required(),
-            // customer_phone: Joi.string().required(),
             customer_code: Joi.string().required(),
             total_ammount: Joi.string().required(),
             cost: Joi.string().required(),
@@ -158,15 +162,13 @@ export default function AddOrder() {
     let submitOrderForm = (e) => {
         setIsLoading(true);
         e.preventDefault();
-    
         let validation = validateOrderForm();
         if (!validation.error) {
             sendOrderDataToApi();
-         
         } else {
             setIsLoading(false);
             try {
-                validation.error.details.map((err) => {
+                validation?.error?.details?.map((err) => {
                     toast.error(err.message);
                 })
             } catch (e) {
@@ -176,20 +178,20 @@ export default function AddOrder() {
     };
     let [salePoints, setSalePoints] = useState([]);
     let getSalePointsData = async () => {
-        let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/points`, {
-            headers: {
-                "Authorization": `Bearer ${accessToken}`
-            }
-        });
-        setSalePoints(data.data);
-
+        try {
+            let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/points`, {
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`
+                }
+            });
+            setSalePoints(data.data);
+        } catch (error) {
+            toast.error('حدث خطأ ما')
+        }
     };
     useEffect(() => {
         getSalePointsData()
     }, []);
-
-
-
 
     return (
         <>
@@ -203,15 +205,14 @@ export default function AddOrder() {
                     <div className="row gy-3">
                         <div className="col-md-4">
                             <label htmlFor="user_id" className='form-label' >كود الموظف   </label>
-                            <CreatableSelect
+                            <Select
                                 name="user_id"
                                 isClearable
                                 options={userOptions}
                                 // value={userOptions?.find((opt) => opt?.value === orders.user_id )} 
                                 onChange={getSelectedUser}
                                 isSearchable={true}
-                                placeholder="إضافة موظف"
-                              
+                                placeholder="إضافة موظف" 
                             />
 
                         </div>

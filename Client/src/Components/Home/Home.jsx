@@ -8,7 +8,6 @@ import Joi from 'joi';
 
 export default function Home() {
   let { accessToken } = useContext(AuthContext);
-
   let [anyDate, setAnyDate] = useState({
     start_date: '',
     end_date: ''
@@ -28,17 +27,27 @@ export default function Home() {
     }).then((res) => {
       setOrdersNumbers(res?.data?.totalNumOfOrders);
       setUsers(res?.data?.users);
-
-
     }).catch((errors) => {
-      toast.error(errors.response?.data?.message);
-
+      const errorList = errors?.response?.data?.message;
+      if (errorList !== undefined) {
+          Object.keys(errorList)?.map((err) => {
+              errorList[err]?.map((err) => {
+                  toast.error(err);
+              })
+          });
+      } else {
+          toast.error("حدث خطأ ما");
+      }
     })
   }
   let validateDateForm = () => {
     const schema = Joi.object({
-      start_date: Joi.date().required(),
-      end_date: Joi.date().required(),
+      start_date: Joi.date().required().messages({
+        "date.base": `تاريخ البداية مطلوب`,
+      }),
+      end_date: Joi.date().required().messages({
+        "date.base": `تاريخ النهاية مطلوب`,
+      }),
     });
     return schema.validate(anyDate, { abortEarly: false });
   };
@@ -57,8 +66,6 @@ export default function Home() {
       }
     }
   };
-
-
 
   return (
     <>

@@ -2,19 +2,22 @@ import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../../Context/AuthStore';
 import { NavLink } from 'react-router-dom';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 export default function DeliveryNavbar() {
     let { logout, userData , accessToken} = useContext(AuthContext);
     let [users, setUsers] = useState([]);
     let getUserData = async () => {
-
-        let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/auth`, {
-            headers: {
-                "Authorization": `Bearer ${accessToken}`
-            }
-        });
-
-        setUsers(data);
+        try {
+            let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/auth`, {
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`
+                }
+            });
+            setUsers(data);
+        } catch (error) {
+            toast.error('حدث خطأ ما')
+        }
     };
     useEffect(() => {
         getUserData()

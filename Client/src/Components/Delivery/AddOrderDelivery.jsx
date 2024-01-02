@@ -10,14 +10,14 @@ import CreatableSelect from 'react-select/creatable';
 
 export default function AddOrderDelivery() {
     let { accessToken } = useContext(AuthContext);
-    const selectRef = useRef();
-
+    //selcting form inputs and selects to reset the form after submtion
     let formInputs = document.querySelectorAll('form input');
     let formSelects = document.querySelectorAll('form select');
     let textarea = document.querySelector('form textarea');
     let [isLoading, setIsLoading] = useState(false);
     let [clients, setClients] = useState([]);
     let [users, setUsers] = useState([]);
+    let [clientOptions, setClientOptions] = useState([]);
     let [orders, setOrders] = useState({
         // customer_address: '',
         // customer_phone: '',
@@ -27,20 +27,23 @@ export default function AddOrderDelivery() {
         notes: '',
         sale_point_id: ''
     });
-
-    let [clientOptions, setClientOptions] = useState([]);
+    //get client data to put it in slecte options
     let getClientData = async () => {
-        let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers`, {
-            headers: {
-                "Authorization": `Bearer ${accessToken}`
-            }
-        });
-        setClients([...data.data]);
+        try {
+            let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers`, {
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`
+                }
+            });
+            setClients([...data.data]);
+        } catch (error) {
+            toast.error('حدث خطأ ما')
+        }
     };
-
     useEffect(() => {
         getClientData()
     }, []);
+    //define specific data to show in slecte options and wait until clients come [clients]
     useEffect(() => {
         let mapClient = clients?.map((client) => ({
             value: `${client.code}`,
@@ -48,26 +51,29 @@ export default function AddOrderDelivery() {
         }));
         setClientOptions(mapClient);
     }, [clients]);
-
-    let getUserData = async () => {
-        let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/auth`, {
-            headers: {
-                "Authorization": `Bearer ${accessToken}`
-            }
+    // get the value of selcted option in  the react select and put it in the orders
+    let getSelectedClient = (selectedOption) => {
+        setOrders({
+            ...orders,
+            customer_code: selectedOption?.value
         });
-
-        setUsers(data);
+    };
+    //get users data to find th id of user to use it in the path to go back
+    let getUserData = async () => {
+        try {
+            let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/auth`, {
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`
+                }
+            });
+            setUsers(data);
+        } catch (error) {
+            toast.error('حدث خطأ ما')
+        }
     };
     useEffect(() => {
         getUserData()
     }, []);
-    let getSelectedClient = (selectedOption) => {
-        console.log(selectedOption)
-        setOrders({
-            ...orders,
-            customer_code: selectedOption?.value,
-        });
-    };
 
     let [contacts, setContacts] = useState([]);
     useEffect(() => {
@@ -77,7 +83,7 @@ export default function AddOrderDelivery() {
             getContactValue(orders.customer_code)
         }
 
-    }, [orders.customer_code]);
+    }, [orders?.customer_code]);
 
     let getContactValue = async (id) => {
         let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers/contact/${id}`, {
@@ -88,77 +94,80 @@ export default function AddOrderDelivery() {
 
         setContacts(data);
     };
+    //get the values of input and put them in the orders state
     let getInputValue = (event) => {
         let myOrders = { ...orders }; //deep copy
         myOrders[event.target.name] = event.target.value;
         setOrders(myOrders);
-
     };
-
     let sendOrderDataToApi = async () => {
-        await axios.post(`${process.env.REACT_APP_API_URL}/api/orders`, orders, {
-            headers: {
-                "Authorization": `Bearer ${accessToken}`
-            }
-        }).then((res) => {
-            toast.success(res.data.message, {
-                position: 'top-center'
-            });
-            setIsLoading(false);
-            formInputs.forEach((el) => {
-                el.value = '';
-            });
-            formSelects.forEach((el) => {
-                el.selectedIndex = '0';
-            });
-            textarea.value = '';
-
-
-        }).catch((errors) => {
-          
-            setIsLoading(false);
-            const errorList = errors?.response?.data?.message;
-            if (errorList !== undefined) {
-                Object.keys(errorList).map((err) => {
-                    errorList[err].map((err) => {
-                        toast.error(err);
-                    })
+        try {
+            await axios.post(`${process.env.REACT_APP_API_URL}/api/orders`, orders, {
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`
+                }
+            }).then((res) => {
+                toast.success(res.data.message, {
+                    position: 'top-center'
                 });
-            } else {
-                toast.error("حدث خطأ ما");
-            }
-        });
+                setIsLoading(false);
+                formInputs.forEach((el) => {
+                    el.value = '';
+                });
+                formSelects.forEach((el) => {
+                    el.selectedIndex = '0';
+                });
+                textarea.value = '';
+            }).catch((errors) => {
+                setIsLoading(false);
+                const errorList = errors?.response?.data?.message;
+                if (errorList !== undefined) {
+                    Object.keys(errorList)?.map((err) => {
+                        errorList[err]?.map((err) => {
+                            toast.error(err);
+                        })
+                    });
+                } else {
+                    toast.error("حدث خطأ ما");
+                }
+            });    
+        } catch (error) {
+            toast.error("حدث خطأ ما");
+        }
     };
+
     let validateOrderForm = () => {
         const schema = Joi.object({
-            // customer_address: Joi.string().required(),
-            // customer_phone: Joi.string().required(),
-            customer_code: Joi.string().required(),
-            total_ammount: Joi.string().required(),
-            cost: Joi.string().required(),
+            customer_code: Joi.string().required().messages({
+                'string.empty': 'كود العميل مطلوب',
+                'any.required': 'كود العميل مطلوب',
+            }),
+            cost: Joi.string().required().messages({
+                'string.empty': 'قيمة الأوردر مطلوبة',
+                'any.required': 'قيمة الأوردر مطلوبة',
+            }),
+            total_ammount: Joi.string().required().messages({
+                'string.empty': 'إجمالي المبلغ مطلوب',
+                'any.required': 'إجمالي المبلغ مطلوب',
+            }),
+            sale_point_id: Joi.string().required().messages({
+                'string.empty': 'نقطة البيع مطلوبة',
+                'any.required': 'نقطة البيع مطلوبة',
+            }),
             notes: Joi.string().empty(''),
-            sale_point_id: Joi.string().required(),
         });
         return schema.validate(orders, { abortEarly: false });
     };
-    //the key for making render for reset the form بصي على الفانكشن ال بتبعت الداتا للapi عشان نشيل الكي)
-    const [key, setKey] = useState(0);
     let submitOrderForm = (e) => {
         setIsLoading(true);
         e.preventDefault();
         let validation = validateOrderForm();
         if (!validation.error) {
             sendOrderDataToApi();
-            setKey(key + 1);
-            setClientOptions(null);
-
         } else {
-
             setIsLoading(false);
             try {
-                console.log('validate error');
-                validation.error.details.map((err) => {
-
+                validation?.error?.details?.map((err) => {
                     toast.error(err.message);
                 })
             } catch (e) {
@@ -168,16 +177,19 @@ export default function AddOrderDelivery() {
     };
     let [salePoints, setSalePoints] = useState([]);
     let getSalePointsData = async () => {
-      let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/points`, {
-        headers: {
-          "Authorization": `Bearer ${accessToken}`
+        try {
+            let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/points`, {
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`
+                }
+            });
+            setSalePoints(data.data);
+        } catch (error) {
+            toast.error('حدث خطأ ما')
         }
-      });
-      setSalePoints(data.data);
-  
     };
     useEffect(() => {
-      getSalePointsData()
+        getSalePointsData()
     }, []);
 
     return (
@@ -201,7 +213,6 @@ export default function AddOrderDelivery() {
                                 onChange={getSelectedClient}
                                 isSearchable={true}
                                 placeholder="بحث عن عميل..."
-                                key={key}
                             />
                         </div>
 
@@ -209,8 +220,8 @@ export default function AddOrderDelivery() {
                             <label htmlFor="sale_point_id" className='form-label'>نقطة البيع </label>
                             <select name="sale_point_id" defaultValue={0} className='form-control' id="sale_point_id"
                                 onChange={getInputValue}>
-                                     <option value={0} hidden selected disabled>اختار</option>
-                                  {salePoints.map((point)=> <option key={point.id} value={point.id}>{point.name}</option>)} 
+                                <option value={0} hidden selected disabled>اختار</option>
+                                {salePoints.map((point) => <option key={point.id} value={point.id}>{point.name}</option>)}
                             </select>
                         </div>
                         <div className="col-md-4">
@@ -232,7 +243,6 @@ export default function AddOrderDelivery() {
                         </div>
                         <div className="col-md-3">
                             <NavLink to={`/deliverylayout/deliveryOrders/${users.id}`} className='btn  btn-secondary form-control fs-5'>رجوع</NavLink>
-
                         </div>
                     </div>
                 </form >

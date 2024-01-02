@@ -31,23 +31,31 @@ export default function DoctorOrders() {
   let [users, setUsers] = useState([]);
   let [userOptions, setUserOptions] = useState([]);
   let getUsersData = async () => {
-    let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users`, {
-      headers: {
-        "Authorization": `Bearer ${accessToken}`
-      }
-    });
-    setUsers(data.data);
+    try {
+      let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users`, {
+        headers: {
+          "Authorization": `Bearer ${accessToken}`
+        }
+      });
+      setUsers(data.data);
+    } catch (error) {
+      toast.error("حدث خطأ ما")
+    }
   };
   useEffect(() => {
     getUsersData()
   }, []);
   useEffect(() => {
-    let mapUser = users?.map((user) => ({
-      value: `${user.id}`,
-      label: `${user.code}`
-    }));
-    setUserOptions(mapUser);
+    try {
 
+      let mapUser = users?.map((user) => ({
+        value: `${user.id}`,
+        label: `${user.code}`
+      }));
+      setUserOptions(mapUser);
+    } catch (error) {
+      toast.error("حدث خطأ ما")
+    }
   }, [users]);
 
   let [searchText, setSearchText] = useState('');
@@ -62,13 +70,11 @@ export default function DoctorOrders() {
   }
   let [filterUsertId, setFilterUserId] = useState('');
   function handleUserChange(selectedOption) {
-
-    setFilterUserId(selectedOption.value)
+    setFilterUserId(selectedOption?.value)
   }
   let [filterIsPaid, setFilterIsPaid] = useState('');
   function handleIsPaidChange(event) {
     setFilterIsPaid(event?.target?.value);
-
   }
   let getOrderData = async () => {
     let orderResult;
@@ -111,9 +117,7 @@ export default function DoctorOrders() {
           "Authorization": `Bearer ${accessToken}`
         }
       });
-
       setOrders(orderResult.data.data)
-
     } else if (filterPointId !== undefined && filterPointId.length > 0
       && (filterUsertId !== undefined && filterUsertId.length > 0)
       && (filterIsPaid === undefined || filterIsPaid === '')) {
@@ -247,7 +251,7 @@ export default function DoctorOrders() {
   });
   let getInputValue = (event) => {
     let myPaids = { ...paid }; //deep copy
-    myPaids[event.target.name] = event.target.value;
+    myPaids[event.target.name] = event?.target?.value;
     setPaid(myPaids);
   };
 
@@ -261,12 +265,14 @@ export default function DoctorOrders() {
       formInput.value = '';
     }).catch((errors) => {
       toast.error(errors?.response?.data?.message);
-
     })
   };
   let validatePaidsForm = () => {
     const schema = Joi.object({
-      paid_value: Joi.string().required(),
+      paid_value: Joi.string().required().messages({
+        'string.empty': 'القيمة المسددة مطلوبة',
+        'any.required': 'القيمة المسددة مطلوبة',
+    }),
     });
     return schema.validate(paid, { abortEarly: false });
   };

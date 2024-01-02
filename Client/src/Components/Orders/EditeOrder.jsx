@@ -99,7 +99,7 @@ export default function EditeOrder() {
       const errorList = errors?.response?.data?.message;
       if (errorList !== undefined) {
         Object.keys(errorList)?.map((err) => {
-          errorList[err].map((err) => {
+          errorList[err]?.map((err) => {
             toast.error(err);
           })
         });

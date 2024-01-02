@@ -52,8 +52,8 @@ export default function AddUser() {
             setIsLoading(false);
             const errorList = errors?.response?.data?.error;
             if (errorList !== undefined) {
-                Object.keys(errorList).map((err) => {
-                    errorList[err].map((err) => {
+                Object.keys(errorList)?.map((err) => {
+                    errorList[err]?.map((err) => {
                         toast.error(err);
                     })
                 });

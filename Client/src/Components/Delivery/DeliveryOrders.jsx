@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { NavLink, useParams } from 'react-router-dom';
 import { AuthContext } from '../../Context/AuthStore';
+import { toast } from 'react-toastify';
 
 
 
@@ -18,33 +19,43 @@ export default function DeliveryOrders() {
   let getOrderData = async () => {
     let searchResult;
     if (searchText !== undefined && searchText.trim().length > 0) {
-      searchResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/user/${id}?key=${searchText.trim()}`, {
-        headers: {
-          "Authorization": `Bearer ${accessToken}`
-        }
-      });
-      setOrders(searchResult.data.data);
+      try {
+        searchResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/user/${id}?key=${searchText.trim()}`, {
+          headers: {
+            "Authorization": `Bearer ${accessToken}`
+          }
+        });
+        setOrders(searchResult.data.data);
+      } catch (error) {
+        toast.error('حدث خطأ ما')
+      } 
     } else {
-      searchResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/user/${id}`, {
-        headers: {
-          "Authorization": `Bearer ${accessToken}`
-        }
-      });
-      setOrders(searchResult.data.data);
-    }
-    
+      try {
+        searchResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/user/${id}`, {
+          headers: {
+            "Authorization": `Bearer ${accessToken}`
+          }
+        });
+        setOrders(searchResult.data.data);
+      } catch (error) {
+        toast.error('حدث خطأ ما')
+      }
+    }  
   };
   useEffect(() => { getOrderData() }, [searchText]);
-
     //get total money with the delivery from all orders
    let [unpaidAmount , setUnpaidAmmount] = useState([]);
     let getUnpiadAmmountForDelivery = async () => {
-      let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/show/${id}` , {
-        headers: {
-          "Authorization": `Bearer ${accessToken}`
-        }
-      });
-      setUnpaidAmmount(data.data)
+      try {
+        let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/show/${id}` , {
+          headers: {
+            "Authorization": `Bearer ${accessToken}`
+          }
+        });
+        setUnpaidAmmount(data.data)
+      } catch (error) {
+        toast.error('حدث خطأ ما')
+      }
     };
   useEffect(()=>{
     getUnpiadAmmountForDelivery()
@@ -69,7 +80,6 @@ export default function DeliveryOrders() {
             </thead>
             <tbody>
               {orders.map((order, index) => <tr key={order.id}>
-          
                 <td data-label="#">{++index}</td>
                 <td data-lable="تاريخ الإنشاء" >{order?.created_at}</td>
                 <td data-label="كود العميل">{order?.customer?.code}</td>
@@ -87,7 +97,10 @@ export default function DeliveryOrders() {
     } else {
       return (
         <div className=' d-flex justify-content-center  height-calc-70 align-items-center' >
-          <i className='fa fa-spinner fa-spin  fa-5x'></i>
+         {orders.length <= 0 && searchText.length <= 0  ?
+            <i className='fa fa-spinner fa-spin  fa-5x'></i>
+            : <div className='alert alert-danger w-50 text-center'>لا يوجد أوردرات</div>
+          }
         </div>)
 
     }

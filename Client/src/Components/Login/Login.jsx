@@ -15,38 +15,20 @@ export default function Login({ saveUserData }) {
         phone: '',
         password: '',
     });
-
-
     let getInputValue = (event) => {
         let myUsers = { ...users }; //deep copy
         myUsers[event.target.name] = event.target.value;
         setUsers(myUsers)
     };
-
-    let validateLoginFrom = () => {
-        const schema = Joi.object({
-            phone: Joi.string().required().pattern(/^01[0125][0-9]{8}$/).messages({
-                "string.pattern.base": `رقم الهاتف غير صحيح`,
-                "any.required": `"" phone required`,
-            }),
-            password: Joi.string().required(),
-
-        });
-        return schema.validate(users, { abortEarly: false });
-    };
-  
     let sendLoginDataToApi = async () => {
         let { data } = await axios.post(`${process.env.REACT_APP_API_URL}/api/login`, users);
         if (data.message == 'تم تسجيل دخولك بنجاح') {
             setIsLoading(false);
             localStorage.setItem('userToken', data.token);
             saveUserData();
-
             toast.success(data.message, {
                 position: 'top-center',
-            });
-        
-           
+            }); 
             switch (data.user.role) {
                 case 'delivery':
                     navigate(`/deliverylayout/deliveryOrders/${data.user.id}`);
@@ -58,7 +40,6 @@ export default function Login({ saveUserData }) {
                 default:
                     navigate("/home");
             }
-
         } else {
             setIsLoading(false);
             try {
@@ -68,11 +49,21 @@ export default function Login({ saveUserData }) {
             } catch (error) {
                 toast.error("حدث خطأ ما عند تسجيل الدخول");
             }
-
         }
         ;
     };
-
+    let validateLoginFrom = () => {
+        const schema = Joi.object({
+            phone: Joi.string().required().pattern(/^01[0125][0-9]{8}$/).messages({
+                "string.pattern.base": `رقم الهاتف غير صحيح`,
+                'string.empty': ' أدخل رقم الهاتف ',  
+            }),
+            password: Joi.string().required().messages({
+                'string.empty': ' أدخل كلمة السر ', 
+            })
+        });
+        return schema.validate(users, { abortEarly: false });
+    };
 
     let submitLoginForm = (e) => {
         setIsLoading(true);
