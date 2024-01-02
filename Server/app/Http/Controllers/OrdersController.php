@@ -39,8 +39,9 @@ class OrdersController extends Controller
     {
 
         if ((Auth::user()->role == 'delivery'||Auth::user()->role == 'doctor') && Auth::check()) {
-            $request->request->add(['user_id' => Auth::user()->id]);
+            $request->request->add(['user_code' => Auth::user()->code]);
         }
+        // return $request->user_code;
 
         $validator = Validator::make($request->all(), [
             'cost' => 'numeric|required',
@@ -48,7 +49,7 @@ class OrdersController extends Controller
             'customer_code' => 'required',
         //    'customer_phone'=>'required|regex:/^01[0125][0-9]{8}$/|exists:custom_fields,value',
         //    'customer_address'=>'required|exists:custom_fields,value',
-            'user_id' => 'required|exists:users,id',
+            'user_code' => 'required|exists:users,code',
             'sale_point_id' => 'required|exists:sale_points,id'
         ]);
         if ($validator->fails()) {
@@ -56,7 +57,7 @@ class OrdersController extends Controller
                 "message" => $validator->errors()],409);
         }
 
-
+        $user =User::where('code',$request->user_code)->first('id');
         $customer = Customer::where('code', $request->customer_code)->first('id');
 
         // create customer if not exist
@@ -74,7 +75,7 @@ class OrdersController extends Controller
             "customer_id" => $customer->id,
             // "customer_phone" => $request->customer_phone,
             // "customer_address" => $request->customer_address,
-            "user_id" => $request->user_id,
+            "user_id" => $user->id,
             "sale_point_id"=>$request->sale_point_id
         ]);
 
