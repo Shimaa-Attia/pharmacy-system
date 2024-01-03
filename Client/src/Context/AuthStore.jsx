@@ -14,11 +14,13 @@ export default function AuthContextProvider(props) {
         }
     }, []);
     let [userData, setUserData] = useState(null);
+    let [userName, setUserName] = useState(null);
     let saveUserData = () => {
         let encodedToken = localStorage.getItem('userToken');
+        let name = localStorage.getItem('userName');
+        setUserName(name);
         setUserData(encodedToken);
     };
-  
 
 
     let logout = async () => {
@@ -36,7 +38,7 @@ export default function AuthContextProvider(props) {
     };
 
 
-    return <AuthContext.Provider value={{ userData, saveUserData, logout, accessToken }} >
+    return <AuthContext.Provider value={{ userData, saveUserData, logout, accessToken , userName }} >
         {props.children}
     </AuthContext.Provider>
 

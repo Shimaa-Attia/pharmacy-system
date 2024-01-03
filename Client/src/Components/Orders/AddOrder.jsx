@@ -17,7 +17,7 @@ export default function AddOrder() {
     let [users, setUsers] = useState([]);
     let [clients, setClients] = useState([]);
     let [orders, setOrders] = useState({
-        user_id: '',
+        user_code: '',
         // customer_address: '',
         // customer_phone: '',
         customer_code: '',
@@ -47,7 +47,7 @@ export default function AddOrder() {
     }, []);
     useEffect(() => {
         let mapUser = users?.map((user) => ({
-            value: `${user.id}`,
+            value: `${user.code}`,
             label: `${user.code}`
         }));
         setUserOptions(mapUser);
@@ -99,7 +99,7 @@ export default function AddOrder() {
     let getSelectedUser = (selectedOption) => {
         setOrders({
             ...orders,
-            user_id: selectedOption?.value,
+            user_code: selectedOption?.value,
         });
     };
     let getSelectedClient = (selectedOption) => {
@@ -134,6 +134,7 @@ export default function AddOrder() {
             });
             textarea.value = '';
         }).catch((errors) => {
+            console.log(errors);
             setIsLoading(false);
             const errorList = errors?.response?.data?.message;
             if (errorList !== undefined) {
@@ -150,7 +151,11 @@ export default function AddOrder() {
     };
     let validateOrderForm = () => {
         const schema = Joi.object({
-            user_id: Joi.number().required(),
+            user_code: Joi.string().alphanum().required().messages({
+                'string.empty': 'كود المستخدم مطلوب',
+                'any.required': 'كود المستخدم مطلوب',
+                'string.alphanum':'كود المستخدم يجب أن يكون أرقام أو حروف، لا يحتوي على رموز'
+            }),
             customer_code: Joi.string().alphanum().required().messages({
                 'string.empty': 'كود العميل مطلوب',
                 'any.required': 'كود العميل مطلوب',
@@ -170,7 +175,7 @@ export default function AddOrder() {
             }),
             notes: Joi.string().empty(''),
         });
-        return schema.validate(orders, { abortEarly: false });
+        return schema.validate(orders, { abortEarly: false  });
     };
 
     let submitOrderForm = (e) => {
@@ -218,12 +223,11 @@ export default function AddOrder() {
                 <form onSubmit={submitOrderForm} >
                     <div className="row gy-3">
                         <div className="col-md-4">
-                            <label htmlFor="user_id" className='form-label' >كود الموظف   </label>
+                            <label htmlFor="user_code" className='form-label' >كود الموظف   </label>
                             <Select
-                                name="user_id"
+                                name="user_code"
                                 isClearable
                                 options={userOptions}
-                                // value={userOptions?.find((opt) => opt?.value === orders.user_id )} 
                                 onChange={getSelectedUser}
                                 isSearchable={true}
                                 placeholder="إضافة موظف"
@@ -231,7 +235,7 @@ export default function AddOrder() {
 
                         </div>
                         <div className="col-md-4">
-                            <label htmlFor="customer_id" className='form-label'>كود العميل  </label>
+                            <label htmlFor="customer_code" className='form-label'>كود العميل  </label>
                             <CreatableSelect
                                 name="customer_code"
                                 isClearable

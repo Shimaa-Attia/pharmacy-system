@@ -12,7 +12,7 @@ export default function Orders() {
   let { accessToken } = useContext(AuthContext);
   let formInput = document.getElementById('paid');
   let [orders, setOrders] = useState([]);
-
+  let [unpaid , setUnpaid] = useState('')
   let [salePoints, setSalePoints] = useState([]);
   let getSalePointsData = async () => {
     let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/points`, {
@@ -172,7 +172,7 @@ export default function Orders() {
   useEffect(() => { getOrderData() }, [searchText, filterPointId, filterUsertId,filterIsPaid]);
 
   let [orderId, setOrderId] = useState('');
-
+let [isChecked , setIsChecked] = useState(false)
   let showOrders = () => {
     if (orders.length > 0) {
       return (
@@ -195,7 +195,7 @@ export default function Orders() {
             </thead>
             <tbody>
               {orders.map((order, index) => <tr key={order.id}>
-                <td data-label="#">{++index}</td>
+                <td data-label="#"><input type="checkbox"/></td>
                 <td data-label="تاريخ الإنشاء"  >{order.created_at}</td>
                 <td data-label="نقطة البيع">{order?.sale_point?.name}</td>
                 <td data-label="اسم الموظف">{order?.delivery_man?.name}</td>
@@ -246,6 +246,7 @@ export default function Orders() {
   function closeModal() {
     paidModal.style.display = 'none';
   };
+
   let [paid, setPaid] = useState({
     paid_value: '',
   });

@@ -5,7 +5,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 
 export default function DeliveryNavbar() {
-    let { logout, userData , accessToken} = useContext(AuthContext);
+    let { logout, userData , accessToken , userName} = useContext(AuthContext);
     let [users, setUsers] = useState([]);
     let getUserData = async () => {
         try {
@@ -36,6 +36,9 @@ export default function DeliveryNavbar() {
                             <NavLink to='/' onClick={logout} className="dropdown-item " > تسجيل خروج</NavLink>
                         </ul>
 
+                    </div>
+                    <div className='ms-2 '>
+                        <p className=' text-white fw-bold fs-6'>{userName}</p>
                     </div>
                     <button className="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span className="navbar-toggler-icon " />

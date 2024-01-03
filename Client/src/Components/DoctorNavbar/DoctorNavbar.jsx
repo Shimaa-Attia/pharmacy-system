@@ -4,7 +4,7 @@ import { AuthContext } from '../../Context/AuthStore';
 import axios from 'axios';
 
 export default function DoctorNavbar() {
-    let { logout, userData , accessToken} = useContext(AuthContext);
+    let { logout, userData, accessToken, userName } = useContext(AuthContext);
     let [users, setUsers] = useState([]);
     let getUserData = async () => {
         let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/auth`, {
@@ -21,7 +21,7 @@ export default function DoctorNavbar() {
     return (
         <>
 
-        {userData ?  <nav className="navbar navbar-expand-lg bg-primary">
+            {userData ? <nav className="navbar navbar-expand-lg bg-primary">
                 <div className="container">
                     <div className='dropdown'>
                         <a className="nav-link" data-bs-toggle="dropdown" aria-expanded="false">
@@ -32,6 +32,9 @@ export default function DoctorNavbar() {
                             <NavLink to='/' onClick={logout} className="dropdown-item " > تسجيل خروج</NavLink>
                         </ul>
 
+                    </div>
+                    <div className='ms-2 '>
+                        <p className=' text-white fw-bold fs-6'>{userName}</p>
                     </div>
                     <button className="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span className="navbar-toggler-icon " />
@@ -45,9 +48,9 @@ export default function DoctorNavbar() {
 
                     </div>
                 </div>
-            </nav> :'' }
-          
-           
+            </nav> : ''}
+
+
         </>
     )
 }

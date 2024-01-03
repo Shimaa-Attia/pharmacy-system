@@ -272,7 +272,7 @@ export default function DoctorOrders() {
       paid_value: Joi.string().required().messages({
         'string.empty': 'القيمة المسددة مطلوبة',
         'any.required': 'القيمة المسددة مطلوبة',
-    }),
+      }),
     });
     return schema.validate(paid, { abortEarly: false });
   };
@@ -294,6 +294,33 @@ export default function DoctorOrders() {
 
   };
 
+  let showSalePoints = () => {
+    if (salePoints.length > 0) {
+      return (
+        <div >
+          {salePoints.map((point) => <div key={point.id}>
+            <div className={`row`}>
+              <div className="col-4 ">
+                <p className='bg-secondary p-1 text-white rounded'>{point?.name}</p>
+              </div>
+              <div className="col-4 ">
+                <p className='bg-secondary p-1 text-white rounded '>{point?.unpaid_balance}</p>
+              </div>
+            </div>
+          </div>)}
+
+        </div>
+      )
+    } else {
+      return (
+        <div className='h-75' >
+          <div className=' d-flex justify-content-center h-100  align-items-center' >
+            <i className='fa fa-spinner fa-spin fa-2x '></i>
+          </div>
+        </div>
+      )
+    }
+  }
   return (
     <>
       <Helmet>
@@ -329,12 +356,15 @@ export default function DoctorOrders() {
           <div className="col-md-3">
             <NavLink to={`/doctorlayout/add/${id}`} className='btn btn-primary mb-1' >إضافة أوردر</NavLink>
           </div>
-          <div className="col-md-12 m-auto d-flex " >
+          <div className="col-md-12 row m-auto d-flex " >
+            <div className="col-md-4 mt-1">
+              {showSalePoints()}
+            </div>
             <div className="col-md-3 m-auto bg-secondary-subtle mt-1 rounded">
               <div className=' text-bg-danger rounded p-1 fw-bolder ' >إجمالي المبلغ المطلوب سداده</div>
               <div className='fw-bolder p-1 '>{unpaidAmount?.unpaidAmount}</div>
             </div>
-            <div className="col-md-6">
+            <div className="col-md-5">
               <input type="text" className='form-control text-end mt-1' placeholder='بحث عن أوردر...' onChange={handleSearchChange} />
             </div>
           </div>

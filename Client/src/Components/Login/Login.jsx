@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import { AuthContext } from '../../Context/AuthStore';
 import logo from '../../imgs/logo.jpg'
 
-export default function Login({ saveUserData }) {
+export default function Login({ saveUserData}) {
 
     let navigate = useNavigate();
     let [isLoading, setIsLoading] = useState(false);
@@ -25,6 +25,7 @@ export default function Login({ saveUserData }) {
         if (data.message == 'تم تسجيل دخولك بنجاح') {
             setIsLoading(false);
             localStorage.setItem('userToken', data.token);
+            localStorage.setItem('userName', data.user.name);
             saveUserData();
             toast.success(data.message, {
                 position: 'top-center',
