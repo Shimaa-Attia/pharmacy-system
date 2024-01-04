@@ -23,6 +23,7 @@ class OrderResource extends JsonResource
             "unpaid"=>$this->totalAmmount-$this->paid,
             'notes'=>$this->notes,
             'created_at'=> $this->created_at->format('Y-m-d H:i'),
+            'isPaid_theOtherSystem'=>boolval($this->isPaid_theOtherSystem),
             'customer'=>$this->customer,
             'customer_phone'=>$this->customer_phone,
             'customer_address'=>$this->customer_address,

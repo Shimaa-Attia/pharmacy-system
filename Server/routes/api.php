@@ -96,6 +96,7 @@ Route::middleware(['auth:api'])->group(function(){
          Route::post('/specificOrders',[OrdersController::class,'ordersInSpecificTime']);
         //filter
          Route::get('/filter',[OrdersController::class,'filter']);
+         Route::post('/isPaid_theOtherSystem/{id}',[OrdersController::class,'isPaid_theOtherSystem']);
 
     });
 

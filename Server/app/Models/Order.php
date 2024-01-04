@@ -20,7 +20,8 @@ class Order extends Model
         'customer_phone',
         'customer_address',
         'user_id',
-        'sale_point_id'
+        'sale_point_id',
+        'isPaid_theOtherSystem'
     ];
 
     public function customer(){

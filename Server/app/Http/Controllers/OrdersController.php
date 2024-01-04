@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use PhpParser\Node\Stmt\Return_;
+use Symfony\Component\HttpFoundation\Test\Constraint\ResponseIsRedirected;
 
 class OrdersController extends Controller
 {
@@ -237,12 +238,13 @@ class OrdersController extends Controller
                        ->OrWhere(function ($query) use($key){
                           $query->where(Order::raw('totalAmmount - paid'), 'like', "$key.%");
                         })
-                        ->orWhereHas('customer', function ($query) use ($key) {
-                            $query->where('name', 'like', "%$key%")
-                                ->OrWhere('code', 'like', "%$key%");
-                        }) ->orWhereHas('sale_point', function ($query) use ($key) {
-                            $query->where('name', 'like', "%$key%");
-                        });
+                ->orWhereHas('customer', function ($query) use ($key) {
+                    $query->where('name', 'like', "%$key%")
+                        ->OrWhere('code', 'like', "%$key%");
+                })
+                ->orWhereHas('sale_point', function ($query) use ($key) {
+                    $query->where('name', 'like', "%$key%");
+                });
                 })->orderBy('created_at', 'DESC')->get();
             return OrderResource::collection($orders);
 
@@ -348,12 +350,40 @@ class OrdersController extends Controller
                 "numOfOrders"=>$numOfOrders
               ];
             }
-         }
+        }
 
-         return response()->json([
+        return response()->json([
             "totalNumOfOrders" =>$totalNumOfOrders,
             "users" =>$result
-         ]) ;
+        ]) ;
 
-       }
+    }
+
+    public function isPaid_theOtherSystem(Request $request,$id){
+        $order = Order::find($id);
+        if ($order == null) {
+            return response()->json([
+                "message" => "هذا الطلب غير موجود"
+            ], 404);
+        }
+        $validator = Validator::make($request->all(), [
+            'isPaid_theOtherSystem' => 'required|boolean',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                "message" => $validator->errors()
+            ], 409);
+        }
+
+        $isPaid_theOtherSystem = $request->boolean('isPaid_theOtherSystem');
+        $order->update([
+            "isPaid_theOtherSystem" =>$isPaid_theOtherSystem
+
+        ]);
+        return response()->json([
+            "message"=>"done"
+        ]);
+
+    }
+
 }
