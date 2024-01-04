@@ -12,7 +12,7 @@ export default function Orders() {
   let { accessToken } = useContext(AuthContext);
   let formInput = document.getElementById('paid');
   let [orders, setOrders] = useState([]);
-  let [unpaid , setUnpaid] = useState('')
+  let [unpaid, setUnpaid] = useState('')
   let [salePoints, setSalePoints] = useState([]);
   let getSalePointsData = async () => {
     let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/points`, {
@@ -59,7 +59,7 @@ export default function Orders() {
   }
   let [filterUsertId, setFilterUserId] = useState('');
   function handleUserChange(selectedOption) {
-   
+
     setFilterUserId(selectedOption.value)
   }
   let [filterIsPaid, setFilterIsPaid] = useState('');
@@ -103,7 +103,7 @@ export default function Orders() {
     } else if (filterIsPaid !== undefined && filterIsPaid.length > 0
       && (filterUsertId === undefined || filterUsertId === '')
       && (filterPointId === undefined || filterPointId === '')
-      ) {
+    ) {
       console.log('filter is paid only ');
       orderResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/filter?is_paid=${filterIsPaid}`, {
         headers: {
@@ -114,7 +114,7 @@ export default function Orders() {
       setOrders(orderResult.data.data)
 
     } else if (filterPointId !== undefined && filterPointId.length > 0
-      && (filterUsertId !== undefined && filterUsertId.length >0)
+      && (filterUsertId !== undefined && filterUsertId.length > 0)
       && (filterIsPaid === undefined || filterIsPaid === '')) {
       console.log('filter point and users');
       orderResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/filter?point_id=${filterPointId}&user_id=${filterUsertId}`, {
@@ -124,7 +124,7 @@ export default function Orders() {
       });
       setOrders(orderResult.data.data);
 
-     }  else if (filterPointId !== undefined && filterPointId.length > 0
+    } else if (filterPointId !== undefined && filterPointId.length > 0
       && (filterIsPaid !== undefined && filterIsPaid.length > 0)
       && (filterUsertId === undefined || filterUsertId === '')) {
       console.log('filter point and paids');
@@ -135,8 +135,8 @@ export default function Orders() {
       });
       setOrders(orderResult.data.data);
 
-     }
-     else if (filterIsPaid !== undefined && filterIsPaid.length > 0
+    }
+    else if (filterIsPaid !== undefined && filterIsPaid.length > 0
       && (filterUsertId !== undefined && filterUsertId.length > 0)
       && (filterPointId === undefined || filterPointId === '')) {
       console.log('filter users and paids');
@@ -147,8 +147,8 @@ export default function Orders() {
       });
       setOrders(orderResult.data.data);
 
-     }
-     else if (filterIsPaid !== undefined && filterIsPaid.length > 0
+    }
+    else if (filterIsPaid !== undefined && filterIsPaid.length > 0
       && (filterUsertId !== undefined && filterUsertId.length > 0)
       && (filterPointId !== undefined && filterPointId.length > 0)) {
       console.log('filter all');
@@ -159,8 +159,8 @@ export default function Orders() {
       });
       setOrders(orderResult.data.data);
 
-     }
-     else {
+    }
+    else {
       orderResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders`, {
         headers: {
           "Authorization": `Bearer ${accessToken}`
@@ -168,11 +168,43 @@ export default function Orders() {
       });
     }
     setOrders(orderResult.data.data);
+    console.log(orderResult.data);
   };
-  useEffect(() => { getOrderData() }, [searchText, filterPointId, filterUsertId,filterIsPaid]);
+  useEffect(() => { getOrderData() }, [searchText, filterPointId, filterUsertId, filterIsPaid]);
 
-  let [orderId, setOrderId] = useState('');
-let [isChecked , setIsChecked] = useState(false)
+  let [orderId, setOrderId] = useState(''); // for making paid
+  let [orderIdOther, setOrderIdOther] = useState('');
+  let [paidsOnOtherSystem, setPaidsOnOtherSystem] = useState({
+    isPaid_theOtherSystem: ''
+  })
+  let [isChecked, setIsChecked] = useState(false)
+  let inputPaidValue = document.getElementById('isPaid_theOtherSystem')
+  let getInputPaidValue = () => {
+    setPaidsOnOtherSystem({
+      ...paidsOnOtherSystem,
+      isPaid_theOtherSystem: inputPaidValue?.value,
+    })
+  }
+  let getChekedValue = () => {
+    getInputPaidValue();
+  }
+  let sendIsPaidOnThOtherSystemToApi = async (ordId) => {
+    await axios.post(`${process.env.REACT_APP_API_URL}/api/orders/isPaid_theOtherSystem/${ordId}`, paidsOnOtherSystem, {
+      headers: {
+        "Authorization": `Bearer ${accessToken}`
+      }
+    }).then((res) => {
+      toast.success(res.data.message);
+    }).catch((errors) => {
+      toast.error('حدث خطأ ما');
+      toast.error(errors?.response?.data?.message);
+    })
+  }
+  let submitIsPaidOnTheSystem = (e) => {
+    e.preventDefault();
+    sendIsPaidOnThOtherSystemToApi(orderIdOther)
+  }
+
   let showOrders = () => {
     if (orders.length > 0) {
       return (
@@ -180,7 +212,7 @@ let [isChecked , setIsChecked] = useState(false)
           <table dir="rtl" responsive='sm' className='table table-bordered table-hover text-center table-responsive-list '>
             <thead className='table-primary'>
               <tr>
-                <th>رقم</th>
+                <th>#</th>
                 <th> تاريخ الإنشاء</th>
                 <th> نقطة اليبع</th>
                 <th>اسم الموظف</th>
@@ -195,11 +227,19 @@ let [isChecked , setIsChecked] = useState(false)
             </thead>
             <tbody>
               {orders.map((order, index) => <tr key={order.id}>
-                <td data-label="#"><input type="checkbox"/></td>
+                <td>
+                  <form onSubmit={submitIsPaidOnTheSystem}>
+                    <input name="isPaid_theOtherSystem" type='hidden' defaultValue={1} id="isPaid_theOtherSystem" />
+                    <button className=' border-0 rounded text-white bg-danger px-1' onClick={() => {
+                      setOrderIdOther(order.id)
+                      getChekedValue()
+                    }} type='submit'>تم</button>
+                  </form>
+                </td>
                 <td data-label="تاريخ الإنشاء"  >{order.created_at}</td>
                 <td data-label="نقطة البيع">{order?.sale_point?.name}</td>
                 <td data-label="اسم الموظف">{order?.delivery_man?.name}</td>
-                <td data-label="اسم العميل">{order?.customer?.code}</td>
+                <td data-label="كود العميل">{order?.customer?.code}</td>
                 <td data-label="قيمة الأوردر">{order.cost}</td>
                 <td data-label="الإجمالي">{order.total_ammount}</td>
                 <td data-label="المدفوع">{order.paid}</td>
@@ -216,7 +256,7 @@ let [isChecked , setIsChecked] = useState(false)
                     <i className='bi bi-pencil-square text-bg-primary mx-1 p-1 rounded'></i>
                   </NavLink>
                   <NavLink to={`/orders/details/${order.id}`} >
-                    <i className='bi bi-list-ul text-bg-success mx-1 p-1 rounded'></i>
+                    <i className='bi bi-list-ul text-bg-success mx-1  p-1 rounded'></i>
                   </NavLink>
                 </td>
 
@@ -231,7 +271,7 @@ let [isChecked , setIsChecked] = useState(false)
     } else {
       return (
         <div className=' d-flex justify-content-center  height-calc-70 align-items-center' >
-         {orders.length <= 0 && searchText.length <= 0 && filterPointId.length <= 0 && filterUsertId.length <= 0 && filterIsPaid.length <= 0 ?
+          {orders.length <= 0 && searchText.length <= 0 && filterPointId.length <= 0 && filterUsertId.length <= 0 && filterIsPaid.length <= 0 ?
             <i className='fa fa-spinner fa-spin  fa-5x'></i>
             : <div className='alert alert-danger w-50 text-center'>لا يوجد أوردرات</div>
           }

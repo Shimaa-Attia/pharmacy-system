@@ -6,7 +6,7 @@ import { AuthContext } from '../../Context/AuthStore';
 
 export default function Sidebar({ userData }) {
 
-  let {deliveryData} = useContext(AuthContext);
+
 
 
     return (
