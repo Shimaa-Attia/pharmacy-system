@@ -174,36 +174,23 @@ export default function Orders() {
 
   let [orderId, setOrderId] = useState(''); // for making paid
   let [orderIdOther, setOrderIdOther] = useState('');
-  let [paidsOnOtherSystem, setPaidsOnOtherSystem] = useState({
-    isPaid_theOtherSystem: ''
-  })
   let [isChecked, setIsChecked] = useState(false)
   let inputPaidValue = document.getElementById('isPaid_theOtherSystem')
-  let getInputPaidValue = () => {
-    setPaidsOnOtherSystem({
-      ...paidsOnOtherSystem,
-      isPaid_theOtherSystem: inputPaidValue?.value,
-    })
-  }
-  let getChekedValue = () => {
-    getInputPaidValue();
-  }
+
   let sendIsPaidOnThOtherSystemToApi = async (ordId) => {
-    await axios.post(`${process.env.REACT_APP_API_URL}/api/orders/isPaid_theOtherSystem/${ordId}`, paidsOnOtherSystem, {
+    await axios.post(`${process.env.REACT_APP_API_URL}/api/orders/isPaid_theOtherSystem/${ordId}`,{}, {
       headers: {
         "Authorization": `Bearer ${accessToken}`
       }
     }).then((res) => {
       toast.success(res.data.message);
+      getOrderData()
     }).catch((errors) => {
       toast.error('حدث خطأ ما');
       toast.error(errors?.response?.data?.message);
     })
   }
-  let submitIsPaidOnTheSystem = (e) => {
-    e.preventDefault();
-    sendIsPaidOnThOtherSystemToApi(orderIdOther)
-  }
+
 
   let showOrders = () => {
     if (orders.length > 0) {
@@ -228,13 +215,7 @@ export default function Orders() {
             <tbody>
               {orders.map((order, index) => <tr key={order.id}>
                 <td>
-                  <form onSubmit={submitIsPaidOnTheSystem}>
-                    <input name="isPaid_theOtherSystem" type='hidden' defaultValue={1} id="isPaid_theOtherSystem" />
-                    <button className=' border-0 rounded text-white bg-danger px-1' onClick={() => {
-                      setOrderIdOther(order.id)
-                      getChekedValue()
-                    }} type='submit'>تم</button>
-                  </form>
+                  {++index}
                 </td>
                 <td data-label="تاريخ الإنشاء"  >{order.created_at}</td>
                 <td data-label="نقطة البيع">{order?.sale_point?.name}</td>
@@ -258,8 +239,8 @@ export default function Orders() {
                   <NavLink to={`/orders/details/${order.id}`} >
                     <i className='bi bi-list-ul text-bg-success mx-1  p-1 rounded'></i>
                   </NavLink>
+                  {order.isPaid_theOtherSystem ? <button className='btn btn-sm btn-success' onClick={ () => sendIsPaidOnThOtherSystemToApi(order.id)} >مدفوع</button> : <button className='btn btn-sm btn-danger' onClick={() => sendIsPaidOnThOtherSystemToApi(order.id)} >غير مدفوع</button>}
                 </td>
-
               </tr>
 
               )}
@@ -333,7 +314,6 @@ export default function Orders() {
 
   };
 
-
   return (
     <>
       <Helmet>
@@ -380,11 +360,9 @@ export default function Orders() {
               <input type="text" name="paid_value" id="paid" className='form-control' onChange={getInputValue} />
             </div>
             <button type='submit' className=' btn text-bg-success'>سدد</button>
-
           </form>
         </div>
       </div>
-
       {showOrders()}
     </>
   )
