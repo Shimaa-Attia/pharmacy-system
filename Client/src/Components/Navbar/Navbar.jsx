@@ -5,8 +5,8 @@ import { AuthContext } from '../../Context/AuthStore';
 
 
 
-export default function Navbar({ userData, logout }) {
-  let { userName } = useContext(AuthContext);
+export default function Navbar() {
+  let { userName ,userData , logout } = useContext(AuthContext);
   return (
     <>
       {userData ?

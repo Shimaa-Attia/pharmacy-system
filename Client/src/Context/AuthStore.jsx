@@ -34,7 +34,7 @@ export default function AuthContextProvider(props) {
         toast.success(res.data.message, {
             position: 'top-center'
         });
-        <Navigate to='/' />
+      return <Navigate to='/'/>;
     };
 
 

@@ -4,11 +4,8 @@ import styles from './Sidebar.module.css';
 import { AuthContext } from '../../Context/AuthStore';
 
 
-export default function Sidebar({ userData }) {
-
-
-
-
+export default function Sidebar() {
+    let { userData } = useContext(AuthContext);
     return (
         <>
             {userData ?

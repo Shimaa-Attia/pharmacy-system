@@ -13,7 +13,7 @@ export default function EditeOrder() {
   let { id } = useParams();
   let navigate = useNavigate();
   let [isLoading, setIsLoading] = useState(false);
-  let[orderData , setOrderData] = useState([])
+  let [orderData, setOrderData] = useState([])
 
   let [users, setUsers] = useState([]);
   let [clients, setClients] = useState([]);
@@ -24,11 +24,11 @@ export default function EditeOrder() {
     cost: '',
     notes: '',
     sale_point_id: '',
-    paid:'',
- 
+    paid: '',
+
   });
   let getInputValue = (event) => {
-    let myOrders = { ...orders }; 
+    let myOrders = { ...orders };
     myOrders[event?.target?.name] = event?.target?.value;
     setOrders(myOrders);
 
@@ -48,10 +48,10 @@ export default function EditeOrder() {
       cost: data.data?.cost,
       notes: data.data?.notes,
       sale_point_id: data.data?.sale_point?.id,
-      paid:data.data?.paid,
-   
+      paid: data.data?.paid,
+
     });
- 
+
   };
   useEffect(() => {
     getOrder()
@@ -116,9 +116,9 @@ export default function EditeOrder() {
       total_ammount: Joi.number().required(),
       cost: Joi.number().required(),
       sale_point_id: Joi.number().required(),
-      paid:Joi.string().empty(''),
+      paid: Joi.string().empty(''),
       notes: Joi.any().empty(""),
-     
+
     });
     return schema.validate(orders, { abortEarly: false });
   };
@@ -169,24 +169,24 @@ export default function EditeOrder() {
           <div className="row gy-3">
             <div className="col-md-4">
               <label htmlFor="user_code" className='form-label'>كود  الموظف </label>
-              <input type="text" name="user_code" id="user_code"   className='form-control '
+              <input type="text" name="user_code" id="user_code" className='form-control '
                 defaultValue={orderData?.delivery_man?.code}
                 onChange={getInputValue}
-                 />
+              />
             </div>
             <div className="col-md-4">
               <label htmlFor="customer_code" className='form-label'>كود العميل  </label>
               <input type="text" name="customer_code" id="customer_code" className='form-control '
                 onChange={getInputValue}
-               defaultValue={orderData?.customer?.code}
-             
-                  />
+                defaultValue={orderData?.customer?.code}
+
+              />
             </div>
             <div className="col-md-4">
               <label htmlFor="sale_point_id" className='form-label'>نقطة البيع </label>
               <select name="sale_point_id" defaultValue={0} className='form-control ' id="sale_point_id"
-                onChange={getInputValue}>   
-                  <option value={0} hidden disabled>اختار</option>
+                onChange={getInputValue}>
+                <option value={0} hidden disabled>اختار</option>
                 {salePoints.map((point) => <option key={point.id} value={point?.id} selected={orderData?.sale_point?.id}  >{point.name}</option>)}
               </select>
             </div>
@@ -195,7 +195,7 @@ export default function EditeOrder() {
               <input type="text" className='form-control ' name="cost" id="cost"
                 onFocus={getInputValue}
                 defaultValue={orderData?.cost}
-              
+
               />
             </div>
             <div className="col-md-4">
@@ -203,23 +203,23 @@ export default function EditeOrder() {
               <input type="text" className='form-control ' name="total_ammount" id="total_ammount"
                 onChange={getInputValue}
                 defaultValue={orderData?.total_ammount}
-                />
+              />
             </div>
             <div className="col-md-4">
               <label htmlFor="paid" className='form-label'>القيمة المسددة </label>
               <input type="text" className='form-control ' name="paid" id="paid"
                 onChange={getInputValue}
                 defaultValue={orderData?.paid}
-             
-                />
+
+              />
             </div>
             <div className="col-md-12">
               <label htmlFor="notes" className='form-label'>ملاحظات</label>
               <textarea type='text' name="notes" id="notes" className='form-control editedElement'
                 onChange={getInputValue}
-                defaultValue={orderData.notes !== null ? orderData.notes :"" }
-               
-                 />
+                defaultValue={orderData.notes !== null ? orderData.notes : ""}
+
+              />
             </div>
             <div className="col-md-3">
               <button type='submit' className='btn btn-primary form-control fs-5'>

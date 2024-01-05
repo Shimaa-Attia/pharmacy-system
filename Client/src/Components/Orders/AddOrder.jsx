@@ -134,7 +134,6 @@ export default function AddOrder() {
             });
             textarea.value = '';
         }).catch((errors) => {
-            console.log(errors);
             setIsLoading(false);
             const errorList = errors?.response?.data?.message;
             if (errorList !== undefined) {
@@ -154,12 +153,12 @@ export default function AddOrder() {
             user_code: Joi.string().alphanum().required().messages({
                 'string.empty': 'كود المستخدم مطلوب',
                 'any.required': 'كود المستخدم مطلوب',
-                'string.alphanum':'كود المستخدم يجب أن يكون أرقام أو حروف، لا يحتوي على رموز'
+                'string.alphanum': 'كود المستخدم يجب أن يكون أرقام أو حروف، لا يحتوي على رموز'
             }),
             customer_code: Joi.string().alphanum().required().messages({
                 'string.empty': 'كود العميل مطلوب',
                 'any.required': 'كود العميل مطلوب',
-                'string.alphanum':'كود العميل يجب أن يكون أرقام أو حروف، لا يحتوي على رموز'
+                'string.alphanum': 'كود العميل يجب أن يكون أرقام أو حروف، لا يحتوي على رموز'
             }),
             cost: Joi.string().required().messages({
                 'string.empty': 'قيمة الأوردر مطلوبة',
@@ -175,7 +174,7 @@ export default function AddOrder() {
             }),
             notes: Joi.string().empty(''),
         });
-        return schema.validate(orders, { abortEarly: false  });
+        return schema.validate(orders, { abortEarly: false });
     };
 
     let submitOrderForm = (e) => {
@@ -184,6 +183,15 @@ export default function AddOrder() {
         let validation = validateOrderForm();
         if (!validation.error) {
             sendOrderDataToApi();
+            setOrders({
+                user_code: '',
+                customer_code: '',
+                total_ammount: '',
+                cost: '',
+                notes: '',
+                sale_point_id: ''
+
+            })
         } else {
             setIsLoading(false);
             try {
@@ -268,7 +276,7 @@ export default function AddOrder() {
                             <label htmlFor="sale_point_id" className='form-label'>نقطة البيع </label>
                             <select name="sale_point_id" defaultValue={0} className='form-control' id="sale_point_id"
                                 onChange={getInputValue}>
-                                <option value={0} hidden selected disabled>اختار</option>
+                                <option value={0} hidden disabled>اختار</option>
                                 {salePoints.map((point) => <option key={point.id} value={point.id}>{point.name}</option>)}
                             </select>
                         </div>

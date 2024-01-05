@@ -168,15 +168,10 @@ export default function Orders() {
       });
     }
     setOrders(orderResult.data.data);
-    console.log(orderResult.data);
   };
   useEffect(() => { getOrderData() }, [searchText, filterPointId, filterUsertId, filterIsPaid]);
 
   let [orderId, setOrderId] = useState(''); // for making paid
-  let [orderIdOther, setOrderIdOther] = useState('');
-  let [isChecked, setIsChecked] = useState(false)
-  let inputPaidValue = document.getElementById('isPaid_theOtherSystem')
-
   let sendIsPaidOnThOtherSystemToApi = async (ordId) => {
     await axios.post(`${process.env.REACT_APP_API_URL}/api/orders/isPaid_theOtherSystem/${ordId}`,{}, {
       headers: {
@@ -195,11 +190,10 @@ export default function Orders() {
   let showOrders = () => {
     if (orders.length > 0) {
       return (
-        <div className="shadow rounded rounded-4 bg-white mx-3 p-3 ">
-          <table dir="rtl" responsive='sm' className='table table-bordered table-hover text-center table-responsive-list '>
+        <div className="shadow rounded rounded-4 bg-white mx-3 p-3 table-responsive">
+          <table dir="rtl" responsive='sm' className='table  table-hover text-center align-middle table-responsive-list '>
             <thead className='table-primary'>
               <tr>
-                <th>#</th>
                 <th> تاريخ الإنشاء</th>
                 <th> نقطة اليبع</th>
                 <th>اسم الموظف</th>
@@ -214,9 +208,6 @@ export default function Orders() {
             </thead>
             <tbody>
               {orders.map((order, index) => <tr key={order.id}>
-                <td>
-                  {++index}
-                </td>
                 <td data-label="تاريخ الإنشاء"  >{order.created_at}</td>
                 <td data-label="نقطة البيع">{order?.sale_point?.name}</td>
                 <td data-label="اسم الموظف">{order?.delivery_man?.name}</td>
@@ -234,12 +225,15 @@ export default function Orders() {
                     <i className='bi bi-trash text-bg-danger p-1 mx-1 rounded'></i>
                   </NavLink>
                   <NavLink to={`/orders/edite/${order.id}`} >
-                    <i className='bi bi-pencil-square text-bg-primary mx-1 p-1 rounded'></i>
+                    <i className='bi bi-pencil-square text-bg-primary mx-1  p-1 rounded'></i>
                   </NavLink>
                   <NavLink to={`/orders/details/${order.id}`} >
                     <i className='bi bi-list-ul text-bg-success mx-1  p-1 rounded'></i>
                   </NavLink>
-                  {order.isPaid_theOtherSystem ? <button className='btn btn-sm btn-success' onClick={ () => sendIsPaidOnThOtherSystemToApi(order.id)} >مدفوع</button> : <button className='btn btn-sm btn-danger' onClick={() => sendIsPaidOnThOtherSystemToApi(order.id)} >غير مدفوع</button>}
+                  {order.isPaid_theOtherSystem ? <i className='bi bi-check-circle-fill text-success fs-4' 
+                  onClick={ () => sendIsPaidOnThOtherSystemToApi(order.id)} ></i>
+                   : <i className='bi bi-x-circle-fill text-danger fs-4 ' 
+                   onClick={() => sendIsPaidOnThOtherSystemToApi(order.id)} ></i>}
                 </td>
               </tr>
 
@@ -285,6 +279,7 @@ export default function Orders() {
     }).then((res) => {
       toast.success(res.data.message);
       formInput.value = '';
+      getOrderData()
     }).catch((errors) => {
       toast.error(errors?.response?.data?.message);
 

@@ -27,18 +27,16 @@ export default function SalePoints() {
       formInput.value = '';
 
     }).catch((errors) => {
-      // console.log('erorr');
-      // console.log(errors);
-      // const errorList = errors?.response?.data?.message;
-      // if (errorList !== undefined) {
-      //   Object.keys(errorList).map((err) => {
-      //     errorList[err].map((err) => {
-      //       toast.error(err);
-      //     })
-      //   });
-      // } else {
-      //   toast.error("حدث خطأ ما");
-      // }
+      const errorList = errors?.response?.data?.message;
+      if (errorList !== undefined) {
+        Object.keys(errorList)?.map((err) => {
+          errorList[err]?.map((err) => {
+            toast.error(err);
+          })
+        });
+      } else {
+        toast.error("حدث خطأ ما");
+      }
     })
   };
 
@@ -48,10 +46,13 @@ export default function SalePoints() {
     });
     return schema.validate(points, { abortEarly: false });
   };
-  let submitPointsForm = (e) => {
+  let submitPointsForm = () => {
     let validation = validatePointForm();
     if (!validation.error) {
       sendPointsDataToApi()
+      setPoints({
+        name:''
+      })
     } else {
       try {
         validation.error.details.map((err) => {
@@ -65,6 +66,7 @@ export default function SalePoints() {
 
   //Show Sales Ponits 
   let [salePoints, setSalePoints] = useState([]);
+
   let getSalePointsData = async () => {
     let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/points`, {
       headers: {
@@ -73,7 +75,6 @@ export default function SalePoints() {
     });
 
     setSalePoints(data.data);
-
   };
   useEffect(() => {
     getSalePointsData()
@@ -85,14 +86,13 @@ export default function SalePoints() {
         <div className='w-100 ' >
           {salePoints.map((point, index) => <div key={point.id}>
 
-
             <div className={`row ${styles.bgGray}`}>
               <div className="col-md-4 d-flex">
-                <p className='bg-secondary-subtle p-1 ms-2 rounded' >اسم نقطة البيع</p>
+                <p className='bg-secondary-subtle p-1 ms-2 rounded' >اسم النقطة </p>
                 <p className='bg-body-secondary p-1 rounded'>{point?.name}</p>
               </div>
               <div className="col-md-4  d-flex">
-                <p className=' bg-secondary-subtle ms-2  p-1 rounded '> رصيد نقطة البيع </p>
+                <p className=' bg-secondary-subtle ms-2  p-1 rounded '> رصيد النقطة  </p>
                 <p className='bg-body-secondary p-1 rounded '>{point?.unpaid_balance}</p>
               </div>
               <div className="col-md-4 d-flex">
@@ -130,6 +130,7 @@ export default function SalePoints() {
         }
       });
       toast.success(data.message);
+      getSalePointsData()
     } catch (error) {
 
       toast.error('حدث خطأ ما، حاول مرة أخرى')
@@ -137,25 +138,22 @@ export default function SalePoints() {
   };
 
   //Edite Sale Point 
+  let [edtitedPoints , setEditedPoints] = useState({
+    name:''
+  })
   let sendEditedPointsDataToApi = async (pointId) => {
-
     await axios.put(`${process.env.REACT_APP_API_URL}/api/points/${pointId}`, points, {
       headers: {
         "Authorization": `Bearer ${accessToken}`
       }
     }).then((res) => {
-      console.log('res');
-      console.log(res);
       toast.success(res.data.message);
       formInput.value = '';
-
     }).catch((errors) => {
-      console.log('err');
-      console.log(errors);
       const errorList = errors?.response?.data?.message;
       if (errorList !== undefined) {
-        Object.keys(errorList).map((err) => {
-          errorList[err].map((err) => {
+        Object.keys(errorList)?.map((err) => {
+          errorList[err]?.map((err) => {
             toast.error(err);
           })
         });
@@ -174,7 +172,10 @@ export default function SalePoints() {
   let submitEditedPointsForm = (e) => {
     let validation = validateEditedPointForm();
     if (!validation.error) {
-      sendEditedPointsDataToApi(pointId)
+      sendEditedPointsDataToApi(pointId);
+      setPoints({
+        name:''
+      })
     } else {
       try {
         validation.error.details.map((err) => {
@@ -190,9 +191,10 @@ export default function SalePoints() {
     e.preventDefault();
     if (mainBtn.innerHTML === 'إضافة') {
       submitPointsForm()
-
+      getSalePointsData()
     } else {
       submitEditedPointsForm()
+      getSalePointsData()
       mainBtn.innerHTML = 'إضافة'
       mainBtn.classList.remove('btn-outline-danger');
     }
@@ -201,7 +203,10 @@ export default function SalePoints() {
   let getInputInfo = (index) => {
     pointNameInput.value = salePoints[index]?.name;
     pointNameInput.focus();
-    mainBtn.innerHTML = 'تعديل';
+    setPoints({
+      name:pointNameInput.value,
+    })
+    mainBtn.innerHTML = 'تعديل';   
     mainBtn.classList.add('btn-outline-danger');
   }
 
