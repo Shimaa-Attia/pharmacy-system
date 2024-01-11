@@ -42,8 +42,15 @@ class OrdersController extends Controller
         if ((Auth::user()->role == 'delivery' || Auth::user()->role == 'doctor') && Auth::check()) {
             $request->request->add(['user_code' => Auth::user()->code]);
         }
-        // return $request->user_code;
 
+        if ((Auth::user()->role == 'delivery') && Auth::check()) {
+            $validator = Validator::make($request->all(), [
+                'total_ammount' => 'numeric|required',
+                'customer_code' => 'required',
+                'user_code' => 'required|exists:users,code',
+                'sale_point_id' => 'required|exists:sale_points,id'
+            ]);
+        }else{
         $validator = Validator::make($request->all(), [
             'cost' => 'numeric|required',
             'total_ammount' => 'numeric|required|gte:cost',
@@ -53,10 +60,12 @@ class OrdersController extends Controller
             'user_code' => 'required|exists:users,code',
             'sale_point_id' => 'required|exists:sale_points,id'
         ]);
+        }
         if ($validator->fails()) {
             return response()->json([
                 "message" => $validator->errors()], 409);
         }
+
 
         $user = User::where('code', $request->user_code)->first('id');
         $customer = Customer::where('code', $request->customer_code)->first('id');
@@ -69,13 +78,12 @@ class OrdersController extends Controller
             ]);
         }
         //create
+
         $order = Order::create([
             "cost" => $request->cost,
             "totalAmmount" => $request->total_ammount,
             "notes" => $request->notes,
             "customer_id" => $customer->id,
-            // "customer_phone" => $request->customer_phone,
-            // "customer_address" => $request->customer_address,
             "user_id" => $user->id,
             "sale_point_id" => $request->sale_point_id
         ]);
@@ -97,18 +105,24 @@ class OrdersController extends Controller
             ], 404);
         }
         //validation
-        $validator = Validator::make($request->all(), [
-            'cost' => 'numeric|required',
-            'total_ammount' => 'numeric|required|gte:cost',
-            'paid' => 'numeric|required|lte:total_ammount',
-            'customer_code' => 'required',
-            // 'customer_id' => 'required|exists:customers,id',
-            // 'customer_phone' => 'required|regex:/(01)[0-9]{9}/|exists:custom_fields,value',
-            // 'customer_address' => 'required|exists:custom_fields,value',
-            'user_code' => 'required|exists:users,code',
-            'sale_point_id' => 'required|exists:sale_points,id'
-        ]);
-
+        if($order->user->role =='delivery' && $order->cost == null){
+            $validator = Validator::make($request->all(), [
+                'total_ammount' => 'numeric|required',
+                'paid' => 'numeric|required|lte:total_ammount',
+                'customer_code' => 'required',
+                'user_code' => 'required|exists:users,code',
+                'sale_point_id' => 'required|exists:sale_points,id'
+            ]);
+        }else{
+            $validator = Validator::make($request->all(), [
+                'cost' => 'numeric|required',
+                'total_ammount' => 'numeric|required|gte:cost',
+                'paid' => 'numeric|required|lte:total_ammount',
+                'customer_code' => 'required',
+                'user_code' => 'required|exists:users,code',
+                'sale_point_id' => 'required|exists:sale_points,id'
+            ]);
+        }
         if ($validator->fails()) {
             return response()->json([
                 "message" => $validator->errors()
@@ -361,6 +375,32 @@ class OrdersController extends Controller
 
     }
 
+     public function deliveryOrderPay($id){
+        if ((Auth::user()->role == 'delivery') && Auth::check()) {
+           $user_id = Auth::user()->id;
+           $order= Order::where('id',$id)
+                    ->where('user_id',$user_id)->first();
+            if($order==null){
+                return response()->json([
+                    "message" => "هذا الطلب غير موجود"
+                ], 404);
+            }
+            $update = $order->update([
+                "paid" => $order->totalAmmount
+
+            ]);
+            if ($update) {
+                return response()->json([
+                    "message" => "تم تسديد إجمالي المبلغ"
+                ]);
+            } else {
+                return response()->json([
+                    "message" => "حدث خطأ ما"
+                ], 409);
+            }
+        }
+
+    }
     public function isPaid_theOtherSystem(Request $request, $id)
     {
 

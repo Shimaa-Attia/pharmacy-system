@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\OrderResource;
 use App\Http\Resources\UserResouce;
+use App\Models\CustomProperties;
 use App\Models\Order;
 use App\Models\User;
 use Exception;
@@ -27,6 +28,7 @@ class UserController extends Controller
             'role' => 'required|in:delivery,admin,doctor',
             'code' => 'required',
             'hourRate' => 'numeric|nullable',
+            'branch_id'=>'exists:custom_properties,id',
             'salary' => 'numeric|nullable',
         ]);
 
@@ -36,7 +38,15 @@ class UserController extends Controller
                 "error" => $validator->errors()
             ], 409);
         }
+        if($request->branch_id != null){
+            $branch = CustomProperties::where('id',$request->branch_id)->first();
+            if($branch->type != "branch"){
+                return response()->json([
+                    "message" => " اخترت فرع غير موجود",
+                ],404);
+            }
 
+        }
 
         $hashedPassword = bcrypt($request->password);
 
@@ -86,6 +96,7 @@ class UserController extends Controller
             "hourRate" => $request->hourRate,
             "code" => $request->code,
             "notes" => $request->notes,
+            'branch_id'=>$request->branch_id,
             "salary" => $request->salary
         ]);
 
@@ -144,6 +155,7 @@ class UserController extends Controller
     public function all()
     {
         $users = User::all()->sortByDesc("created_at");
+
         return UserResouce::collection($users);
     }
 
@@ -155,6 +167,7 @@ class UserController extends Controller
                 "message" => "هذا المستخدم غير موجود"
             ], 404);
         }
+        // return $user->custom->name;
         return new UserResouce($user);
     }
 
@@ -176,12 +189,22 @@ class UserController extends Controller
             'code' => 'required|unique:users,code,' . $user->id,
             'hourRate' => 'numeric|nullable',
             'salary' => 'numeric|nullable',
+            'branch_id'=>'exists:custom_properties,id',
             'password' => 'min:6',
         ]);
         if ($validator->fails()) {
             return response()->json([
                 "message" => $validator->errors()
             ], 409);
+        }
+        if($request->branch_id != null){
+            $branch = CustomProperties::where('id',$request->branch_id)->first();
+            if($branch->type != "branch"){
+                return response()->json([
+                    "message" => " اخترت فرع غير موجود",
+                ],404);
+            }
+
         }
 
         if ($request->has("password")) {
@@ -197,6 +220,7 @@ class UserController extends Controller
             "role" => $request->role,
             "hourRate" => $request->hourRate,
             "code" => $request->code,
+            "branch_id"=>$request->branch_id,
             "notes" => $request->notes,
             "salary" => $request->salary
         ]);

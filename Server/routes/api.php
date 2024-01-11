@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\CustomCotroller;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\CustomPropertiesController;
 use App\Http\Controllers\OrdersController;
 use App\Http\Controllers\SalePointController;
 use App\Http\Controllers\UserController;
@@ -93,10 +95,13 @@ Route::middleware(['auth:api'])->group(function(){
         //pay for an order
         Route::post('/pay/{id}',[OrdersController::class,'pay']);
          //get orders in a specific period
-         Route::post('/specificOrders',[OrdersController::class,'ordersInSpecificTime']);
+        Route::post('/specificOrders',[OrdersController::class,'ordersInSpecificTime']);
         //filter
-         Route::get('/filter',[OrdersController::class,'filter']);
-         Route::post('/isPaid_theOtherSystem/{id}',[OrdersController::class,'isPaid_theOtherSystem']);
+        Route::get('/filter',[OrdersController::class,'filter']);
+
+        Route::post('/isPaid_theOtherSystem/{id}',[OrdersController::class,'isPaid_theOtherSystem']);
+        //deliveryOrderPay
+        Route::put('/deliveryOrderPay/{id}',[OrdersController::class,'deliveryOrderPay']);
 
     });
 
@@ -117,7 +122,23 @@ Route::middleware(['auth:api'])->group(function(){
          //search points
          Route::get('/search/{key}',[SalePointController::class,'search']);
 
-
+    });
+    Route::group(['prefix'=>'properties','as'=>'properties.'],function(){
+        //getCustomList
+        Route::get('/getCustomList/{type}',[CustomPropertiesController::class,'getCustomList']);
+        //select one point
+        Route::get('/show/{id}',[CustomPropertiesController::class,'show']);
+         //create point
+         Route::post('/{type}',[CustomPropertiesController::class,'store']);
+        //update point
+        Route::put('{/{id}',[CustomPropertiesController::class,'update']);
+        //point soft delete
+        Route::delete('/delete/{id}',[CustomPropertiesController::class,'destroy']);
+        Route::get('{type}/archive/',[CustomPropertiesController::class,'archive']);
+        Route::post('/restore/{id}',[CustomPropertiesController::class,'restore']);
+        Route::delete('/deleteArchive/{id}',[CustomPropertiesController::class,'deleteArchive']);
+        //search points
+        //  Route::get('/search/{key}',[CustomPropertiesController::class,'search']);
 
     });
 

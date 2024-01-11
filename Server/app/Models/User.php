@@ -30,11 +30,15 @@ class User extends Authenticatable
         'hourRate',
         'notes',
         'password',
+        'branch_id',
         'salary',
-        // 'remember_token'
+
     ];
     public function orders(){
         return $this->hasMany(Order::class,'user_id');
+    }
+    public function custom(){
+        return $this->belongsTo(CustomProperties::class,'branch_id','id');
     }
 
 
