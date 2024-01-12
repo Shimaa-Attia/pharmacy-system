@@ -45,14 +45,14 @@ class OrdersController extends Controller
 
         if ((Auth::user()->role == 'delivery') && Auth::check()) {
             $validator = Validator::make($request->all(), [
-                'total_ammount' => 'numeric|required',
+                'total_ammount' => 'numeric|required|gt:0',
                 'customer_code' => 'required',
                 'user_code' => 'required|exists:users,code',
                 'sale_point_id' => 'required|exists:sale_points,id'
             ]);
         }else{
         $validator = Validator::make($request->all(), [
-            'cost' => 'numeric|required',
+            'cost' => 'numeric|required|gt:0',
             'total_ammount' => 'numeric|required|gte:cost',
             'customer_code' => 'required',
             //    'customer_phone'=>'required|regex:/^01[0125][0-9]{8}$/|exists:custom_fields,value',
@@ -107,7 +107,7 @@ class OrdersController extends Controller
         //validation
         if($order->user->role =='delivery' && $order->cost == null){
             $validator = Validator::make($request->all(), [
-                'total_ammount' => 'numeric|required',
+                'total_ammount' => 'numeric|required|gt:0',
                 'paid' => 'numeric|required|lte:total_ammount',
                 'customer_code' => 'required',
                 'user_code' => 'required|exists:users,code',
@@ -115,7 +115,7 @@ class OrdersController extends Controller
             ]);
         }else{
             $validator = Validator::make($request->all(), [
-                'cost' => 'numeric|required',
+                'cost' => 'numeric|required|gt:0',
                 'total_ammount' => 'numeric|required|gte:cost',
                 'paid' => 'numeric|required|lte:total_ammount',
                 'customer_code' => 'required',
