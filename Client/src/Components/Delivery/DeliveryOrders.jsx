@@ -105,8 +105,7 @@ export default function DeliveryOrders() {
                 <td data-label="سداد" >
                 {order.unpaid ? <i className='bi bi-x-circle-fill text-danger fs-4' 
                   onClick={ () => sendDelavaryPaidsToApi(order.id)} ></i>
-                   : <i className='bi bi-check-circle-fill text-success fs-4 ' 
-                   onClick={() => sendDelavaryPaidsToApi(order.id)} ></i>}
+                   : <i className='bi bi-check-circle-fill text-success fs-4 ' ></i>}
                 </td>
               </tr>
               )}
