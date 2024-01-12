@@ -83,7 +83,6 @@ export default function AddUser() {
         e.preventDefault();
         let validation = validateUserForm();
         if (!validation.error) {
-
             sendUserDataToApi();
         } else {
             setIsLoading(false);

@@ -171,7 +171,7 @@ export default function Orders() {
   };
   useEffect(() => { getOrderData() }, [searchText, filterPointId, filterUsertId, filterIsPaid]);
 
-  let [orderId, setOrderId] = useState(''); // for making paid
+  let [orderId, setOrderId] = useState(''); // for making orders paids on the same system
   let sendIsPaidOnThOtherSystemToApi = async (ordId) => {
     await axios.post(`${process.env.REACT_APP_API_URL}/api/orders/isPaid_theOtherSystem/${ordId}`,{}, {
       headers: {
@@ -197,6 +197,7 @@ export default function Orders() {
                 <th> تاريخ الإنشاء</th>
                 <th> نقطة اليبع</th>
                 <th>اسم الموظف</th>
+                <th>هاتف الموظف</th>
                 <th>كود العميل</th>
                 <th>قيمة الأوردر</th>
                 <th>الإجمالي</th>
@@ -211,6 +212,7 @@ export default function Orders() {
                 <td data-label="تاريخ الإنشاء"  >{order.created_at}</td>
                 <td data-label="نقطة البيع">{order?.sale_point?.name}</td>
                 <td data-label="اسم الموظف">{order?.delivery_man?.name}</td>
+                <td data-label="هاتف الموظف">{order?.delivery_man?.phone}</td>
                 <td data-label="كود العميل">{order?.customer?.code}</td>
                 <td data-label="قيمة الأوردر">{order.cost}</td>
                 <td data-label="الإجمالي">{order.total_ammount}</td>

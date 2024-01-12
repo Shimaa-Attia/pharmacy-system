@@ -23,7 +23,7 @@ export default function AddOrderDelivery() {
         // customer_phone: '',
         customer_code: '',
         total_ammount: '',
-        cost: '',
+        // cost: '',
         notes: '',
         sale_point_id: ''
     });
@@ -76,15 +76,6 @@ export default function AddOrderDelivery() {
     }, []);
 
     let [contacts, setContacts] = useState([]);
-    useEffect(() => {
-        if (orders.customer_code === '') {
-            return;
-        } else {
-            getContactValue(orders.customer_code)
-        }
-
-    }, [orders?.customer_code]);
-
     let getContactValue = async (id) => {
         let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers/contact/${id}`, {
             headers: {
@@ -94,6 +85,15 @@ export default function AddOrderDelivery() {
 
         setContacts(data);
     };
+    useEffect(() => {
+        if (orders.customer_code === '') {
+            return;
+        } else {
+            getContactValue(orders.customer_code)
+        }
+
+    }, [orders?.customer_code]);
+
     //get the values of input and put them in the orders state
     let getInputValue = (event) => {
         let myOrders = { ...orders }; //deep copy
@@ -119,6 +119,7 @@ export default function AddOrderDelivery() {
                 });
                 textarea.value = '';
             }).catch((errors) => {
+                console.log(errors);
                 setIsLoading(false);
                 const errorList = errors?.response?.data?.message;
                 if (errorList !== undefined) {
@@ -142,10 +143,10 @@ export default function AddOrderDelivery() {
                 'string.empty': 'كود العميل مطلوب',
                 'any.required': 'كود العميل مطلوب',
             }),
-            cost: Joi.string().required().messages({
-                'string.empty': 'قيمة الأوردر مطلوبة',
-                'any.required': 'قيمة الأوردر مطلوبة',
-            }),
+            // cost: Joi.string().required().messages({
+            //     'string.empty': 'قيمة الأوردر مطلوبة',
+            //     'any.required': 'قيمة الأوردر مطلوبة',
+            // }),
             total_ammount: Joi.string().required().messages({
                 'string.empty': 'إجمالي المبلغ مطلوب',
                 'any.required': 'إجمالي المبلغ مطلوب',
@@ -220,14 +221,14 @@ export default function AddOrderDelivery() {
                             <label htmlFor="sale_point_id" className='form-label'>نقطة البيع </label>
                             <select name="sale_point_id" defaultValue={0} className='form-control' id="sale_point_id"
                                 onChange={getInputValue}>
-                                <option value={0} hidden selected disabled>اختار</option>
+                                <option value={0} hidden  disabled>اختار</option>
                                 {salePoints.map((point) => <option key={point.id} value={point.id}>{point.name}</option>)}
                             </select>
                         </div>
-                        <div className="col-md-4">
+                        {/* <div className="col-md-4">
                             <label htmlFor="cost" className='form-label'>قيمة الأوردر </label>
                             <input type="text" className='form-control' name="cost" id="cost" onChange={getInputValue} />
-                        </div>
+                        </div> */}
                         <div className="col-md-4">
                             <label htmlFor="totalAmmount" className='form-label'> إجمالي المبلغ مع الطيار </label>
                             <input type="text" className='form-control' name="total_ammount" id="totalAmmount" onChange={getInputValue} />

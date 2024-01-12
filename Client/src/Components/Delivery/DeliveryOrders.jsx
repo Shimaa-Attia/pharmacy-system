@@ -60,6 +60,21 @@ export default function DeliveryOrders() {
   useEffect(()=>{
     getUnpiadAmmountForDelivery()
   },[]);
+  //for delivary paid for himself
+  let sendDelavaryPaidsToApi = async (ordId) => {
+    await axios.put(`${process.env.REACT_APP_API_URL}/api/orders/deliveryOrderPay/${ordId}`,{}, {
+      headers: {
+        "Authorization": `Bearer ${accessToken}`
+      }
+    }).then((res) => {
+      toast.success(res.data.message);
+      getOrderData()
+    }).catch((errors) => {
+      console.log(errors);
+      toast.error('حدث خطأ ما');
+      toast.error(errors?.response?.data?.message);
+    })
+  }
   let showOrders = () => {
     if (orders.length > 0) {
       return (
@@ -71,10 +86,10 @@ export default function DeliveryOrders() {
                 <th>تاريخ الإنشاء</th>
                 <th>كود العميل</th>
                 <th>اسم العميل</th>
-                <th>قيمة الأوردر</th>
                 <th>إجمالي المبلغ</th>
                 <th>نقطة البيع</th>
                 <th>المطلوب سداده</th>
+                <th>سداد</th>
                 
               </tr>
             </thead>
@@ -84,10 +99,15 @@ export default function DeliveryOrders() {
                 <td data-lable="تاريخ الإنشاء" >{order?.created_at}</td>
                 <td data-label="كود العميل">{order?.customer?.code}</td>
                 <td data-label="اسم العميل">{order?.customer?.name}</td>
-                <td data-label="قيمة الأوردر">{order?.cost}</td>
                 <td data-label=" إجمالي المبلغ">{order?.total_ammount}</td>
                 <td data-label="نقطة البيع">{order?.sale_point?.name}</td>
                 <td data-label="المطلوب سداده">{order?.unpaid}</td>
+                <td data-label="سداد" >
+                {order.unpaid ? <i className='bi bi-x-circle-fill text-danger fs-4' 
+                  onClick={ () => sendDelavaryPaidsToApi(order.id)} ></i>
+                   : <i className='bi bi-check-circle-fill text-success fs-4 ' 
+                   onClick={() => sendDelavaryPaidsToApi(order.id)} ></i>}
+                </td>
               </tr>
               )}
             </tbody>
@@ -112,7 +132,6 @@ export default function DeliveryOrders() {
         <meta charSet="utf-8" />
         <title>Delivery Orders</title>
       </Helmet>
-      
       <div className='container'>
         <div className=" my-3 text-center row   ">
           <div className="col-md-4 ">
