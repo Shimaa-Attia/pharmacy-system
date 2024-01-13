@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('shortcomings', function (Blueprint $table) {
+        Schema::table('shortcomings', function (Blueprint $table) {
             //productName - productImage - clientInfo - creator_userId - updator_userId
             //- isAvailable_inOtherbranch  - productType - notes -status
             // $table->id();
