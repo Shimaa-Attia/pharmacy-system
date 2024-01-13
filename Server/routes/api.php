@@ -127,13 +127,13 @@ Route::middleware(['auth:api'])->group(function(){
     Route::group(['prefix'=>'properties','as'=>'properties.'],function(){
         //getCustomList
         Route::get('/getCustomList/{type}',[CustomPropertiesController::class,'getCustomList']);
-        //select one point
+        //select one 
         Route::get('/show/{id}',[CustomPropertiesController::class,'show']);
-         //create point
-         Route::post('/{type}',[CustomPropertiesController::class,'store']);
-        //update point
+         //create 
+         Route::post('/{type}',[CustomPropertiesController::class,'create']);
+        //update 
         Route::put('{/{id}',[CustomPropertiesController::class,'update']);
-        //point soft delete
+        //soft delete
         Route::delete('/delete/{id}',[CustomPropertiesController::class,'destroy']);
         Route::get('{type}/archive/',[CustomPropertiesController::class,'archive']);
         Route::post('/restore/{id}',[CustomPropertiesController::class,'restore']);
