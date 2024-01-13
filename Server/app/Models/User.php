@@ -37,9 +37,17 @@ class User extends Authenticatable
     public function orders(){
         return $this->hasMany(Order::class,'user_id');
     }
-    public function custom(){
+    public function branch(){
         return $this->belongsTo(CustomProperties::class,'branch_id','id');
     }
+
+    public function shortcoming(){
+        return $this->hasMany(Shortcoming::class,'creator_userId','id');
+    }
+    public function updatedShortcoming(){
+        return $this->hasMany(Shortcoming::class,'lastUpdater_userId','id');
+    }
+
 
 
     /**

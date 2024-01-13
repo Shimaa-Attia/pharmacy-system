@@ -17,4 +17,8 @@ class CustomProperties extends Model
     public function users(){
         return $this->hasMany(User::class,'branch_id','id');
     }
+
+    public function shotrcoming(){
+        return $this->hasMany(User::class,'status_id','id');
+    }
 }

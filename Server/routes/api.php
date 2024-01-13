@@ -5,6 +5,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomPropertiesController;
 use App\Http\Controllers\OrdersController;
 use App\Http\Controllers\SalePointController;
+use App\Http\Controllers\ShortcomingController;
 use App\Http\Controllers\UserController;
 use App\Models\Order;
 use Illuminate\Http\Request;
@@ -139,6 +140,28 @@ Route::middleware(['auth:api'])->group(function(){
         Route::delete('/deleteArchive/{id}',[CustomPropertiesController::class,'deleteArchive']);
         //search points
         //  Route::get('/search/{key}',[CustomPropertiesController::class,'search']);
+
+    });
+    Route::group(['prefix'=>'shortcomings','as'=>'shortcomings.'],function(){
+        //select all
+        Route::get('/',[ShortcomingController::class,'all']);
+        //select one
+        Route::get('/show/{id}',[ShortcomingController::class,'show']);
+        //create
+        Route::post('/',[ShortcomingController::class,'store']);
+        //update
+        Route::put('/{id}',[ShortcomingController::class,'update']);
+        //soft delete
+        Route::delete('/delete/{id}',[ShortcomingController::class,'destroy']);
+        Route::get('/archive',[ShortcomingController::class,'archive']);
+        Route::post('/restore/{id}',[ShortcomingController::class,'restore']);
+        Route::delete('/deleteArchive/{id}',[ShortcomingController::class,'deleteArchive']);
+        //search
+        Route::get('/search/{key}',[ShortcomingController::class,'search']);
+        //filter
+        Route::get('/filter',[ShortcomingController::class,'filter']);
+        //update status
+        Route::post('/updateStatus/{id}',[ShortcomingController::class,'updateStatus']);
 
     });
 
