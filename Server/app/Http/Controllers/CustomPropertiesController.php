@@ -77,7 +77,7 @@ class CustomPropertiesController extends Controller
 
         return response()->json([
             "message"=>"تم التحديث"
-        ],409);
+        ],200);
     }
 
     public function destroy($id)
