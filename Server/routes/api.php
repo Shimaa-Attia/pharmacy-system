@@ -132,8 +132,8 @@ Route::middleware(['auth:api'])->group(function(){
          //create 
          Route::post('/{type}',[CustomPropertiesController::class,'create']);
         //update 
-        Route::put('{/{id}',[CustomPropertiesController::class,'update']);
-        //soft delete
+        Route::put('/{id}',[CustomPropertiesController::class,'update']);
+        // soft delete
         Route::delete('/delete/{id}',[CustomPropertiesController::class,'destroy']);
         Route::get('{type}/archive/',[CustomPropertiesController::class,'archive']);
         Route::post('/restore/{id}',[CustomPropertiesController::class,'restore']);
