@@ -44,6 +44,7 @@ export default function Users() {
                 <th>رقم</th>
                 <th>كود المستخدم</th>
                 <th>الاسم</th>
+                <th>الفرع</th>
                 <th>الوظيفة</th>
                 <th>رقم الهاتف</th>
                 <th>إجمالي المبلغ</th>
@@ -53,11 +54,12 @@ export default function Users() {
             <tbody>
               {users.map((user, index) => <tr key={user.id}>
                 <td data-label="#">{++index}</td>
-                <td data-label="كود المستخدم">{user.code}</td>
-                <td data-label="اسم المستخدم">{user.name}</td>
-                <td data-label="الوظيفة">{user.role}</td>
-                <td data-label="رقم الهاتف">{user.phone}</td>
-                <td data-label="إجمالي المبلغ">{user.unpaidAmount}</td>
+                <td data-label="كود المستخدم">{user?.code}</td>
+                <td data-label="اسم المستخدم">{user?.name}</td>
+                <td data-label="الفرع">{user?.branch?.name}</td>
+                <td data-label="الوظيفة">{user?.role}</td>
+                <td data-label="رقم الهاتف">{user?.phone}</td>
+                <td data-label="إجمالي المبلغ">{user?.unpaidAmount}</td>
                 <td data-label="خيارات">
                   <NavLink to={`/users/delete/${user.id}`} >
                     <i className='bi bi-trash text-bg-danger p-1 mx-1 rounded'></i>

@@ -30,7 +30,7 @@ class CustomPropertiesController extends Controller
     }
     public function create(Request $request , $type){
         $validator = Validator::make($request->all(),[
-            'name'=>"required|text"
+            'name'=>"required|string"
         ]);
         if($validator->fails()){
             return response()->json([
@@ -62,7 +62,7 @@ class CustomPropertiesController extends Controller
                     ],404);
         }
         $validator = Validator::make($request->all(),[
-            'name'=>"required|text"
+            'name'=>"required|string"
         ]);
 
         if($validator->fails()){
@@ -77,7 +77,7 @@ class CustomPropertiesController extends Controller
 
         return response()->json([
             "message"=>"تم التحديث"
-        ],409);
+        ],200);
     }
 
     public function destroy($id)

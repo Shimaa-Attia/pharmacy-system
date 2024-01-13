@@ -32,6 +32,12 @@ import SalePoints from '../SalePoints/SalePoints';
 import DoctorLayout from '../Layouts/DoctorLayout';
 import DoctorOrders from '../Doctor/DoctorOrders';
 import AddOrderDoctor from '../Doctor/AddOrderDoctor';
+import Branches from '../Branches/Branches';
+import AddShortComings from '../ShortComings/AddShortComings';
+import Purchases from '../Purchases/Purchases';
+import PurchasesDeatils from '../Purchases/PurchasesDeatils';
+import EditePurchases from '../Purchases/EditePurchases';
+import DeletePurchases from '../Purchases/DeletePurchases';
 
 
 
@@ -63,6 +69,12 @@ function App() {
             <Route path='orders/details/:id' element={<ProtectedRoute ><OrderDetails /></ProtectedRoute>} ></Route>
             <Route path='settings' element={<ProtectedRoute ><Settings /></ProtectedRoute>} ></Route>
             <Route path='salepoints' element={<ProtectedRoute ><SalePoints /></ProtectedRoute>} ></Route>
+            <Route path='branches' element={<ProtectedRoute ><Branches /></ProtectedRoute>} ></Route>
+            <Route path='shortcomings' element={<ProtectedRoute ><AddShortComings /></ProtectedRoute>} ></Route>
+            <Route path='purchases' element={<ProtectedRoute ><Purchases /></ProtectedRoute>} ></Route>
+            <Route path='purchases/delete/:id' element={<ProtectedRoute ><DeletePurchases /></ProtectedRoute>} ></Route>
+            <Route path='purchases/edite/:id' element={<ProtectedRoute ><EditePurchases /></ProtectedRoute>} ></Route>
+            <Route path='purchases/details/:id' element={<ProtectedRoute ><PurchasesDeatils /></ProtectedRoute>} ></Route>
             <Route path='*' element={<ProtectedRoute ><NotFound /></ProtectedRoute>} ></Route>
           </Route>
           <Route path='deliverylayout' element={<ProtectedRoute><DeliveryLayout/></ProtectedRoute>}>

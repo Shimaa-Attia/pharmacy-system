@@ -23,7 +23,20 @@ export default function AddUser() {
         code: '',
         hourRate: '',
         notes: '',
+        branch_id: ''
     };
+    let [branches, setBranches] = useState([]);
+    let getBranches = async () => {
+        let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/properties/getCustomList/branch`, {
+            headers: {
+                "Authorization": `Bearer ${accessToken}`
+            }
+        });
+        setBranches(data)
+    }
+    useEffect(() => {
+        getBranches()
+    }, []);
 
     let [users, setUsers] = useState(initUsers);
     let getInputValue = (event) => {
@@ -32,10 +45,10 @@ export default function AddUser() {
         setUsers(myUsers);
     };
     let sendUserDataToApi = async () => {
-        await axios.post(`${process.env.REACT_APP_API_URL}/api/users`, users ,{
+        await axios.post(`${process.env.REACT_APP_API_URL}/api/users`, users, {
             headers: {
                 "Authorization": `Bearer ${accessToken}`
-              }
+            }
         }).then((res) => {
             toast.success(res.data.message, {
                 position: 'top-center'
@@ -49,6 +62,7 @@ export default function AddUser() {
             document.getElementById("role").selectedIndex = "0";
 
         }).catch((errors) => {
+            console.log(errors);
             setIsLoading(false);
             const errorList = errors?.response?.data?.error;
             if (errorList !== undefined) {
@@ -74,7 +88,7 @@ export default function AddUser() {
             hourRate: Joi.number().empty(''),
             salary: Joi.number().empty(''),
             notes: Joi.string().empty(''),
-
+            branch_id: Joi.required()
         });
         return schema.validate(users, { abortEarly: false });
     };
@@ -122,6 +136,14 @@ export default function AddUser() {
                                 <option value="admin">مشرف</option>
                                 <option value="doctor">صيدلي</option>
                                 <option value="delivery">طيار</option>
+                            </select>
+                        </div>
+                        <div className="col-md-4">
+                            <label htmlFor="branch" className='form-label'>اسم الفرع</label>
+                            <select name="branch_id" defaultValue={0} className='form-control' id="branch_id"
+                                onChange={getInputValue}>
+                                <option value={0} hidden disabled>اختار</option>
+                                {branches.map((branch) => <option key={branch.id} value={branch?.id}>{branch?.name}</option>)}
                             </select>
                         </div>
                         <div className="col-md-4">

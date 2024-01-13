@@ -45,8 +45,7 @@ export default function Sidebar() {
                                         <li className="nav-item my-1 ">
                                             <NavLink to='salepoints' className="nav-link  fw-bolder" >
                                                 <span className='me-3 d-none d-sm-inline'>نقاط البيع</span>
-                                                <i className="bi bi-geo-alt-fill"></i>
-                                            </NavLink>
+                                                <i className="bi bi-person-fill-add"></i>                                            </NavLink>
                                         </li>
 
                                     </ul>
@@ -57,9 +56,22 @@ export default function Sidebar() {
                             <div>
                                 <ul className="nav flex-column mt-2">
                                     <li className="nav-item my-1">
+                                        <NavLink to='/branches' className="nav-link  fw-bolder">
+                                            <span className='me-3 d-none d-sm-inline'> الفروع</span>
+                                            <i className="bi bi-geo-alt-fill"></i>
+                                        </NavLink>
+                                    </li>
+                                    <li className="nav-item my-1">
                                         <NavLink to='users' className="nav-link  fw-bolder">
                                             <span className='me-3 d-none d-sm-inline'> المستخدمون</span>
                                             <i className="bi bi-file-earmark-person-fill"></i>
+
+                                        </NavLink>
+                                    </li>
+                                    <li className="nav-item my-1">
+                                        <NavLink to='purchases' className="nav-link  fw-bolder">
+                                            <span className='me-3 d-none d-sm-inline'> المشتريات</span>
+                                            <i className="bi bi-bag-fill"></i>
 
                                         </NavLink>
                                     </li>

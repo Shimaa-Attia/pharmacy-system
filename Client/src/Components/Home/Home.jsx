@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet'
 import { AuthContext } from '../../Context/AuthStore';
 import { toast } from 'react-toastify';
 import Joi from 'joi';
+import { NavLink } from 'react-router-dom';
 
 
 export default function Home() {
@@ -74,7 +75,10 @@ export default function Home() {
         <title>Home</title>
       </Helmet>
       <div className='container my-4' >
-        <div className='alert text-center fs-4 text-white ' style={{ backgroundColor: 'rgb(100, 100, 128)' }} > أعداد الأوردرات</div>
+        <div>
+        <NavLink to='/shortcomings' className='btn  btn-danger mt-2 mb-4'>إضافة النواقص</NavLink>
+        </div>
+        {/* <div className='alert text-center fs-4 text-white ' style={{ backgroundColor: 'rgb(100, 100, 128)' }} > إحصائيات </div> */}
         <form onSubmit={submitDateForm}>
           <div className=' row' dir='rtl' >
             <div className='col-md-4' >

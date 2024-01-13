@@ -16,6 +16,7 @@ export default function EditeUser() {
     code: '',
     hourRate: '',
     notes: '',
+    branch_id: ''
   });
   let { id } = useParams();
   let navigate = useNavigate();
@@ -24,23 +25,36 @@ export default function EditeUser() {
     myUsers[event.target.name] = event.target.value;
     setUsers(myUsers);
   };
-  let [userData , setUserData] = useState([])
+  let [branches, setBranches] = useState([]);
+  let getBranches = async () => {
+    let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/properties/getCustomList/branch`, {
+      headers: {
+        "Authorization": `Bearer ${accessToken}`
+      }
+    });
+    setBranches(data)
+  }
+  useEffect(() => {
+    getBranches()
+  }, []);
+  let [userData, setUserData] = useState([])
   let getUser = async () => {
     try {
-      let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/show/${id}`,{
+      let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/show/${id}`, {
         headers: {
           "Authorization": `Bearer ${accessToken}`
         }
-      });  
+      });
       setUserData(data.data);
       setUsers({
         name: data?.data?.name,
-        role:data?.data?.role,
+        role: data?.data?.role,
         phone: data?.data?.phone,
         salary: data?.data?.salary,
         code: data?.data?.code,
         hourRate: data?.data?.hourRate,
-        notes:data?.data?.notes,
+        notes: data?.data?.notes,
+        branch_id: data?.data?.branch?.id
 
       })
     } catch (error) {
@@ -84,7 +98,8 @@ export default function EditeUser() {
       hourRate: Joi.any().empty(""),
       salary: Joi.any().empty(""),
       notes: Joi.any().empty(""),
-    
+      branch_id: Joi.required()
+
     });
     return schema.validate(users, { abortEarly: false });
 
@@ -111,7 +126,7 @@ export default function EditeUser() {
 
   return (
     <>
-       <Helmet>
+      <Helmet>
         <meta charSet="utf-8" />
         <title>Edite User</title>
       </Helmet>
@@ -140,6 +155,14 @@ export default function EditeUser() {
               </select>
             </div>
             <div className="col-md-4">
+              <label htmlFor="branch" className='form-label'>اسم الفرع</label>
+              <select name="branch_id" defaultValue={0} className='form-control' id="branch_id"
+                onChange={getInputValue}>
+                <option value={0} hidden disabled>اختار</option>
+                {branches.map((branch) => <option key={branch.id} value={branch?.id}>{branch?.name}</option>)}
+              </select>
+            </div>
+            <div className="col-md-4">
               <label htmlFor="phone" className='form-label'>رقم الهاتف</label>
               <input type="tel" className='form-control' name="phone" id="phone"
                 onChange={getInputValue} defaultValue={userData?.phone} />
@@ -152,12 +175,12 @@ export default function EditeUser() {
             <div className="col-md-4">
               <label htmlFor="salary" className='form-label'>الراتب</label>
               <input type="number" className='form-control' name="salary" id="salary"
-                onChange={getInputValue} defaultValue={userData?.salary } />
+                onChange={getInputValue} defaultValue={userData?.salary} />
             </div>
             <div className="col-md-12">
               <label htmlFor="notes" className='form-label'>ملاحظات</label>
               <textarea type='text' name="notes" id="notes" className='form-control'
-                onChange={getInputValue}  defaultValue={userData?.notes} />
+                onChange={getInputValue} defaultValue={userData?.notes} />
             </div>
             <div className="col-md-3">
               <button type='submit' className='btn btn-primary form-control fs-5'>

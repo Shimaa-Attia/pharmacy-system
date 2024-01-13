@@ -49,7 +49,6 @@ export default function EditeOrder() {
       notes: data.data?.notes,
       sale_point_id: data.data?.sale_point?.id,
       paid: data.data?.paid,
-
     });
 
   };

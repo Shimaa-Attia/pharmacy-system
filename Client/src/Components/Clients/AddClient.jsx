@@ -81,8 +81,7 @@ export default function AddClient() {
 
             }
         }
-
-        setIsLoading(false);
+        
     };
     let [showInput, setShowInput] = useState(false);
     let toggleInput = () => {
