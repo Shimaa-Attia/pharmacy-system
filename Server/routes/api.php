@@ -133,11 +133,7 @@ Route::middleware(['auth:api'])->group(function(){
          Route::post('/{type}',[CustomPropertiesController::class,'create']);
         //update 
         Route::put('/{id}',[CustomPropertiesController::class,'update']);
-<<<<<<< HEAD
-        //soft delete
-=======
         // soft delete
->>>>>>> 64c6d3212b60d15df79aa147a23b9c014c73bac2
         Route::delete('/delete/{id}',[CustomPropertiesController::class,'destroy']);
         Route::get('{type}/archive/',[CustomPropertiesController::class,'archive']);
         Route::post('/restore/{id}',[CustomPropertiesController::class,'restore']);
