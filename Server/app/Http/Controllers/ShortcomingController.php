@@ -131,8 +131,8 @@ class ShortcomingController extends Controller
                 "message" => $validator->errors()
                 ],409);
         }
-        $status = $branch = CustomProperties::where('id',$request->status_id)->first();
-        if($status->type!="status" ){
+        $status =CustomProperties::where('id',$request->status_id)->first();
+        if($status->type!="status"){
             return response()->json([
                  "message" => "اختر احد الحالات الموجودة فقط"
             ], 409);
