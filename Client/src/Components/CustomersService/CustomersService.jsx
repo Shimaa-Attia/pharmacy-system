@@ -12,7 +12,6 @@ export default function CustomersService() {
           "Authorization": `Bearer ${accessToken}`
         }
       });
-      console.log(data.data);
       setPurchasesData(data.data)
     }
     useEffect(() => {

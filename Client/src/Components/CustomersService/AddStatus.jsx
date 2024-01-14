@@ -22,12 +22,10 @@ export default function AddStatus() {
                 "Authorization": `Bearer ${accessToken}`
             }
         }).then((res) => {
-            console.log(res);
             toast.success(res.data.message);
             formInput.value = '';
 
         }).catch((errors) => {
-            console.log(errors);
             const errorList = errors?.response?.data?.message;
             if (errorList !== undefined) {
                 Object.keys(errorList)?.map((err) => {
@@ -74,7 +72,7 @@ export default function AddStatus() {
                 "Authorization": `Bearer ${accessToken}`
             }
         });
-        console.log(data);
+    
         setStatusData(data)
         
     }
