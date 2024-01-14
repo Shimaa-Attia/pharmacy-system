@@ -75,10 +75,8 @@ export default function Home() {
         <title>Home</title>
       </Helmet>
       <div className='container my-4' >
-        <div>
-        <NavLink to='/shortcomings' className='btn  btn-danger mt-2 mb-4'>إضافة النواقص</NavLink>
-        </div>
-        {/* <div className='alert text-center fs-4 text-white ' style={{ backgroundColor: 'rgb(100, 100, 128)' }} > إحصائيات </div> */}
+     
+        <div className='alert text-center fs-4 text-white ' style={{ backgroundColor: 'rgb(100, 100, 128)' }} > أعداد الأوردرات </div>
         <form onSubmit={submitDateForm}>
           <div className=' row' dir='rtl' >
             <div className='col-md-4' >

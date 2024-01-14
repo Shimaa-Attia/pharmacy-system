@@ -47,6 +47,11 @@ export default function Sidebar() {
                                                 <span className='me-3 d-none d-sm-inline'>نقاط البيع</span>
                                                 <i className="bi bi-person-fill-add"></i>                                            </NavLink>
                                         </li>
+                                        <li className="nav-item my-1 ">
+                                            <NavLink to='customersservice' className="nav-link  fw-bolder" >
+                                                <span className='me-3 d-none d-sm-inline'>خدمة العملاء </span>
+                                                <i className="bi bi-telephone-outbound-fill"></i>                                          </NavLink>
+                                        </li>
 
                                     </ul>
                                 </div>
