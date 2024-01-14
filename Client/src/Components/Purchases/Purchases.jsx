@@ -35,21 +35,24 @@ export default function Purchases() {
   let [status, setStatus] = useState({
     status_id: ''
   })
-  let sendEditedStatusDataToApi = async (statId) => {
-    await axios.post(`${process.env.REACT_APP_API_URL}/api/shortcomings/updateStatus/${statId}`, status, {
+  let getInputValue = (event) => {
+    setStatus({ 
+      ...status,
+       status_id: event?.target?.value })
+    console.log(status);
+    console.log(event?.target?.value);
+  };
+  let sendEditedStatusDataToApi = async (purchId) => {
+    await axios.post(`${process.env.REACT_APP_API_URL}/api/shortcomings/updateStatus/${purchId}`, status, {
       headers: {
         "Authorization": `Bearer ${accessToken}`
       }
     }).then((res) => {
-      console.log(res);
-      setStatus({
-        status_id: ''
-      })
       toast.success(res.data.message)
-      console.log(status);
-
+      getPurchasesData()
+     
+    
     }).catch((errors) => {
-      console.log(errors);
       if (errors.response.data.message == "غير موجود") {
         toast.error(errors.response.data.message)
       } else {
@@ -66,6 +69,13 @@ export default function Purchases() {
       }
     })
   };
+  let [purchId ,setPurchId] = useState('')
+  useEffect(() => {
+    if (status.status_id !== '') {
+      sendEditedStatusDataToApi(purchId);
+
+    }
+  }, [status.status_id]);
 
   let showPurchases = () => {
     if (purchasesData.length > 0) {
@@ -94,20 +104,14 @@ export default function Purchases() {
                 <td data-label="الحالة">{purch?.status?.name}</td>
                 <td data-label="تغيير الحالة">
                   <div >
-                    <select name="name" className='form-control w-50 m-auto' id="name" defaultValue={0}
-                      onChange={(e) => {
-                        // let statusId = e.target.value;
-                        // console.log(statusId);
+                    <select name="status_id" className='form-control w-50 m-auto' id="status_id" defaultValue={0}
+                      onChange={(event) => {
                         setStatus({
-                          status_id: e.target.value
-                        })
-                        // console.log(e.target.value);                 
-                        //        console.log(status);
-                        // if (status) {
-                        //   sendEditedStatusDataToApi(purch.id)
-                     
-                        // }
-
+                          ...status,
+                          status_id: event?.target?.value
+                        });
+                        setPurchId(purch.id)
+                    
                       }}
                     >
                       <option value={0} hidden disabled>اختار</option>
