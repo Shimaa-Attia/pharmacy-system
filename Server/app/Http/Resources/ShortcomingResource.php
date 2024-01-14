@@ -24,7 +24,7 @@ class ShortcomingResource extends JsonResource
             'branch'=>$this->creatorUser->branch,
             'isAvailable_inOtherBranch'=>$this->isAvailable_inOtherBranch,
             'productType'=>$this->productType,
-            'created_at'=>$this->created_at,
+            'created_at'=>$this->created_at->format('Y-m-d H:i'),
             'creatorUser'=>$this->creatorUser,
             'updaterUser'=>$this->updaterUser,
             'status'=>$this->status
