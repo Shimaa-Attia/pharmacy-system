@@ -40,6 +40,9 @@ import EditePurchases from '../Purchases/EditePurchases';
 import DeletePurchases from '../Purchases/DeletePurchases';
 import CustomersService from '../CustomersService/CustomersService';
 import AddStatus from '../CustomersService/AddStatus';
+import AddShortComingsDoctor from '../ShortComings/AddShortComingsDoctor';
+import DoctorPurchases from '../Purchases/DoctorPurchases';
+import DoctorPurchasesDeatils from '../Purchases/DoctorPurchasesDeatils';
 
 
 
@@ -87,6 +90,9 @@ function App() {
             <Route path='*' element={<ProtectedRoute ><NotFound /></ProtectedRoute>}></Route>
           </Route>
           <Route path='doctorlayout' element={<ProtectedRoute><DoctorLayout/></ProtectedRoute>}>
+          <Route path='doctorpurchases' element={<ProtectedRoute ><DoctorPurchases /></ProtectedRoute>} ></Route>
+          <Route path='add' element={<ProtectedRoute ><AddShortComingsDoctor /></ProtectedRoute>} ></Route>
+          <Route path='doctorpurchases/details/:id' element={<ProtectedRoute ><DoctorPurchasesDeatils /></ProtectedRoute>} ></Route>
             <Route path='doctorOrders/:id' element={<ProtectedRoute><DoctorOrders/></ProtectedRoute>}></Route>
             <Route path='add/:id' element={<ProtectedRoute><AddOrderDoctor/></ProtectedRoute>}></Route>
             <Route path='*' element={<ProtectedRoute ><NotFound /></ProtectedRoute>}></Route>

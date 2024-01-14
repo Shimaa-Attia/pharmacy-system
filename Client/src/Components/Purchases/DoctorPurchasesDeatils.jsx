@@ -1,3 +1,4 @@
+
 import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../../Context/AuthStore';
 import { NavLink, useParams } from 'react-router-dom';
@@ -5,7 +6,7 @@ import axios from 'axios';
 import { Helmet } from 'react-helmet';
 import { toast } from 'react-toastify';
 
-export default function PurchasesDeatils() {
+export default function DoctorPurchasesDeatils() {
   let { accessToken } = useContext(AuthContext);
   let [purchasesData, setPurchasesData] = useState([]);
   let { id } = useParams();
@@ -36,7 +37,7 @@ export default function PurchasesDeatils() {
       </Helmet>
       <h4 className='text-center alert alert-primary m-3 '>({purchasesData?.productName})</h4>
       <div className="col-md-2 m-auto ">
-        <NavLink to='/purchases' className='btn  btn-secondary form-control mx-2 '>رجوع</NavLink>
+        <NavLink to='/doctorlayout/doctorpurchases' className='btn  btn-secondary form-control mx-2 '>رجوع</NavLink>
       </div>
       <div className="card mx-3 m-auto my-3 p-5 ">
         <div className="row  ">
@@ -58,7 +59,7 @@ export default function PurchasesDeatils() {
           </div>
           <div className='col-md-6 ' >
             <div className="text-center rounded p-2 my-2" style={{ backgroundColor: ' rgb(160, 200, 240)' }}>
-              <h5 className='h3' > فرع الموظف: {purchasesData?.branch?.name}</h5>
+              <h5 className='h3' >  فرع الموظف  : {purchasesData?.branch?.name}</h5>
             </div>
           </div>
           <div className='col-md-6 ' >
@@ -79,11 +80,6 @@ export default function PurchasesDeatils() {
           <div className='col-md-6 ' >
             <div className="text-center rounded p-2 my-2" style={{ backgroundColor: ' rgb(160, 200, 240)' }}>
               <h5 className='h3' >  متوفر بالفرع الأخر : {purchasesData?.isAvailable_inOtherBranch == 1 ? "متوفر" : "غير متوفر"}</h5>
-            </div>
-          </div>
-          <div className='col-md-12' >
-            <div className="text-center rounded p-2 my-2" style={{ backgroundColor: ' rgb(160, 200, 240)' }}>
-              <h5 className='h3' >    الموظف الذي قام بالتعديل : {purchasesData?.updaterUser?.name}</h5>
             </div>
           </div>
           <div className='col-md-6 ' >

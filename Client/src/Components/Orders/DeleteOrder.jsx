@@ -27,7 +27,7 @@ try {
   useEffect(() => {
     getOrder()
   }, []);
-  let DeleteOrder = async () => {
+  let deleteOrder = async () => {
     try {
    let {data}=   axios.delete(`${process.env.REACT_APP_API_URL}/api/orders/delete/${id}`, {
         headers: {
@@ -89,7 +89,7 @@ try {
 
       <div className="col-md-3 d-flex m-auto mt-3 ">
         <NavLink to='../orders' className='btn  btn-secondary form-control mx-2 '>رجوع</NavLink>
-        <button className='btn btn-danger form-control mx-2' onClick={DeleteOrder} >حذف العميل</button>
+        <button className='btn btn-danger form-control mx-2' onClick={deleteOrder} >حذف العميل</button>
       </div>
     </>
   )

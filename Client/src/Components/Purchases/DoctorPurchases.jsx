@@ -4,7 +4,7 @@ import { AuthContext } from '../../Context/AuthStore';
 import { NavLink, useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-export default function Purchases() {
+export default function DoctorPurchases() {
   let { accessToken } = useContext(AuthContext);
   let [purchasesData, setPurchasesData] = useState([]);
   let getPurchasesData = async () => {
@@ -98,7 +98,6 @@ export default function Purchases() {
                 <td data-label="تاريخ الإنشاء"  >{purch.created_at}</td>
                 <td data-label="اسم الصنف">{purch?.productName}</td>
                 <td data-label="متوفر بالفرع الأخر">{purch?.isAvailable_inOtherBranch == 1 ? "متوفر" : "غير متوفر"}</td>
-
                 <td data-label="الحالة" >{purch?.status?.name}</td>
                 <td data-label="تغيير الحالة"  >
                   <div >
@@ -119,13 +118,8 @@ export default function Purchases() {
                   </div>
                 </td>
                 <td data-label="خيارات" style={{minWidth:'150px'}} >
-                  <NavLink to={`/purchases/delete/${purch.id}`} >
-                    <i className='bi bi-trash text-bg-danger p-1 mx-1 rounded'></i>
-                  </NavLink>
-                  <NavLink to={`/purchases/edite/${purch.id}`} >
-                    <i className='bi bi-pencil-square text-bg-primary mx-1  p-1 rounded'></i>
-                  </NavLink>
-                  <NavLink to={`/purchases/details/${purch.id}`} >
+            
+                  <NavLink to={`/doctorlayout/doctorpurchases/details/${purch.id}`} >
                     <i className='bi bi-list-ul text-bg-success mx-1  p-1 rounded'></i>
                   </NavLink>
                 </td>
@@ -150,7 +144,7 @@ export default function Purchases() {
 
       <div className='text-center m-3 fs-4 fw-bold  bg-secondary text-white rounded p-1 ' >المشتريات</div>
       <div>
-        <NavLink to='/shortcomings/add' className='btn btn-danger mb-3 mx-3'>إضافة النواقص</NavLink>
+        <NavLink to='/doctorlayout/add' className='btn btn-danger mb-3 mx-3'>إضافة النواقص</NavLink>
       </div>
       {showPurchases()}
     </>
