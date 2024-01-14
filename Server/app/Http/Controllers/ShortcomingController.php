@@ -37,7 +37,7 @@ class ShortcomingController extends Controller
 
         $validator = Validator::make($request->all(), [
             'productName' => 'required|max:255',
-            "productImage"=>'required|image|mimes:png,jpg,jpeg,gif',
+            "productImage"=>'required|image|mimes:png,jpg,jpeg,gif,webp',
             "clientInfo"=>'required|string',
             "isAvailable_inOtherBranch"=>'required|boolean',
             "productType" => 'required|in:أدوية,تركيبات,كوزمو,براندات',
@@ -80,7 +80,7 @@ class ShortcomingController extends Controller
         //validation
         $validator = Validator::make($request->all(), [
             'productName' => 'required|max:255',
-            "productImage"=>'image|mimes:png,jpg,jpeg,gif',
+            "productImage"=>'nullable|image|mimes:png,jpg,jpeg,gif,webp',
             "clientInfo"=>'required|string',
             "isAvailable_inOtherBranch"=>'required|boolean',
             "productType" => 'required|in:أدوية,تركيبات,كوزمو,براندات',
@@ -131,8 +131,8 @@ class ShortcomingController extends Controller
                 "message" => $validator->errors()
                 ],409);
         }
-        $status = $branch = CustomProperties::where('id',$request->status_id)->first();
-        if($status->type!="status" ){
+        $status =CustomProperties::where('id',$request->status_id)->first();
+        if($status->type!="status"){
             return response()->json([
                  "message" => "اختر احد الحالات الموجودة فقط"
             ], 409);
