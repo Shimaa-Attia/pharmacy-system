@@ -38,7 +38,7 @@ export default function EditePurchases() {
         "Authorization": `Bearer ${accessToken}`
       }
     });
-    console.log(data.data.isAvailable_inOtherBranch);
+    console.log(data.data);
     setPurchasesData(data.data)
     setShortComings({
       productName: data?.data?.productName,
@@ -143,15 +143,20 @@ export default function EditePurchases() {
           <div className="row gy-3">
             <div className="col-md-4">
               <label htmlFor="productName" className='form-label'>اسم المنتج</label>
-              <input type="text" className='form-control' name="productName" id="productName" onChange={getInputValue} />
+              <input type="text" className='form-control' name="productName" id="productName"
+              defaultValue={purchasesData?.productName}
+              onChange={getInputValue} />
             </div>
             <div className="col-md-4">
               <label htmlFor="productImage" className='form-label'>صورة المنتج</label>
-              <input type="file" accept='image/*' className='form-control' name="productImage" id="productImage" onChange={handleImageChange} />
+              <input type="file" accept='image/*' className='form-control' name="productImage" id="productImage" 
+              onChange={handleImageChange} />
             </div>
             <div className="col-md-4">
               <label htmlFor="clientInfo" className='form-label'> كود أو اسم أو هاتف العميل</label>
-              <input type="text" className='form-control'   name="clientInfo" id="clientInfo" onChange={getInputValue} />
+              <input type="text" className='form-control'   name="clientInfo" id="clientInfo"
+                      defaultValue={purchasesData?.clientInfo}
+              onChange={getInputValue} />
             </div>
             <div className="col-md-4">
               <label htmlFor="isAvailable_inOtherBranch" className='form-label'>متوفر بالفرع الآخر</label>
@@ -165,14 +170,18 @@ export default function EditePurchases() {
             </div>
             <div className="col-md-4">
               <label htmlFor="productType" className='form-label'>نوع المنتج</label>
-              <select name="productType" defaultValue={0} className='form-control' id="productType"
+              <select name="productType" className='form-control' id="productType"
+               defaultValue={0} 
+             
                 onChange={getInputValue}>
                 <option value={0} hidden disabled>اختار</option>
-                <option value="أدوية">أدوية</option>
+                <option value="أدوية" >أدوية</option>
                 <option value="تركيبات">تركيبات</option>
-                <option value="كوزمو">كوزمو</option>
+                <option value="كوزمو" >كوزمو</option>
                 <option value="براندات">براندات</option>
               </select>
+         <p>{purchasesData.productType}</p>
+
             </div>
 
             <div className="col-md-12">
