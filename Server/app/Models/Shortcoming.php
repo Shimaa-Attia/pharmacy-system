@@ -17,7 +17,8 @@ class Shortcoming extends Model
         'lastUpdater_userId',
         'isAvailable_inOtherBranch',
         'productType',
-        'status_id'
+        'status_id',
+        'notes'
     ];
     public function status(){
         return $this->belongsTo(CustomProperties::class,'status_id','id');
