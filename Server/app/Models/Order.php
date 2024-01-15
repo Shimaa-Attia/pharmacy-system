@@ -9,6 +9,9 @@ use Monolog\Handler\SamplingHandler;
 
 class Order extends Model
 {
+    protected $casts = [
+        'payed_at' => 'datetime'
+    ];
     use SoftDeletes;
     use HasFactory;
     protected $fillable = [
