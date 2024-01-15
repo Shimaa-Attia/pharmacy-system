@@ -65,7 +65,6 @@ export default function Orders() {
   let [filterIsPaid, setFilterIsPaid] = useState('');
   function handleIsPaidChange(event) {
     setFilterIsPaid(event?.target?.value);
-
   }
 
   let getOrderData = async () => {
@@ -81,7 +80,6 @@ export default function Orders() {
       });
       setOrders(orderResult.data.data);
     } else if (searchText !== undefined && searchText.trim().length > 0) {
-      console.log('search only');
       orderResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/search/${searchText.trim()}`, {
         headers: {
           "Authorization": `Bearer ${accessToken}`

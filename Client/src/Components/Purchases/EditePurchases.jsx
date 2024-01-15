@@ -9,7 +9,7 @@ import { AuthContext } from '../../Context/AuthStore';
 
 export default function EditePurchases() {
   let { accessToken } = useContext(AuthContext);
-  let {id}  = useParams()
+  let { id } = useParams()
   let formInputs = document.querySelectorAll('form input');
   let textarea = document.querySelector('form textarea');
   let [isLoading, setIsLoading] = useState(false);
@@ -27,9 +27,11 @@ export default function EditePurchases() {
     myShortComings[event?.target?.name] = event?.target?.value;
     setShortComings(myShortComings);
   };
-  let handleImageChange=(e)=>{
-    setShortComings({...shortComings,
-    productImage:e.target.files[0]});
+  let handleImageChange = (e) => {
+    setShortComings({
+      ...shortComings,
+      productImage: e.target.files[0]
+    });
   }
   let [purchasesData, setPurchasesData] = useState([]);
   let getPurchasesData = async () => {
@@ -38,15 +40,13 @@ export default function EditePurchases() {
         "Authorization": `Bearer ${accessToken}`
       }
     });
-    console.log(data.data);
     setPurchasesData(data.data)
     setShortComings({
       productName: data?.data?.productName,
-      productImage: data?.data?.imageName,
       clientInfo: data?.data?.clientInfo,
       isAvailable_inOtherBranch: data?.data?.isAvailable_inOtherBranch,
       productType: data?.data?.productType,
-      notes:data?.data?.notes
+      notes: data?.data?.notes
     })
   }
   useEffect(() => {
@@ -54,14 +54,7 @@ export default function EditePurchases() {
   }, []);
 
   let sendEditedShortComingsDataToApi = async () => {
-    const shorts = new FormData();
-    shorts.append('productName', shortComings.productName);
-    shorts.append('clientInfo', shortComings.clientInfo);
-    shorts.append('isAvailable_inOtherBranch', shortComings.isAvailable_inOtherBranch);
-    shorts.append('productType', shortComings.productType);
-    shorts.append('notes', shortComings.notes);
-    shorts.append('productImage', shortComings.productImage);
-    await axios.put(`${process.env.REACT_APP_API_URL}/api/shortcomings/${id}`, shorts, {
+    await axios.put(`${process.env.REACT_APP_API_URL}/api/shortcomings/${id}`, shortComings, {
       headers: {
         "Authorization": `Bearer ${accessToken}`
       }
@@ -96,7 +89,7 @@ export default function EditePurchases() {
     const schema = Joi.object({
       productName: Joi.string().required(),
       productImage: Joi.any(),
-      clientInfo: Joi.string().required(),
+      clientInfo: Joi.string(),
       isAvailable_inOtherBranch: Joi.required(),
       productType: Joi.string().required(),
       notes: Joi.string().empty(''),
@@ -144,19 +137,19 @@ export default function EditePurchases() {
             <div className="col-md-4">
               <label htmlFor="productName" className='form-label'>اسم المنتج</label>
               <input type="text" className='form-control' name="productName" id="productName"
-              defaultValue={purchasesData?.productName}
-              onChange={getInputValue} />
+                defaultValue={purchasesData?.productName}
+                onChange={getInputValue} />
             </div>
-            <div className="col-md-4">
+            {/* <div className="col-md-4">
               <label htmlFor="productImage" className='form-label'>صورة المنتج</label>
               <input type="file" accept='image/*' className='form-control' name="productImage" id="productImage" 
               onChange={handleImageChange} />
-            </div>
+            </div> */}
             <div className="col-md-4">
               <label htmlFor="clientInfo" className='form-label'> كود أو اسم أو هاتف العميل</label>
-              <input type="text" className='form-control'   name="clientInfo" id="clientInfo"
-                      defaultValue={purchasesData?.clientInfo}
-              onChange={getInputValue} />
+              <input type="text" className='form-control' name="clientInfo" id="clientInfo"
+                defaultValue={purchasesData?.clientInfo}
+                onChange={getInputValue} />
             </div>
             <div className="col-md-4">
               <label htmlFor="isAvailable_inOtherBranch" className='form-label'>متوفر بالفرع الآخر</label>
@@ -165,28 +158,28 @@ export default function EditePurchases() {
                 <option value={0} hidden disabled>اختار</option>
                 <option value={1}>نعم</option>
                 <option value={0}>لا</option>
-          
+
               </select>
             </div>
             <div className="col-md-4">
               <label htmlFor="productType" className='form-label'>نوع المنتج</label>
               <select name="productType" className='form-control' id="productType"
-               defaultValue={0} 
-             
+                defaultValue={0}
+
                 onChange={getInputValue}>
                 <option value={0} hidden disabled>اختار</option>
                 <option value="أدوية" >أدوية</option>
                 <option value="تركيبات">تركيبات</option>
-                <option value="كوزمو" >كوزمو</option>
+                <option value="كوزمو">كوزمو</option>
                 <option value="براندات">براندات</option>
               </select>
-         <p>{purchasesData.productType}</p>
+              <p>{purchasesData.productType}</p>
 
             </div>
 
             <div className="col-md-12">
               <label htmlFor="notes" className='form-label'>ملاحظات</label>
-              <textarea name="notes" id="notes" className='form-control' onChange={getInputValue} />
+              <textarea name="notes" id="notes" defaultValue={purchasesData?.notes} className='form-control' onChange={getInputValue} />
             </div>
             <div className="col-md-3">
               <button type='submit' className='btn btn-primary form-control fs-5'>

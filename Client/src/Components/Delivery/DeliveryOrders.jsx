@@ -25,6 +25,7 @@ export default function DeliveryOrders() {
             "Authorization": `Bearer ${accessToken}`
           }
         });
+
         setOrders(searchResult.data.data);
       } catch (error) {
         toast.error('حدث خطأ ما')
@@ -67,10 +68,11 @@ export default function DeliveryOrders() {
         "Authorization": `Bearer ${accessToken}`
       }
     }).then((res) => {
+      console.log(res);
+      console.log("res");
       toast.success(res.data.message);
       getOrderData()
     }).catch((errors) => {
-      console.log(errors);
       toast.error('حدث خطأ ما');
       toast.error(errors?.response?.data?.message);
     })
@@ -89,6 +91,7 @@ export default function DeliveryOrders() {
                 <th>إجمالي المبلغ</th>
                 <th>نقطة البيع</th>
                 <th>المطلوب سداده</th>
+                <th>تاريخ السداد</th>
                 <th>سداد</th>
                 
               </tr>
@@ -102,6 +105,7 @@ export default function DeliveryOrders() {
                 <td data-label=" إجمالي المبلغ">{order?.total_ammount}</td>
                 <td data-label="نقطة البيع">{order?.sale_point?.name}</td>
                 <td data-label="المطلوب سداده">{order?.unpaid}</td>
+                <td data-label="تاريخ السداد">{order?.payed_at}</td>
                 <td data-label="سداد" >
                 {order.unpaid ? <i className='bi bi-x-circle-fill text-danger fs-4' 
                   onClick={ () => sendDelavaryPaidsToApi(order.id)} ></i>

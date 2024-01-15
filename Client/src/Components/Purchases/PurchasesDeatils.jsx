@@ -17,6 +17,7 @@ export default function PurchasesDeatils() {
           "Authorization": `Bearer ${accessToken}`
         }
       });
+
       setPurchasesData(data.data);
 
     } catch (error) {
@@ -83,7 +84,12 @@ export default function PurchasesDeatils() {
           </div>
           <div className='col-md-12' >
             <div className="text-center rounded p-2 my-2" style={{ backgroundColor: ' rgb(160, 200, 240)' }}>
-              <h5 className='h3' >    الموظف الذي قام بالتعديل : {purchasesData?.updaterUser?.name}</h5>
+              <h5 className='h3' > آخر تعديل للحالة: {purchasesData?.updaterUser?.name}</h5>
+            </div>
+          </div>
+          <div className='col-md-12 ' >
+            <div className="text-center rounded p-2 my-2" style={{ backgroundColor: ' rgb(160, 200, 240)' }}>
+              <h5 className='h3' > ملاحظات : {purchasesData?.notes}</h5>
             </div>
           </div>
           <div className='col-md-6 ' >
@@ -91,17 +97,13 @@ export default function PurchasesDeatils() {
               <img src={purchasesData.imageName} className='w-50' alt="صورة المنتج" />
             </div>
           </div>
-          {purchasesData?.notes ?
-            <div className='col-md-12 ' >
-              <div className="text-center rounded p-2 my-2" style={{ backgroundColor: ' rgb(160, 200, 240)' }}>
-                <h5 className='h3' > ملاحظات : {purchasesData?.notes}</h5>
-              </div>
-            </div> : ''
-          }
+
+ 
+
         </div>
 
       </div>
-  
+
 
     </>
   )

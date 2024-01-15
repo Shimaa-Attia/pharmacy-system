@@ -74,8 +74,8 @@ export default function AddShortComingsDoctor() {
   let validateShortComingsForm = () => {
     const schema = Joi.object({
       productName: Joi.string().required(),
-      productImage: Joi.any().required(),
-      clientInfo: Joi.string().required(),
+      productImage: Joi.any(),
+      clientInfo: Joi.string(),
       isAvailable_inOtherBranch: Joi.required(),
       productType: Joi.string().required(),
       notes: Joi.string().empty(''),

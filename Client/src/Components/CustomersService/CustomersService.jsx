@@ -28,7 +28,7 @@ export default function CustomersService() {
                 <th>اسم الصنف</th>
                 <th>متوفر بالفرع الأخر</th>
                 <th>نوع المنتج</th>
-
+                <th> الحالة</th>
               </tr>
             </thead>
             <tbody>
@@ -36,6 +36,7 @@ export default function CustomersService() {
                 <td data-label="اسم الصنف">{purch?.productName}</td>
                 <td data-label="متوفر بالفرع الأخر">{purch?.isAvailable_inOtherBranch == 1 ? "متوفر" : "غير متوفر"}</td>
                 <td data-label=" نوع المنتج">{purch?.productType}</td>
+                <td data-label=" نوع المنتج">{purch?.status?.name}</td>
 
 
 
