@@ -56,6 +56,7 @@ class ShortcomingController extends Controller
             "productName" => $request->productName,
             "productImage" => $imageName,
             "clientInfo" =>$request->clientInfo,
+            "notes"=>$request->notes,
             "isAvailable_inOtherBranch"=>$request->boolean('isAvailable_inOtherBranch'),
             "productType"=>$request->productType,
             "creator_userId"=>Auth::user()->id
@@ -102,6 +103,7 @@ class ShortcomingController extends Controller
             "productName" => $request->productName,
             "productImage" => $imageName,
             "clientInfo" =>$request->clientInfo,
+            "notes"=>$request->notes,
             "isAvailable_inOtherBranch"=>$request->boolean('isAvailable_inOtherBranch'),
             "productType"=>$request->productType,
         ]);
