@@ -21,7 +21,8 @@ class Order extends Model
         'customer_address',
         'user_id',
         'sale_point_id',
-        'isPaid_theOtherSystem'
+        'isPaid_theOtherSystem',
+        'payed_at'
     ];
 
     public function customer(){

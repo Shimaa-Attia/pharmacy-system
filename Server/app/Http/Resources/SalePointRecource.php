@@ -30,7 +30,7 @@ class SalePointRecource extends JsonResource
             'id'=>$this->id,
             'name'=>$this->name,
             'unpaid_balance'=>$unpaid_balance,
-            'created_at'=>$this->created_at->format('Y-m-d H:i'),
+            'created_at'=>$this->created_at->format('Y/m/d h:i A'),
             'orders'=>$this->orders,
         ];
     }

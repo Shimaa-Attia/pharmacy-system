@@ -33,7 +33,7 @@ class UserResouce extends JsonResource
             'notes'=>$this->notes,
             'unpaidAmount'=>$unpaidAmount,
             'branch'=>$this->branch,
-            'created_at' =>$this->created_at->format('Y-m-d H:i')
+            'created_at' =>$this->created_at->format('Y/m/d h:i A')
         ];
     }
 

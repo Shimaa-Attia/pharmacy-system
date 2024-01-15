@@ -6,6 +6,7 @@ use App\Http\Resources\OrderResource;
 use App\Models\Customer;
 use App\Models\Order;
 use App\Models\User;
+use DateTime;
 use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -299,8 +300,14 @@ class OrdersController extends Controller
                 "message" => "مبلغ اكبر من المطلوب"
             ]);
         } else {
-            Order::where('id', $id)->update(array('paid' => $newPaid));
-            $order = Order::find($id);
+            $payed_at =null;
+            if($newPaid = $order->totalAmmount){
+              $payed_at = now();
+            }
+            $order->update([
+                "paid" =>$newPaid,
+                "payed_at"=>$payed_at
+            ]);
             $unpaid = $order->totalAmmount - $order->paid;
             return response()->json([
                 "message" => "تم تسديد المبلغ المطلوب، متبقي من اجمالي المبلغ $unpaid جنيهًا"
@@ -376,19 +383,29 @@ class OrdersController extends Controller
     }
 
      public function deliveryOrderPay($id){
-        if ((Auth::user()->role == 'delivery') && Auth::check()) {
-           $user_id = Auth::user()->id;
-           $order= Order::where('id',$id)
-                    ->where('user_id',$user_id)->first();
-            if($order==null){
-                return response()->json([
-                    "message" => "هذا الطلب غير موجود"
-                ], 404);
-            }
-            $update = $order->update([
-                "paid" => $order->totalAmmount
 
-            ]);
+
+
+            if ((Auth::user()->role == 'delivery') && Auth::check()) {
+                $user_id = Auth::user()->id;
+                $order= Order::where('id',$id)
+                ->where('user_id',$user_id)->first();
+                if($order==null){
+                    return response()->json([
+                        "message" => "هذا الطلب غير موجود"
+                    ], 404);
+                }
+                if($order->paid == $order->totalAmmount){
+                    return response()->json([
+                        "message" => "كامل المبلغ مُسدد بالفعل"
+                    ]);
+                };
+            return now()->format('Y/m/d h:i A');
+                $update = $order->update([
+                    "paid" => $order->totalAmmount,
+                    "payed_at"=>now()
+                ]);
+            // $pay_time= $order->updated_at->formate('Y-m-d H:i');
             if ($update) {
                 return response()->json([
                     "message" => "تم تسديد إجمالي المبلغ"

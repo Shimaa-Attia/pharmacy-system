@@ -14,7 +14,10 @@ class OrderResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-
+        $payed_at = $this->payed_at;
+        // if ($this->payed_at != null){
+        //     $payed_at = $this->payed_at->format('Y/m/d h:i A');
+        // }
         return [
             'id'=>$this->id,
             'cost'=>$this->cost,
@@ -22,7 +25,8 @@ class OrderResource extends JsonResource
             'paid'=>$this->paid,
             "unpaid"=>$this->totalAmmount-$this->paid,
             'notes'=>$this->notes,
-            'created_at'=> $this->created_at->format('Y-m-d H:i'),
+            'created_at'=> $this->created_at->format('Y/m/d h:i A'),
+            'payed_at'=> $payed_at ,
             'isPaid_theOtherSystem'=>boolval($this->isPaid_theOtherSystem),
             'customer'=>$this->customer,
             'customer_phone'=>$this->customer_phone,

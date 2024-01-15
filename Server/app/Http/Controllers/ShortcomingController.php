@@ -37,8 +37,7 @@ class ShortcomingController extends Controller
 
         $validator = Validator::make($request->all(), [
             'productName' => 'required|max:255',
-            "productImage"=>'required|image|mimes:png,jpg,jpeg,gif,webp',
-            "clientInfo"=>'required|string',
+            "productImage"=>'nullable|image|mimes:png,jpg,jpeg,gif,webp',
             "isAvailable_inOtherBranch"=>'required|boolean',
             "productType" => 'required|in:أدوية,تركيبات,كوزمو,براندات',
 
@@ -49,10 +48,10 @@ class ShortcomingController extends Controller
                 "message" => $validator->errors()
                 ], 409);
         }
-
-
-        $imageName = Storage::putFile("shortcomings",$request->productImage);
-
+        if($request->has('productImage')){ //check if there is image
+            $imageName = Storage::putFile("shortcomings", $request->productImage);
+        }
+        $imageName =null;
         $shortcoming = Shortcoming::create([
             "productName" => $request->productName,
             "productImage" => $imageName,
@@ -81,7 +80,6 @@ class ShortcomingController extends Controller
         $validator = Validator::make($request->all(), [
             'productName' => 'required|max:255',
             "productImage"=>'nullable|image|mimes:png,jpg,jpeg,gif,webp',
-            "clientInfo"=>'required|string',
             "isAvailable_inOtherBranch"=>'required|boolean',
             "productType" => 'required|in:أدوية,تركيبات,كوزمو,براندات',
         ]);
