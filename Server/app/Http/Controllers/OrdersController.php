@@ -400,7 +400,7 @@ class OrdersController extends Controller
                         "message" => "كامل المبلغ مُسدد بالفعل"
                     ]);
                 };
-            return now()->format('Y/m/d h:i A');
+            // return now()->format('Y/m/d h:i A');
                 $update = $order->update([
                     "paid" => $order->totalAmmount,
                     "payed_at"=>now()
