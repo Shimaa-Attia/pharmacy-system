@@ -48,10 +48,10 @@ class ShortcomingController extends Controller
                 "message" => $validator->errors()
                 ], 409);
         }
+        $imageName =null;
         if($request->has('productImage')){ //check if there is image
             $imageName = Storage::putFile("shortcomings", $request->productImage);
         }
-        $imageName =null;
         $shortcoming = Shortcoming::create([
             "productName" => $request->productName,
             "productImage" => $imageName,
