@@ -57,6 +57,7 @@ export default function AddShortComingsDoctor() {
       document.getElementById("isAvailable_inOtherBranch").selectedIndex = "0";
 
     }).catch((errors) => {
+      console.log(errors);
       setIsLoading(false);
       const errorList = errors?.response?.data?.message;
       if (errorList !== undefined) {
@@ -75,7 +76,7 @@ export default function AddShortComingsDoctor() {
     const schema = Joi.object({
       productName: Joi.string().required(),
       productImage: Joi.any(),
-      clientInfo: Joi.string(),
+      clientInfo: Joi.string().empty(''),
       isAvailable_inOtherBranch: Joi.required(),
       productType: Joi.string().required(),
       notes: Joi.string().empty(''),

@@ -75,7 +75,7 @@ export default function AddShortComings() {
     const schema = Joi.object({
       productName: Joi.string().required(),
       productImage: Joi.any(),
-      clientInfo: Joi.string(),
+      clientInfo: Joi.string().empty(''),
       isAvailable_inOtherBranch: Joi.required(),
       productType: Joi.string().required(),
       notes: Joi.string().empty(''),
