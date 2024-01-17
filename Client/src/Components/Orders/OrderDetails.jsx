@@ -53,6 +53,11 @@ export default function OrderDetails() {
           </div>
           <div className=' col-md-6  ' >
             <div className='text-center rounded p-2 mt-2' style={{ backgroundColor: ' rgb(160, 200, 240)' }} >
+              <h3 className='h2' >  تاريخ سداد الطيار   : {orders?.payed_at} </h3>
+            </div>
+          </div>
+          <div className=' col-md-6  ' >
+            <div className='text-center rounded p-2 mt-2' style={{ backgroundColor: ' rgb(160, 200, 240)' }} >
               <h3 className='h2' > هاتف العميل   : {orders?.customer_phone} </h3>
             </div>
           </div>

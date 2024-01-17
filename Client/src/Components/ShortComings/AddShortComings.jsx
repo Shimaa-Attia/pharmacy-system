@@ -31,7 +31,6 @@ export default function AddShortComings() {
     productImage:e.target.files[0]});
   }
 
-
   let sendShortComingsDataToApi = async () => {
     const shorts = new FormData();
     shorts.append('productName', shortComings.productName);
@@ -57,6 +56,7 @@ export default function AddShortComings() {
       document.getElementById("isAvailable_inOtherBranch").selectedIndex = "0";
 
     }).catch((errors) => {
+      console.log(errors);
       setIsLoading(false);
       const errorList = errors?.response?.data?.message;
       if (errorList !== undefined) {

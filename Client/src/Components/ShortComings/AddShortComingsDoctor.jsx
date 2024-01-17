@@ -39,7 +39,7 @@ export default function AddShortComingsDoctor() {
     shorts.append('isAvailable_inOtherBranch', shortComings.isAvailable_inOtherBranch);
     shorts.append('productType', shortComings.productType);
     shorts.append('notes', shortComings.notes);
-    shorts.append('productImage', shortComings.productImage);
+    shorts.append('productImage', shortComings?.productImage);
     await axios.post(`${process.env.REACT_APP_API_URL}/api/shortcomings`, shorts, {
       headers: {
         "Authorization": `Bearer ${accessToken}`
