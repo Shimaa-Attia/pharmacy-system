@@ -49,7 +49,7 @@ class ShortcomingController extends Controller
                 ], 409);
         }
         $imageName =null;
-        if($request->has('productImage')){ //check if there is image
+        if($request->productImage != null){ //check if there is image
             $imageName = Storage::putFile("shortcomings", $request->productImage);
         }
         $shortcoming = Shortcoming::create([
@@ -90,7 +90,7 @@ class ShortcomingController extends Controller
                 ],409);
         }
         $imageName=$shortcoming->productImage;
-        if($request->has('productImage')){ //check if there is image
+        if($request->productImage != null){ //check if there is image
             //delete old image
             // Storage::delete($shortcoming->productImage); ?
             Storage::disk('public')->delete($shortcoming->productImage);
