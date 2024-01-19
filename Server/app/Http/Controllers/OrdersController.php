@@ -359,7 +359,7 @@ class OrdersController extends Controller
                 ->where(function ($query) use ($request) {
                     $query->whereBetween('created_at', [$request->start_date, $request->end_date]);
 
-                })->orderBy('created_at', 'DESC')->get();
+                })->get();
 
             $numOfOrders = count($orders);
             $totalNumOfOrders += $numOfOrders;
@@ -374,7 +374,16 @@ class OrdersController extends Controller
                     ];
             }
         }
-
+        $count = count($result);
+          for($i = 0; $i <$count-1; $i ++){
+             if($result[$i]['numOfOrders'] > $result[$i+1]['numOfOrders']) {
+                    $temp = $result[$i+1];
+                    $result[$i+1]=$result[$i];
+                    $result[$i]=$temp;    
+              }
+            }
+        
+        $result=array_reverse($result);
         return response()->json([
             "totalNumOfOrders" => $totalNumOfOrders,
             "users" => $result
