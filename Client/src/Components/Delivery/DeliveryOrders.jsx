@@ -93,7 +93,7 @@ export default function DeliveryOrders() {
                 <th>المطلوب سداده</th>
                 <th>تاريخ السداد</th>
                 <th>سداد</th>
-                
+                <th>خيارات</th>  
               </tr>
             </thead>
             <tbody>
@@ -110,6 +110,11 @@ export default function DeliveryOrders() {
                 {order.unpaid ? <i className='bi bi-x-circle-fill text-danger fs-4' 
                   onClick={ () => sendDelavaryPaidsToApi(order.id)} ></i>
                    : <i className='bi bi-check-circle-fill text-success fs-4 ' ></i>}
+                </td>
+                <td data-label=" خيارات">
+                <NavLink to={`/deliverylayout/delete/${order.id}`} >
+                    <i className='bi bi-trash text-bg-danger p-1 mx-1 rounded'></i>
+                  </NavLink>
                 </td>
               </tr>
               )}

@@ -47,7 +47,6 @@ export default function DoctorOrders() {
   }, []);
   useEffect(() => {
     try {
-
       let mapUser = users?.map((user) => ({
         value: `${user.id}`,
         label: `${user.code}`
@@ -204,6 +203,7 @@ export default function DoctorOrders() {
                 <th>المدفوع</th>
                 <th> الباقي</th>
                 <th>سداد </th>
+                <th>خيارات </th>
 
               </tr>
             </thead>
@@ -222,6 +222,15 @@ export default function DoctorOrders() {
                   openModal()
                   setOrderId(order.id)
                 }} style={{ backgroundColor: '#2a55a3' }}></i></td>
+                   <td data-label="خيارات">
+                  <NavLink to={`/doctorlayout/edite/${order.id}`} >
+                    <i className='bi bi-pencil-square text-bg-primary mx-1  p-1 rounded'></i>
+                  </NavLink>
+                  <NavLink to={`/doctorlayout/details/${order.id}`} >
+                    <i className='bi bi-list-ul text-bg-success mx-1  p-1 rounded'></i>
+                  </NavLink>
+           
+                </td>
               </tr>
               )}
             </tbody>

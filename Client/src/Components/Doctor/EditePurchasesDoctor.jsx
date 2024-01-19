@@ -1,3 +1,4 @@
+
 import axios from 'axios';
 import Joi from 'joi';
 import React, { useContext, useEffect, useState } from 'react'
@@ -7,7 +8,7 @@ import { toast } from 'react-toastify';
 import { AuthContext } from '../../Context/AuthStore';
 
 
-export default function EditePurchases() {
+export default function EditePurchasesDoctor() {
   let { accessToken } = useContext(AuthContext);
   let { id } = useParams()
   let formInputs = document.querySelectorAll('form input');
@@ -187,7 +188,7 @@ export default function EditePurchases() {
               </button>
             </div>
             <div className="col-md-3">
-              <NavLink to='/purchases' className='btn  btn-secondary form-control fs-5'>رجوع</NavLink>
+              <NavLink to='/doctorlayout/doctorpurchases' className='btn  btn-secondary form-control fs-5'>رجوع</NavLink>
 
             </div>
           </div>

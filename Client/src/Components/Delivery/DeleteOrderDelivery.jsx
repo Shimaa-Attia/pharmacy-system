@@ -1,3 +1,4 @@
+
 import axios from 'axios';
 import React, { useContext, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
@@ -5,12 +6,12 @@ import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../../Context/AuthStore';
 
-export default function DeleteOrder() {
+export default function DeleteOrderDelivery() {
   let { accessToken } = useContext(AuthContext);
-
   let { id } = useParams();
   let navigate = useNavigate();
   let [orders, setOrders] = useState([]);
+  let [users, setUsers] = useState([]);
   let getOrder = async () => {
 try {
   let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/show/${id}`,{
@@ -27,6 +28,22 @@ try {
   useEffect(() => {
     getOrder()
   }, []);
+      //get users data to find the id of user to use it in the path to go back
+  let getUserData = async () => {
+    try {
+        let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/auth`, {
+            headers: {
+                "Authorization": `Bearer ${accessToken}`
+            }
+        });
+        setUsers(data);
+    } catch (error) {
+        toast.error('حدث خطأ ما')
+    }
+};
+useEffect(() => {
+    getUserData()
+}, []);
   let deleteOrder = async () => {
     try {
    let {data}=   axios.delete(`${process.env.REACT_APP_API_URL}/api/orders/delete/${id}`, {
@@ -34,14 +51,12 @@ try {
           "Authorization": `Bearer ${accessToken}`
         }
       });
-      navigate('/orders')
       toast.success('تم حذف الأوردر بنجاح');
 
     } catch (error) {
       toast.error('حدث خطأ ما، حاول مرة أخرى')
 
     }
-
   };
 
   return (
@@ -88,7 +103,7 @@ try {
 
 
       <div className="col-md-3 d-flex m-auto mt-3 ">
-        <NavLink to='../orders' className='btn  btn-secondary form-control mx-2 '>رجوع</NavLink>
+        <NavLink to={`/deliverylayout/deliveryOrders/${users.id}`} className='btn  btn-secondary form-control mx-2 '>رجوع</NavLink>
         <button className='btn btn-danger form-control mx-2' onClick={deleteOrder} >حذف الأوردر</button>
       </div>
     </>

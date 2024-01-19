@@ -58,7 +58,7 @@ export default function AddOrderDelivery() {
             customer_code: selectedOption?.value
         });
     };
-    //get users data to find th id of user to use it in the path to go back
+    //get users data to find the id of user to use it in the path to go back
     let getUserData = async () => {
         try {
             let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/auth`, {

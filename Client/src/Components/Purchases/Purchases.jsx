@@ -191,7 +191,7 @@ export default function Purchases() {
     <>
 
       <div className='text-center m-3 fs-4 fw-bold  bg-secondary text-white rounded p-1 ' >المشتريات</div>
-      <div className='row' dir='rtl'>
+      <div className='row mx-2' dir='rtl'>
         <div className='col-md-3'>
           <NavLink to='/shortcomings/add' className='btn btn-danger mb-3 mx-3'>إضافة النواقص</NavLink>
         </div>
