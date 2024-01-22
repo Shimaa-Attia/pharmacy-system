@@ -197,6 +197,7 @@ export default function DoctorOrders() {
                 <th> تاريخ الإنشاء</th>
                 <th> نقطة اليبع</th>
                 <th>اسم الموظف</th>
+                <th>هاتف الموظف</th>
                 <th>كود العميل</th>
                 <th>قيمة الأوردر</th>
                 <th>الإجمالي</th>
@@ -213,6 +214,7 @@ export default function DoctorOrders() {
                 <td data-label="تاريخ الإنشاء"  >{order.created_at}</td>
                 <td data-label="نقطة البيع">{order?.sale_point?.name}</td>
                 <td data-label="اسم الموظف">{order?.delivery_man?.name}</td>
+                <td data-label="هاتف الموظف">{order?.delivery_man?.phone}</td>
                 <td data-label="اسم العميل">{order?.customer?.code}</td>
                 <td data-label="قيمة الأوردر">{order.cost}</td>
                 <td data-label="الإجمالي">{order.total_ammount}</td>

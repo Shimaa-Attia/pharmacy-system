@@ -105,7 +105,9 @@ export default function DoctorPurchases() {
   useEffect(() => {
     if (status.status_id !== '') {
       sendEditedStatusDataToApi(purchId);
-
+      setStatus({
+        status_id:''
+      });
     }
   }, [status.status_id]);
 
@@ -117,6 +119,7 @@ export default function DoctorPurchases() {
             <thead className='table-primary'>
               <tr>
                 <th> تاريخ الإنشاء</th>
+                <th>العميل</th>
                 <th>اسم الصنف</th>
                 <th>متوفر بالفرع الأخر</th>
                 <th>الحالة</th>
@@ -127,6 +130,7 @@ export default function DoctorPurchases() {
             <tbody>
               {purchasesData.map((purch, index) => <tr key={index}>
                 <td data-label="تاريخ الإنشاء"  >{purch.created_at}</td>
+                <td data-label="العميل"  >{purch.clientInfo}</td>
                 <td data-label="اسم الصنف">{purch?.productName}</td>
                 <td data-label="متوفر بالفرع الأخر">{purch?.isAvailable_inOtherBranch == 1 ? "متوفر" : "غير متوفر"}</td>
                 <td data-label="الحالة" >{purch?.status?.name}</td>
