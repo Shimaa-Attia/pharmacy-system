@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('shortcomings', function (Blueprint $table) {
-            $table->enum('productType', ['أدوية', 'تركيبات طبية', 'كوزمو', 'تركيبات'])->change();
+            $table->enum('productType', ['أدوية', 'مستلزمات طبية', 'كوزمو', 'تركيبات'])->change();
+
         });
 
     }
