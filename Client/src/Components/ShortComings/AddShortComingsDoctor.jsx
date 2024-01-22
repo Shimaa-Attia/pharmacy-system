@@ -151,7 +151,7 @@ export default function AddShortComingsDoctor() {
                 <option value="أدوية">أدوية</option>
                 <option value="تركيبات">تركيبات</option>
                 <option value="كوزمو">كوزمو</option>
-                <option value="براندات">براندات</option>
+                <option value="مستلزمات طبية">مستلزمات طبية </option>
               </select>
             </div>
 

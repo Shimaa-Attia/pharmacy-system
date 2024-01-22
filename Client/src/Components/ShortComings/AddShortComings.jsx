@@ -150,10 +150,9 @@ export default function AddShortComings() {
                 <option value="أدوية">أدوية</option>
                 <option value="تركيبات">تركيبات</option>
                 <option value="كوزمو">كوزمو</option>
-                <option value="براندات">براندات</option>
+                <option value="مستلزمات طبية">مستلزمات طبية </option>
               </select>
             </div>
-
             <div className="col-md-12">
               <label htmlFor="notes" className='form-label'>ملاحظات</label>
               <textarea name="notes" id="notes" className='form-control' onChange={getInputValue} />
