@@ -39,7 +39,7 @@ class ShortcomingController extends Controller
             'productName' => 'required|max:255',
             "productImage"=>'nullable|image|mimes:png,jpg,jpeg,gif,webp',
             "isAvailable_inOtherBranch"=>'required|boolean',
-            "productType" => 'required|in:أدوية,تركيبات,كوزمو,براندات',
+            "productType" => 'required|in:أدوية,تركيبات,كوزمو,مستلزمات طبية',
 
         ]);
 
@@ -82,7 +82,7 @@ class ShortcomingController extends Controller
             'productName' => 'required|max:255',
             "productImage"=>'nullable|image|mimes:png,jpg,jpeg,gif,webp',
             "isAvailable_inOtherBranch"=>'required|boolean',
-            "productType" => 'required|in:أدوية,تركيبات,كوزمو,براندات',
+            "productType" => 'required|in:أدوية,تركيبات,كوزمو,مستلزمات طبية',
         ]);
         if ($validator->fails()) {
             return response()->json([

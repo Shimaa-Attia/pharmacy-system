@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::table('shortcomings', function (Blueprint $table) {
             $table->enum('productType', ['أدوية', 'مستلزمات طبية', 'كوزمو', 'تركيبات'])->change();
 
-        });
+         });
 
     }
 
