@@ -227,11 +227,11 @@ class OrdersController extends Controller
             })
             ->orWhereHas('customer', function ($query) use ($key) {
                 $query->where('name', 'like', "%$key%")
-                    ->OrWhere('code', 'like', "%$key%");
+                    ->OrWhere('code', $key);
             })
             ->orWhereHas('user', function ($query) use ($key) {
                 $query->where('name', 'like', "%$key%")
-                    ->OrWhere('code', 'like', "%$key%");
+                    ->OrWhere('code', $key);
             })->orWhereHas('sale_point', function ($query) use ($key) {
                 $query->where('name', 'like', "%$key%");
             })

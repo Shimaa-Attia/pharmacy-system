@@ -297,7 +297,7 @@ class UserController extends Controller
 
     public function search($key){
         return User::where('name','like',"%$key%")
-        ->OrWhere('code','like',"%$key%")
+        ->OrWhere('code',$key)
         ->OrWhere('phone','like',"%$key%")
         ->OrWhere('role','like',"%$key%")
         ->orderBy('created_at', 'DESC')->get();
