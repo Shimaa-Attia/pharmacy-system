@@ -330,9 +330,16 @@ class OrdersController extends Controller
         if ($request->user_id) {
             $order_query->where('user_id', $request->user_id);
         }
+        if($request->fromDate){
+            $fromDate = new DateTime($request->fromDate);
+            $order_query->whereDate('created_at','>=', $fromDate->modify("-1 day"));
+        }
         $orders = $order_query->orderBy('created_at', 'DESC')->get();
 
-        return OrderResource::collection($orders);
+        return response()->json([
+          "num"=> count($orders) ,
+          "orders"=>  OrderResource::collection($orders)
+        ]);
 
 
     }
@@ -354,10 +361,11 @@ class OrdersController extends Controller
         $users = User::all();
         $result = [];
         $totalNumOfOrders = 0;
+        $end_date = new DateTime($request->end_date);
         foreach ($users as $user) {
             $orders = Order::where('user_id', $user->id)
-                ->where(function ($query) use ($request) {
-                    $query->whereBetween('created_at', [$request->start_date, $request->end_date]);
+                ->where(function ($query) use ($request, $end_date) {
+                    $query->whereBetween('created_at', [$request->start_date, $end_date->modify("+1 day")]);
 
                 })->get();
 
@@ -375,14 +383,16 @@ class OrdersController extends Controller
             }
         }
         $count = count($result);
-          for($i = 0; $i <$count-1; $i ++){
-             if($result[$i]['numOfOrders'] > $result[$i+1]['numOfOrders']) {
+        for($j=0;$j<$count;$j++){
+            for($i = 0; $i <$count-1; $i ++){
+                if($result[$i]['numOfOrders'] > $result[$i+1]['numOfOrders']) {
                     $temp = $result[$i+1];
                     $result[$i+1]=$result[$i];
-                    $result[$i]=$temp;    
-              }
+                    $result[$i]=$temp;
+                }
             }
-        
+        }
+
         $result=array_reverse($result);
         return response()->json([
             "totalNumOfOrders" => $totalNumOfOrders,

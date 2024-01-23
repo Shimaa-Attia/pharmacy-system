@@ -6,6 +6,7 @@ use App\Http\Resources\ShortcomingResource;
 use App\Models\Customer;
 use App\Models\CustomProperties;
 use App\Models\Shortcoming;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -223,10 +224,23 @@ class ShortcomingController extends Controller
             $shortcoming_query->whereHas('creatorUser', function ($query) use ($request) {
                 $query->where('branch_id', $request->branch_id );
             });
-
         }
         if ($request->productType) {
             $shortcoming_query->where('productType', $request->productType);
+        }
+        if($request->fromDate){
+            $fromDate = new DateTime($request->fromDate);
+            $shortcoming_query->whereDate('created_at','>=', $fromDate->modify("-1 day"));
+        }
+        if ($request->status_id &&$request->status_id =="none" ) {
+            $shortcoming_query->where('status_id', null);
+        }elseif($request->status_id ){
+            $shortcoming_query->where('status_id', $request->status_id);
+        }
+        if ($request->isAvailable_inOtherBranch == "yes") {
+            $shortcoming_query->where('isAvailable_inOtherBranch', true);
+        } elseif ($request->isAvailable_inOtherBranch == "no") {
+            $shortcoming_query->where('isAvailable_inOtherBranch', false);
         }
 
         $shortcomings = $shortcoming_query->orderBy('created_at', 'DESC')->get();
