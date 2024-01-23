@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useContext, useEffect, useState } from 'react'
 import styles from '../Orders/Orders.module.css'
 import { Helmet } from 'react-helmet';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { AuthContext } from '../../Context/AuthStore';
 import { toast } from 'react-toastify';
 import Joi from 'joi';
@@ -57,7 +57,7 @@ export default function Orders() {
     setFilterPointId(event?.target?.value);
 
   }
-  let [filterUsertId, setFilterUserId] = useState('');
+  let [filterUserId, setFilterUserId] = useState('');
   function handleUserChange(selectedOption) {
 
     setFilterUserId(selectedOption.value)
@@ -66,112 +66,44 @@ export default function Orders() {
   function handleIsPaidChange(event) {
     setFilterIsPaid(event?.target?.value);
   }
+  let [filterDate, setFilterDate] = useState('');
+  function handleDateChange(event) {
+    setFilterDate(event.target.value)
+  }
 
   let getOrderData = async () => {
     let orderResult;
-    if (filterPointId !== undefined && filterPointId.length > 0
-      && (filterUsertId === undefined || filterUsertId === '')
-      && (filterIsPaid === undefined || filterIsPaid === '')) {
-      console.log('filter point only ');
-      orderResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/filter?point_id=${filterPointId}`, {
-        headers: {
-          "Authorization": `Bearer ${accessToken}`
-        }
-      });
-      setOrders(orderResult.data.data);
-    } else if (searchText !== undefined && searchText.trim().length > 0) {
-      orderResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/search/${searchText.trim()}`, {
-        headers: {
-          "Authorization": `Bearer ${accessToken}`
-        }
-      });
-      setOrders(orderResult.data.data);
-
-    } else if (filterUsertId !== undefined && filterUsertId.length > 0
-      && (filterPointId === undefined || filterPointId === '')
-      && (filterIsPaid === undefined || filterIsPaid === '')) {
-      console.log('filter user only ');
-      orderResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/filter?user_id=${filterUsertId}`, {
-        headers: {
-          "Authorization": `Bearer ${accessToken}`
-        }
-      });
+    let urlApi = `${process.env.REACT_APP_API_URL}/api/orders/filter?`;
+    if (filterUserId !== undefined && filterUserId.length > 0) {
+      urlApi += `user_id=${filterUserId}&`
+    }
+    if (filterIsPaid !== undefined && filterIsPaid.length > 0) {
+      urlApi += `is_paid=${filterIsPaid}&` 
+    }
+    if (filterPointId !== undefined && filterPointId.length > 0) {
+      urlApi += `point_id=${filterPointId}&`
+    }
+    if (filterDate !== undefined && filterDate.length > 0) {
+      urlApi += `fromDate=${filterDate}&`
+    }
+    if (searchText !== undefined && searchText.trim().length > 0) {
+      urlApi += `key=${searchText}`
+      console.log(urlApi);
+    }
+    orderResult = await axios.get(urlApi, {
+      headers: {
+        "Authorization": `Bearer ${accessToken}`
+      }
+    })
+    if (orderResult) {
       setOrders(orderResult.data.data)
-
-    } else if (filterIsPaid !== undefined && filterIsPaid.length > 0
-      && (filterUsertId === undefined || filterUsertId === '')
-      && (filterPointId === undefined || filterPointId === '')
-    ) {
-      console.log('filter is paid only ');
-      orderResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/filter?is_paid=${filterIsPaid}`, {
-        headers: {
-          "Authorization": `Bearer ${accessToken}`
-        }
-      });
-
-      setOrders(orderResult.data.data)
-
-    } else if (filterPointId !== undefined && filterPointId.length > 0
-      && (filterUsertId !== undefined && filterUsertId.length > 0)
-      && (filterIsPaid === undefined || filterIsPaid === '')) {
-      console.log('filter point and users');
-      orderResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/filter?point_id=${filterPointId}&user_id=${filterUsertId}`, {
-        headers: {
-          "Authorization": `Bearer ${accessToken}`
-        }
-      });
-      setOrders(orderResult.data.data);
-
-    } else if (filterPointId !== undefined && filterPointId.length > 0
-      && (filterIsPaid !== undefined && filterIsPaid.length > 0)
-      && (filterUsertId === undefined || filterUsertId === '')) {
-      console.log('filter point and paids');
-      orderResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/filter?point_id=${filterPointId}&is_paid=${filterIsPaid}`, {
-        headers: {
-          "Authorization": `Bearer ${accessToken}`
-        }
-      });
-      setOrders(orderResult.data.data);
-
     }
-    else if (filterIsPaid !== undefined && filterIsPaid.length > 0
-      && (filterUsertId !== undefined && filterUsertId.length > 0)
-      && (filterPointId === undefined || filterPointId === '')) {
-      console.log('filter users and paids');
-      orderResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/filter?user_id=${filterUsertId}&is_paid=${filterIsPaid}`, {
-        headers: {
-          "Authorization": `Bearer ${accessToken}`
-        }
-      });
-      setOrders(orderResult.data.data);
-
-    }
-    else if (filterIsPaid !== undefined && filterIsPaid.length > 0
-      && (filterUsertId !== undefined && filterUsertId.length > 0)
-      && (filterPointId !== undefined && filterPointId.length > 0)) {
-      console.log('filter all');
-      orderResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/filter?user_id=${filterUsertId}&is_paid=${filterIsPaid}&point_id=${filterPointId}`, {
-        headers: {
-          "Authorization": `Bearer ${accessToken}`
-        }
-      });
-      setOrders(orderResult.data.data);
-
-    }
-    else {
-      orderResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders`, {
-        headers: {
-          "Authorization": `Bearer ${accessToken}`
-        }
-      });
-    }
-    setOrders(orderResult.data.data);
   };
-  useEffect(() => { getOrderData() }, [searchText, filterPointId, filterUsertId, filterIsPaid]);
+  useEffect(() => { getOrderData() }, [filterUserId, filterIsPaid, filterPointId,filterDate , searchText]);
 
   let [orderId, setOrderId] = useState(''); // for making orders paids on the same system
   let sendIsPaidOnThOtherSystemToApi = async (ordId) => {
-    await axios.post(`${process.env.REACT_APP_API_URL}/api/orders/isPaid_theOtherSystem/${ordId}`,{}, {
+    await axios.post(`${process.env.REACT_APP_API_URL}/api/orders/isPaid_theOtherSystem/${ordId}`, {}, {
       headers: {
         "Authorization": `Bearer ${accessToken}`
       }
@@ -230,10 +162,10 @@ export default function Orders() {
                   <NavLink to={`/orders/details/${order.id}`} >
                     <i className='bi bi-list-ul text-bg-success mx-1  p-1 rounded'></i>
                   </NavLink>
-                  {order.isPaid_theOtherSystem ? <i className='bi bi-check-circle-fill text-success fs-4' 
-                  onClick={ () => sendIsPaidOnThOtherSystemToApi(order.id)} ></i>
-                   : <i className='bi bi-x-circle-fill text-danger fs-4 ' 
-                   onClick={() => sendIsPaidOnThOtherSystemToApi(order.id)} ></i>}
+                  {order.isPaid_theOtherSystem ? <i className='bi bi-check-circle-fill text-success fs-4'
+                    onClick={() => sendIsPaidOnThOtherSystemToApi(order.id)} ></i>
+                    : <i className='bi bi-x-circle-fill text-danger fs-4 '
+                      onClick={() => sendIsPaidOnThOtherSystemToApi(order.id)} ></i>}
                 </td>
               </tr>
 
@@ -246,14 +178,16 @@ export default function Orders() {
     } else {
       return (
         <div className=' d-flex justify-content-center  height-calc-70 align-items-center' >
-          {orders.length <= 0 && searchText.length <= 0 && filterPointId.length <= 0 && filterUsertId.length <= 0 && filterIsPaid.length <= 0 ?
+           {orders.length <= 0 && searchText.length <= 0 && filterPointId.length <= 0 && filterUserId.length <= 0 && filterIsPaid.length <= 0 && filterDate.length <=0 ?
             <i className='fa fa-spinner fa-spin  fa-5x'></i>
-            : <div className='alert alert-danger w-50 text-center'>لا يوجد أوردرات</div>
+             : <div className='alert alert-danger w-50 text-center'>لا يوجد أوردرات</div>
           }
-        </div>)
+        </div>
+      )
     }
   };
 
+  
   const paidModal = document.getElementById('paidModal');
   function openModal() {
     paidModal.style.display = 'block';
@@ -342,10 +276,14 @@ export default function Orders() {
         <div className="col-md-3">
           <NavLink to='/orders/add' className='btn btn-primary mb-1' >إضافة أوردر</NavLink>
         </div>
-        <div className="col-md-9 m-auto " >
+        <div className="col-md-6" >
           <input type="text" className='form-control text-end mt-1 ' placeholder='بحث عن أوردر...' onChange={handleSearchChange} />
         </div>
+        <div className="col-md-4 mb-1">
+          <input type="date" className='form-control mt-1' onChange={handleDateChange} />
+        </div>
       </div>
+      {/* paid modal */}
       <div id="paidModal" className={`${styles.modal} `}>
         <div className={`${styles.modal_content}`}>
           <span className={`${styles.close} fs-3`} onClick={closeModal} >&times;</span>

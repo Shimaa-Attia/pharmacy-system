@@ -87,12 +87,12 @@ export default function EditePurchases() {
 
   let validateEditedShortComingsForm = () => {
     const schema = Joi.object({
-      productName: Joi.string().required(),
-      productImage: Joi.any(),
-      clientInfo: Joi.any(),
+      productName:Joi.string().required(),
+      productImage:Joi.any(),
+      clientInfo:Joi.any(),
       isAvailable_inOtherBranch: Joi.required(),
-      productType: Joi.string().required(),
-      notes: Joi.string().empty(''),
+      productType:Joi.string().required(),
+      notes:Joi.any().empty(''),
     });
     return schema.validate(shortComings, { abortEarly: false });
   };
@@ -171,9 +171,9 @@ export default function EditePurchases() {
                 <option value="أدوية" >أدوية</option>
                 <option value="تركيبات">تركيبات</option>
                 <option value="كوزمو">كوزمو</option>
-                <option value="براندات">براندات</option>
+                <option value="مستلزمات طبية">مستلزمات طبية </option>
               </select>
-              <p>{purchasesData.productType}</p>
+        
 
             </div>
 

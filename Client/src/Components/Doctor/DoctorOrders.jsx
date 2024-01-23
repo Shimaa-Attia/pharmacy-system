@@ -67,7 +67,7 @@ export default function DoctorOrders() {
     setFilterPointId(event?.target?.value);
 
   }
-  let [filterUsertId, setFilterUserId] = useState('');
+  let [filterUserId, setFilterUserId] = useState('');
   function handleUserChange(selectedOption) {
     setFilterUserId(selectedOption?.value)
   }
@@ -75,101 +75,39 @@ export default function DoctorOrders() {
   function handleIsPaidChange(event) {
     setFilterIsPaid(event?.target?.value);
   }
+  let [filterDate, setFilterDate] = useState('');
+  function handleDateChange(event) {
+    setFilterDate(event.target.value)
+  }
   let getOrderData = async () => {
     let orderResult;
-    if (filterPointId !== undefined && filterPointId.length > 0
-      && (filterUsertId === undefined || filterUsertId === '')
-      && (filterIsPaid === undefined || filterIsPaid === '')) {
-
-      orderResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/filter?point_id=${filterPointId}`, {
-        headers: {
-          "Authorization": `Bearer ${accessToken}`
-        }
-      });
-      setOrders(orderResult.data.data);
-    } else if (searchText !== undefined && searchText.trim().length > 0) {
-
-      orderResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/search/${searchText.trim()}`, {
-        headers: {
-          "Authorization": `Bearer ${accessToken}`
-        }
-      });
-      setOrders(orderResult.data.data);
-
-    } else if (filterUsertId !== undefined && filterUsertId.length > 0
-      && (filterPointId === undefined || filterPointId === '')
-      && (filterIsPaid === undefined || filterIsPaid === '')) {
-
-      orderResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/filter?user_id=${filterUsertId}`, {
-        headers: {
-          "Authorization": `Bearer ${accessToken}`
-        }
-      });
+    let urlApi = `${process.env.REACT_APP_API_URL}/api/orders/filter?`;
+    if (filterUserId !== undefined && filterUserId.length > 0) {
+      urlApi += `user_id=${filterUserId}&`
+    }
+    if (filterIsPaid !== undefined && filterIsPaid.length > 0) {
+      urlApi += `is_paid=${filterIsPaid}&` 
+    }
+    if (filterPointId !== undefined && filterPointId.length > 0) {
+      urlApi += `point_id=${filterPointId}&`
+    }
+    if (filterDate !== undefined && filterDate.length > 0) {
+      urlApi += `fromDate=${filterDate}&`
+    }
+    if (searchText !== undefined && searchText.trim().length > 0) {
+      urlApi += `key=${searchText}`
+    
+    }
+    orderResult = await axios.get(urlApi, {
+      headers: {
+        "Authorization": `Bearer ${accessToken}`
+      }
+    })
+    if (orderResult) {
       setOrders(orderResult.data.data)
-
-    } else if (filterIsPaid !== undefined && filterIsPaid.length > 0
-      && (filterUsertId === undefined || filterUsertId === '')
-      && (filterPointId === undefined || filterPointId === '')
-    ) {
-      orderResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/filter?is_paid=${filterIsPaid}`, {
-        headers: {
-          "Authorization": `Bearer ${accessToken}`
-        }
-      });
-      setOrders(orderResult.data.data)
-    } else if (filterPointId !== undefined && filterPointId.length > 0
-      && (filterUsertId !== undefined && filterUsertId.length > 0)
-      && (filterIsPaid === undefined || filterIsPaid === '')) {
-      orderResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/filter?point_id=${filterPointId}&user_id=${filterUsertId}`, {
-        headers: {
-          "Authorization": `Bearer ${accessToken}`
-        }
-      });
-      setOrders(orderResult.data.data);
-
-    } else if (filterPointId !== undefined && filterPointId.length > 0
-      && (filterIsPaid !== undefined && filterIsPaid.length > 0)
-      && (filterUsertId === undefined || filterUsertId === '')) {
-      orderResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/filter?point_id=${filterPointId}&is_paid=${filterIsPaid}`, {
-        headers: {
-          "Authorization": `Bearer ${accessToken}`
-        }
-      });
-      setOrders(orderResult.data.data);
-
     }
-    else if (filterIsPaid !== undefined && filterIsPaid.length > 0
-      && (filterUsertId !== undefined && filterUsertId.length > 0)
-      && (filterPointId === undefined || filterPointId === '')) {
-      orderResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/filter?user_id=${filterUsertId}&is_paid=${filterIsPaid}`, {
-        headers: {
-          "Authorization": `Bearer ${accessToken}`
-        }
-      });
-      setOrders(orderResult.data.data);
-
-    }
-    else if (filterIsPaid !== undefined && filterIsPaid.length > 0
-      && (filterUsertId !== undefined && filterUsertId.length > 0)
-      && (filterPointId !== undefined && filterPointId.length > 0)) {
-      orderResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/filter?user_id=${filterUsertId}&is_paid=${filterIsPaid}&point_id=${filterPointId}`, {
-        headers: {
-          "Authorization": `Bearer ${accessToken}`
-        }
-      });
-      setOrders(orderResult.data.data);
-
-    }
-    else {
-      orderResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders`, {
-        headers: {
-          "Authorization": `Bearer ${accessToken}`
-        }
-      });
-    }
-    setOrders(orderResult.data.data);
   };
-  useEffect(() => { getOrderData() }, [searchText, filterPointId, filterUsertId, filterIsPaid]);
+  useEffect(() => { getOrderData() }, [filterUserId, filterIsPaid, filterPointId,filterDate , searchText]);
 
   //get total money with the doctor from all orders
   let [unpaidAmount, setUnpaidAmmount] = useState([]);
@@ -242,7 +180,7 @@ export default function DoctorOrders() {
     } else {
       return (
         <div className=' d-flex justify-content-center  height-calc-70 align-items-center' >
-          {orders.length <= 0 && searchText.length <= 0 && filterPointId.length <= 0 && filterUsertId.length <= 0 && filterIsPaid.length <= 0 ?
+          {orders.length <= 0 && searchText.length <= 0 && filterPointId.length <= 0 && filterUserId.length <= 0 && filterIsPaid.length <= 0 ?
             <i className='fa fa-spinner fa-spin  fa-5x'></i>
             : <div className='alert alert-danger w-50 text-center'>لا يوجد أوردرات</div>
           }
@@ -341,7 +279,7 @@ export default function DoctorOrders() {
 
       <div className='container'>
         <div className=" my-3 text-center row mx-2  " dir='rtl'>
-          <div className="col-md-3 mb-1">
+          <div className="col-md-2 mb-1">
             <Select
               options={userOptions}
               onChange={handleUserChange}
@@ -349,6 +287,9 @@ export default function DoctorOrders() {
               placeholder="اختر موظف"
             />
           </div>
+          <div className="col-md-2 mb-1">
+          <input type="date" className='form-control mt-1' onChange={handleDateChange} />
+        </div>
           <div className="col-md-3 mb-1">
             <select name="is_paid" defaultValue={0} className='form-control' id="role"
               onChange={handleIsPaidChange}>
@@ -357,14 +298,14 @@ export default function DoctorOrders() {
               <option value={"unpaid"} >غير مسدد</option>
             </select>
           </div>
-          <div className="col-md-3 mb-1">
+          <div className="col-md-2 mb-1">
             <select name="point_id" defaultValue={0} className='form-control' id="point_id"
               onChange={handlePointChange}>
               <option value={0} hidden disabled>اختر نقطة بيع</option>
               {salePoints.map((point) => <option key={point.id} value={point.id} >{point.name}</option>)}
             </select>
           </div>
-          <div className="col-md-3">
+          <div className="col-md-2">
             <NavLink to={`/doctorlayout/add/${id}`} className='btn btn-primary mb-1' >إضافة أوردر</NavLink>
           </div>
           <div className="col-md-12 row m-auto d-flex " >
