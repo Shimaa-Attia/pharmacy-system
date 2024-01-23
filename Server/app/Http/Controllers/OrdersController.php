@@ -331,8 +331,7 @@ class OrdersController extends Controller
             $order_query->where('user_id', $request->user_id);
         }
         if($request->fromDate){
-            $fromDate = new DateTime($request->fromDate);
-            $order_query->whereDate('created_at','>=', $fromDate->modify("-1 day"));
+            $order_query->whereDate('created_at','>=', $request->fromDate);
         }
         $orders = $order_query->orderBy('created_at', 'DESC')->get();
 

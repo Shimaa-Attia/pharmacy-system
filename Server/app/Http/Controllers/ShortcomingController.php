@@ -229,10 +229,9 @@ class ShortcomingController extends Controller
             $shortcoming_query->where('productType', $request->productType);
         }
         if($request->fromDate){
-            $fromDate = new DateTime($request->fromDate);
-            $shortcoming_query->whereDate('created_at','>=', $fromDate->modify("-1 day"));
+            $shortcoming_query->whereDate('created_at','>=', $request->fromDate);
         }
-        if ($request->status_id &&$request->status_id =="none" ) {
+        if ($request->status_id && $request->status_id =="none" ) {
             $shortcoming_query->where('status_id', null);
         }elseif($request->status_id ){
             $shortcoming_query->where('status_id', $request->status_id);
