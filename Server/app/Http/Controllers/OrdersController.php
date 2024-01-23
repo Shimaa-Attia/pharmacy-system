@@ -318,13 +318,15 @@ class OrdersController extends Controller
         }
         if ($request->key) {
             $key = $request->key;
-            $order_query->where('totalAmmount', 'like', "$key.%")
-            ->orWhereHas('customer', function ($query) use ($key) {
-                $query->where('code', $key);
-            })
-            ->orWhereHas('user', function ($query) use ($key) {
-                $query->where('name', 'like', "%$key%")
-                    ->OrWhere('code', $key);
+            $order_query->where(function ($query) use ($key) {
+             $query->where('totalAmmount', 'like', "$key.%")
+                ->orWhereHas('customer', function ($query) use ($key) {
+                    $query->where('code', $key);
+                })
+                ->orWhereHas('user', function ($query) use ($key) {
+                    $query->where('name', 'like', "%$key%")
+                        ->OrWhere('code', $key);
+                });
             });
         }
         $orders = $order_query->orderBy('created_at', 'DESC')->get();
