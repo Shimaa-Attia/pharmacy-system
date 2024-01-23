@@ -219,21 +219,13 @@ class OrdersController extends Controller
 
     public function search($key)
     { // $query->where(DB::raw('emb_quota - emb_units_sold'), '>=', $embroidery);
-        $orders = Order::where('cost', 'like', "$key.%")
-            ->OrWhere('totalAmmount', 'like', "$key.%")
-            ->OrWhere('paid', 'like', "$key.%")
-            ->OrWhere(function ($query) use ($key) {
-                $query->where(Order::raw('totalAmmount - paid'), 'like', "$key.%");
-            })
+        $orders = Order::where('totalAmmount', 'like', "$key.%")
             ->orWhereHas('customer', function ($query) use ($key) {
-                $query->where('name', 'like', "%$key%")
-                    ->OrWhere('code', $key);
+                $query->where('code', $key);
             })
             ->orWhereHas('user', function ($query) use ($key) {
                 $query->where('name', 'like', "%$key%")
                     ->OrWhere('code', $key);
-            })->orWhereHas('sale_point', function ($query) use ($key) {
-                $query->where('name', 'like', "%$key%");
             })
             ->orderBy('created_at', 'DESC')->get();
         return OrderResource::collection($orders);
@@ -247,18 +239,9 @@ class OrdersController extends Controller
             $key = $request->key;
             $orders = Order::where('user_id', $id)
                 ->where(function ($query) use ($key) {
-                    $query->where('cost', 'like', "$key.%")
-                        ->OrWhere('totalAmmount', 'like', "$key.%")
-                        ->OrWhere('paid', 'like', "$key.%")
-                        ->OrWhere(function ($query) use ($key) {
-                            $query->where(Order::raw('totalAmmount - paid'), 'like', "$key.%");
-                        })
+                    $query->where('totalAmmount', 'like', "$key.%")
                         ->orWhereHas('customer', function ($query) use ($key) {
-                            $query->where('name', 'like', "%$key%")
-                                ->OrWhere('code', 'like', "%$key%");
-                        })
-                        ->orWhereHas('sale_point', function ($query) use ($key) {
-                            $query->where('name', 'like', "%$key%");
+                            $query->where('code', 'like', "%$key%");
                         });
                 })->orderBy('created_at', 'DESC')->get();
             return OrderResource::collection($orders);
@@ -332,6 +315,17 @@ class OrdersController extends Controller
         }
         if($request->fromDate){
             $order_query->whereDate('created_at','>=', $request->fromDate);
+        }
+        if ($request->key) {
+            $key = $request->key;
+            $order_query->where('totalAmmount', 'like', "$key.%")
+            ->orWhereHas('customer', function ($query) use ($key) {
+                $query->where('code', $key);
+            })
+            ->orWhereHas('user', function ($query) use ($key) {
+                $query->where('name', 'like', "%$key%")
+                    ->OrWhere('code', $key);
+            });
         }
         $orders = $order_query->orderBy('created_at', 'DESC')->get();
 
