@@ -335,10 +335,8 @@ class OrdersController extends Controller
         }
         $orders = $order_query->orderBy('created_at', 'DESC')->get();
 
-        return response()->json([
-          "num"=> count($orders) ,
-          "orders"=>  OrderResource::collection($orders)
-        ]);
+        return  OrderResource::collection($orders);
+
 
 
     }
