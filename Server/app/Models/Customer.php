@@ -17,10 +17,10 @@ class Customer extends Model
         'notes',
         ];
 
-     public function orders(){
+    public function orders(){
             return $this->hasMany(Order::class,'customer_id');
-        }
+    }
         public function customFields(){
             return $this->hasMany(CustomField::class,'customer_id');
-        }
+    }
 }

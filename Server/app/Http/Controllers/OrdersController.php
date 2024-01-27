@@ -350,15 +350,15 @@ class OrdersController extends Controller
                 "message" => $validator->errors()
             ], 409);
         }
-
+        $end_date = new DateTime($request->end_date);
+        $end_date = $end_date->modify("+1 day")->format('Y-m-d');
         $users = User::all();
         $result = [];
         $totalNumOfOrders = 0;
-        $end_date = new DateTime($request->end_date);
         foreach ($users as $user) {
             $orders = Order::where('user_id', $user->id)
-                ->where(function ($query) use ($request, $end_date) {
-                    $query->whereBetween('created_at', [$request->start_date, $end_date->modify("+1 day")]);
+                ->where(function ($query) use ($request,$end_date) {
+                    $query->whereBetween('created_at', [$request->start_date, $end_date]);
 
                 })->get();
 
@@ -394,7 +394,7 @@ class OrdersController extends Controller
 
     }
 
-     public function deliveryOrderPay($id){
+    public function deliveryOrderPay($id){
 
 
 
@@ -432,14 +432,12 @@ class OrdersController extends Controller
     }
     public function isPaid_theOtherSystem(Request $request, $id)
     {
-
         $order = Order::find($id);
         if ($order == null) {
             return response()->json([
                 "message" => "هذا الطلب غير موجود"
             ], 404);
         }
-
 
         $update = $order->update([
             "isPaid_theOtherSystem" => !$order->isPaid_theOtherSystem
