@@ -351,6 +351,7 @@ class OrdersController extends Controller
             ], 409);
         }
         $end_date = new DateTime($request->end_date);
+        //edit formate
         $end_date = $end_date->modify("+1 day")->format('Y-m-d');
         $users = User::all();
         $result = [];
