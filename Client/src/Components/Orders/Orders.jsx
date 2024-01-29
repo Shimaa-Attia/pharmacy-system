@@ -154,9 +154,9 @@ export default function Orders() {
                   openModal()
                   setOrderId(order.id)
                 }} style={{ backgroundColor: '#2a55a3' }}></i></td>
-                <td data-label="خيارات">
+                <td data-label="خيارات" style={{ minWidth: '150px' }}>
                   <NavLink to={`/orders/delete/${order.id}`} >
-                    <i className='bi bi-trash text-bg-danger p-1 mx-1 rounded'></i>
+                    <i className='bi bi-trash text-bg-danger p-1  rounded'></i>
                   </NavLink>
                   <NavLink to={`/orders/edite/${order.id}`} >
                     <i className='bi bi-pencil-square text-bg-primary mx-1  p-1 rounded'></i>
