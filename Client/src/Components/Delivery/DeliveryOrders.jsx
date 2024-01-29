@@ -43,7 +43,11 @@ export default function DeliveryOrders() {
       }
     }  
   };
-  useEffect(() => { getOrderData() }, [searchText]);
+
+  useEffect(() => {
+    getOrderData();
+  }, [searchText]);
+
     //get total money with the delivery from all orders
    let [unpaidAmount , setUnpaidAmmount] = useState([]);
     let getUnpiadAmmountForDelivery = async () => {
@@ -67,9 +71,7 @@ export default function DeliveryOrders() {
       headers: {
         "Authorization": `Bearer ${accessToken}`
       }
-    }).then((res) => {
-      console.log(res);
-      console.log("res");
+    }).then((res) => {  
       toast.success(res.data.message);
       getOrderData()
     }).catch((errors) => {
@@ -80,9 +82,9 @@ export default function DeliveryOrders() {
   let showOrders = () => {
     if (orders.length > 0) {
       return (
-        <div className="shadow rounded rounded-4 bg-white mx-3 p-3 ">
-          <table dir="rtl" responsive='sm' className='table table-bordered table-hover text-center table-responsive-list'>
-            <thead className='table-primary'>
+        <div className="shadow rounded rounded-4 bg-white mx-3 p-3 table-responsive ">
+          <table dir="rtl"  className='table  table-hover text-center align-middle table-responsive-list '>
+            <thead className='table-primary  no-wrap-heading'>
               <tr>
                 <th>رقم</th>
                 <th>تاريخ الإنشاء</th>

@@ -4,7 +4,6 @@ import { Helmet } from 'react-helmet'
 import { AuthContext } from '../../Context/AuthStore';
 import { toast } from 'react-toastify';
 import Joi from 'joi';
-import { NavLink } from 'react-router-dom';
 
 
 export default function Home() {

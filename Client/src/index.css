@@ -39,4 +39,8 @@ code {
 .height-calc-70 {
   height: calc(100vh - 166px) !important;
 }
+.no-wrap-heading th {
+  white-space: nowrap;
+
+}
 

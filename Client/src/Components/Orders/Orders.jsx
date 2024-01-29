@@ -99,7 +99,9 @@ export default function Orders() {
       setOrders(orderResult.data.data)
     }
   };
-  useEffect(() => { getOrderData() }, [filterUserId, filterIsPaid, filterPointId,filterDate , searchText]);
+  useEffect(() =>
+   { getOrderData() },
+    [filterUserId, filterIsPaid, filterPointId,filterDate , searchText]);
 
   let [orderId, setOrderId] = useState(''); // for making orders paids on the same system
   let sendIsPaidOnThOtherSystemToApi = async (ordId) => {
@@ -121,8 +123,8 @@ export default function Orders() {
     if (orders.length > 0) {
       return (
         <div className="shadow rounded rounded-4 bg-white mx-3 p-3 table-responsive">
-          <table dir="rtl" responsive='sm' className='table  table-hover text-center align-middle table-responsive-list '>
-            <thead className='table-primary'>
+          <table dir="rtl"  className='table  table-hover text-center align-middle table-responsive-list '>
+            <thead className='table-primary  no-wrap-heading'>
               <tr>
                 <th> تاريخ الإنشاء</th>
                 <th> نقطة اليبع</th>

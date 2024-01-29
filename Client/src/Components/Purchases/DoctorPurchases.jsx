@@ -117,26 +117,27 @@ export default function DoctorPurchases() {
     if (purchasesData.length > 0) {
       return (
         <div className="shadow rounded rounded-4 bg-white mx-3 p-3 table-responsive ">
+
           <table dir="rtl" responsive='sm' className='table  table-hover text-center align-middle table-responsive-list '>
-            <thead className='table-primary'>
+            <thead className='table-primary  no-wrap-heading'>
               <tr>
-                <th> تاريخ الإنشاء</th>
-                <th>متوفر بالفرع الأخر</th>
-                <th>اسم الصنف</th>
+              <th>اسم الصنف</th>
                 <th>العميل</th>
-                <th>نوع المنتج</th>
                 <th>الحالة</th>
                 <th> تغيير الحالة</th>
+                <th > ملاحظات</th>
+                <th>الفرع</th>
+                <th>الموظف</th>
+                <th>متوفر بالفرع الأخر</th>
+                <th>نوع المنتج</th>
+                <th> تاريخ الإنشاء</th>
                 <th>خيارات</th>
               </tr>
             </thead>
             <tbody>
               {purchasesData.map((purch, index) => <tr key={index}>
-                <td data-label="تاريخ الإنشاء"  >{purch.created_at}</td>
-                <td data-label="متوفر بالفرع الأخر">{purch?.isAvailable_inOtherBranch == 1 ? "متوفر" : "غير متوفر"}</td>
-                <td data-label="اسم الصنف">{purch?.productName}</td>
+              <td data-label="اسم الصنف">{purch?.productName}</td>
                 <td data-label="العميل"  >{purch.clientInfo}</td>
-                <td data-label="نوع المنتج"  >{purch.productType}</td>
                 <td data-label="الحالة" >{purch?.status?.name}</td>
                 <td data-label="تغيير الحالة"  >
                   <div >
@@ -155,6 +156,12 @@ export default function DoctorPurchases() {
 
                   </div>
                 </td>
+                <td data-label="ملاحظات">{purch.notes}</td>
+                <td data-label="الفرع">{purch.branch.name}</td>
+                <td data-label="الموظف">{purch.creatorUser.name}</td>
+                <td data-label="متوفر بالفرع الأخر">{purch?.isAvailable_inOtherBranch == 1 ? "متوفر" : "غير متوفر"}</td>
+                <td data-label="نوع المنتج"  >{purch.productType}</td>
+                <td data-label="تاريخ الإنشاء"  >{purch.created_at}</td>
                 <td data-label="خيارات" style={{ minWidth: '150px' }} >
                   <NavLink to={`/doctorlayout/doctorpurchases/details/${purch.id}`} >
                     <i className='bi bi-list-ul text-bg-success mx-1  p-1 rounded'></i>

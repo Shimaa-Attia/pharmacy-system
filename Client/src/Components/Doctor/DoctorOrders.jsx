@@ -127,9 +127,9 @@ export default function DoctorOrders() {
   let showOrders = () => {
     if (orders.length > 0) {
       return (
-        <div className="shadow rounded rounded-4 bg-white mx-3 p-3 ">
-          <table dir="rtl" responsive='sm' className='table table-bordered table-hover text-center table-responsive-list'>
-            <thead className='table-primary'>
+        <div className="shadow rounded rounded-4 bg-white mx-3 p-3 table-responsive ">
+          <table dir="rtl"  className='table table-bordered table-hover text-center table-responsive-list'>
+            <thead className='table-primary no-wrap-heading'>
               <tr>
                 <th>رقم</th>
                 <th> تاريخ الإنشاء</th>

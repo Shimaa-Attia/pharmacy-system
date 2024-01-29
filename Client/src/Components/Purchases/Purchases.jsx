@@ -45,15 +45,16 @@ export default function Purchases() {
     }
     if (filterDate !== undefined && filterDate.length > 0) {
       urlApi += `fromDate=${filterDate}`
-    
+
     }
     purchResult = await axios.get(urlApi, {
       headers: {
         "Authorization": `Bearer ${accessToken}`
       }
     })
+    console.log(purchResult);
     setPurchasesData(purchResult.data.data)
-    
+
   }
   useEffect(() => {
     getPurchasesData()
@@ -114,27 +115,27 @@ export default function Purchases() {
   let showPurchases = () => {
     if (purchasesData.length > 0) {
       return (
-        <div className="shadow rounded rounded-4 bg-white mx-3 p-3 table-responsive ">
-          <table dir="rtl" responsive='sm' className='table  table-hover text-center align-middle table-responsive-list '>
-            <thead className='table-primary'>
+        <div className="shadow rounded rounded-4 bg-white mx-3 p-3 table-responsive">
+          <table dir="rtl" className='table  table-hover text-center align-middle   table-responsive-list '>
+            <thead className='table-primary no-wrap-heading'>
               <tr>
-                <th> تاريخ الإنشاء</th>
-                <th>متوفر بالفرع الأخر</th>
                 <th>اسم الصنف</th>
                 <th>العميل</th>
-                <th>نوع المنتج</th>
                 <th>الحالة</th>
                 <th> تغيير الحالة</th>
+                <th > ملاحظات</th>
+                <th>الفرع</th>
+                <th>الموظف</th>
+                <th>متوفر بالفرع الأخر</th>
+                <th>نوع المنتج</th>
+                <th> تاريخ الإنشاء</th>
                 <th>خيارات</th>
               </tr>
             </thead>
             <tbody>
               {purchasesData.map((purch, index) => <tr key={index}>
-                <td data-label="تاريخ الإنشاء"  >{purch.created_at}</td>
-                <td data-label="متوفر بالفرع الأخر">{purch?.isAvailable_inOtherBranch == 1 ? "متوفر" : "غير متوفر"}</td>
                 <td data-label="اسم الصنف">{purch?.productName}</td>
                 <td data-label="العميل"  >{purch.clientInfo}</td>
-                <td data-label="نوع المنتج"  >{purch.productType}</td>
                 <td data-label="الحالة" >{purch?.status?.name}</td>
                 <td data-label="تغيير الحالة"  >
                   <div >
@@ -153,6 +154,12 @@ export default function Purchases() {
 
                   </div>
                 </td>
+                <td data-label="ملاحظات">{purch.notes}</td>
+                <td data-label="الفرع">{purch.branch.name}</td>
+                <td data-label="الموظف">{purch.creatorUser.name}</td>
+                <td data-label="متوفر بالفرع الأخر">{purch?.isAvailable_inOtherBranch == 1 ? "متوفر" : "غير متوفر"}</td>
+                <td data-label="نوع المنتج"  >{purch.productType}</td>
+                <td data-label="تاريخ الإنشاء"  >{purch.created_at}</td>
                 <td data-label="خيارات" style={{ minWidth: '150px' }} >
                   <NavLink to={`/purchases/delete/${purch.id}`} >
                     <i className='bi bi-trash text-bg-danger p-1 mx-1 rounded'></i>
@@ -175,7 +182,7 @@ export default function Purchases() {
     } else {
       return (
         <div className=' d-flex justify-content-center  height-calc-70 align-items-center' >
-          {purchasesData.length <= 0 && filterBranchId.length <= 0 && filterProductType.length <= 0 && filterBranchId.length <= 0 && filterDate.length <= 0 && filterIsAvailableInOtherBranch.length <= 0 &&filterStatusId.length <=0 ?
+          {purchasesData.length <= 0 && filterBranchId.length <= 0 && filterProductType.length <= 0 && filterBranchId.length <= 0 && filterDate.length <= 0 && filterIsAvailableInOtherBranch.length <= 0 && filterStatusId.length <= 0 ?
             <i className='fa fa-spinner fa-spin  fa-5x'></i>
             : <div className='alert alert-danger w-50 text-center'>لا يوجد مشتريات</div>
           }
