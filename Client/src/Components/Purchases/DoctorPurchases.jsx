@@ -137,7 +137,7 @@ export default function DoctorPurchases() {
             <tbody>
               {purchasesData.map((purch, index) => <tr key={index}>
               <td data-label="اسم الصنف">{purch?.productName}</td>
-                <td data-label="العميل"  >{purch.clientInfo}</td>
+                <td data-label="العميل"  >{purch?.clientInfo}</td>
                 <td data-label="الحالة" >{purch?.status?.name}</td>
                 <td data-label="تغيير الحالة"  >
                   <div >
@@ -151,17 +151,17 @@ export default function DoctorPurchases() {
                       }}
                     >
                       <option value={0} hidden disabled>اختر</option>
-                      {statusData.map((stat) => <option key={stat.id} value={stat.id}>{stat.name}</option>)}
+                      {statusData.map((stat) => <option key={stat.id} value={stat.id}>{stat?.name}</option>)}
                     </select>
 
                   </div>
                 </td>
-                <td data-label="ملاحظات">{purch.notes}</td>
-                <td data-label="الفرع">{purch.branch.name}</td>
-                <td data-label="الموظف">{purch.creatorUser.name}</td>
+                <td data-label="ملاحظات">{purch?.notes}</td>
+                <td data-label="الفرع">{purch?.branch.name}</td>
+                <td data-label="الموظف">{purch?.creatorUser?.name}</td>
                 <td data-label="متوفر بالفرع الأخر">{purch?.isAvailable_inOtherBranch == 1 ? "متوفر" : "غير متوفر"}</td>
-                <td data-label="نوع المنتج"  >{purch.productType}</td>
-                <td data-label="تاريخ الإنشاء"  >{purch.created_at}</td>
+                <td data-label="نوع المنتج"  >{purch?.productType}</td>
+                <td data-label="تاريخ الإنشاء"  >{purch?.created_at}</td>
                 <td data-label="خيارات" style={{ minWidth: '150px' }} >
                   <NavLink to={`/doctorlayout/doctorpurchases/details/${purch.id}`} >
                     <i className='bi bi-list-ul text-bg-success mx-1  p-1 rounded'></i>
