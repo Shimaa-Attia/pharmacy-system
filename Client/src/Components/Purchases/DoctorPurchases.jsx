@@ -17,7 +17,7 @@ export default function DoctorPurchases() {
   }
   let [filterStatusId, setFilterStatusId] = useState('');
   function handleStatusIdChange(event) {
-    setFilterStatusId(event.target.value)
+    setFilterStatusId(event?.target?.value)
   }
   let [filterIsAvailableInOtherBranch, setFilterIsAvailableInOtherBranch] = useState('');
   function handleIsAvailableInOtherBranchChange(event) {
@@ -114,7 +114,7 @@ export default function DoctorPurchases() {
   }, [status.status_id]);
 
   let showPurchases = () => {
-    if (purchasesData.length > 0) {
+    if (purchasesData?.length > 0) {
       return (
         <div className="shadow rounded rounded-4 bg-white mx-3 p-3 table-responsive ">
 
@@ -147,17 +147,17 @@ export default function DoctorPurchases() {
                           ...status,
                           status_id: event?.target?.value
                         });
-                        setPurchId(purch.id)
+                        setPurchId(purch?.id)
                       }}
                     >
                       <option value={0} hidden disabled>اختر</option>
-                      {statusData.map((stat) => <option key={stat.id} value={stat.id}>{stat?.name}</option>)}
+                      {statusData?.map((stat) => <option key={stat.id} value={stat.id}>{stat?.name}</option>)}
                     </select>
 
                   </div>
                 </td>
                 <td data-label="ملاحظات">{purch?.notes}</td>
-                <td data-label="الفرع">{purch?.branch.name}</td>
+                <td data-label="الفرع">{purch?.branch?.name}</td>
                 <td data-label="الموظف">{purch?.creatorUser?.name}</td>
                 <td data-label="متوفر بالفرع الأخر">{purch?.isAvailable_inOtherBranch == 1 ? "متوفر" : "غير متوفر"}</td>
                 <td data-label="نوع المنتج"  >{purch?.productType}</td>
