@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\CompanyController;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -9,10 +8,13 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CustomCotroller;
 use App\Http\Controllers\OfferController;
 use App\Http\Controllers\OrdersController;
+use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\SalePointController;
 use App\Http\Controllers\ShortcomingController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\CustomPropertiesController;
+use App\Http\Controllers\InventoryProductController;
 use App\Http\Controllers\SellingIncentivesController;
 
 /*
@@ -244,6 +246,30 @@ Route::middleware(['auth:api'])->group(function(){
          Route::get('/search/{key}',[CompanyController::class,'search']);
 
     });
+
+    Route::group(['prefix'=>'notifications','as'=>'notifications.'],function(){
+        //select all
+        Route::get('/{status}',[NotificationController::class,'customAll']);
+        //select one
+        Route::get('/show/{id}',[NotificationController::class,'show']);
+        //create
+        Route::post('/',[NotificationController::class,'create']);
+        //update
+        Route::put('/{id}',[NotificationController::class,'update']);
+
+    });
+    Route::group(['prefix'=>'inventoryProducts','as'=>'inventoryProducts'],function(){
+        //select all
+        Route::get('/{status}',[InventoryProductController::class,'customAll']);
+        //select one
+        Route::get('/show/{id}',[InventoryProductController::class,'show']);
+        //create
+        Route::post('/',[InventoryProductController::class,'create']);
+        //update
+        Route::put('/{id}',[InventoryProductController::class,'update']);
+
+    });
+
 
 
 });

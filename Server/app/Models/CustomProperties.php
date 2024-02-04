@@ -27,4 +27,11 @@ class CustomProperties extends Model
         return $this->hasMany(SellingIncentives::class,'incentiveReason_id','id');
     }
 
+    public function notifications(){
+        return $this->hasMany(Notification::class,'status_id','id');
+    }
+    public function inventoryProducts(){
+        return $this->hasMany(InventoryProduct::class,'status_id','id');
+    }
+
 }
