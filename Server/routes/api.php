@@ -1,15 +1,19 @@
 <?php
 
-use App\Http\Controllers\CustomCotroller;
-use App\Http\Controllers\CustomerController;
-use App\Http\Controllers\CustomPropertiesController;
-use App\Http\Controllers\OrdersController;
-use App\Http\Controllers\SalePointController;
-use App\Http\Controllers\ShortcomingController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\CompanyController;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RuleController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\CustomCotroller;
+use App\Http\Controllers\OfferController;
+use App\Http\Controllers\OrdersController;
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\SalePointController;
+use App\Http\Controllers\ShortcomingController;
+use App\Http\Controllers\CustomPropertiesController;
+use App\Http\Controllers\SellingIncentivesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -127,11 +131,11 @@ Route::middleware(['auth:api'])->group(function(){
     Route::group(['prefix'=>'properties','as'=>'properties.'],function(){
         //getCustomList
         Route::get('/getCustomList/{type}',[CustomPropertiesController::class,'getCustomList']);
-        //select one 
+        //select one
         Route::get('/show/{id}',[CustomPropertiesController::class,'show']);
-         //create 
+         //create
          Route::post('/{type}',[CustomPropertiesController::class,'create']);
-        //update 
+        //update
         Route::put('/{id}',[CustomPropertiesController::class,'update']);
         // soft delete
         Route::delete('/delete/{id}',[CustomPropertiesController::class,'destroy']);
@@ -164,6 +168,83 @@ Route::middleware(['auth:api'])->group(function(){
         Route::post('/updateStatus/{id}',[ShortcomingController::class,'updateStatus']);
 
     });
+    Route::group(['prefix'=>'rules','as'=>'rules.'],function(){
+        //select all
+        Route::get('/{type}',[RuleController::class,'all']);
+        //select one
+        Route::get('/show/{id}',[RuleController::class,'show']);
+        //create
+        Route::post('/',[RuleController::class,'create']);
+        //update
+        Route::put('/{id}',[RuleController::class,'update']);
+        //soft delete
+        Route::delete('/delete/{id}',[RuleController::class,'destroy']);
+        Route::get('/archive',[RuleController::class,'archive']);
+        Route::post('/restore/{id}',[RuleController::class,'restore']);
+        Route::delete('/deleteArchive/{id}',[RuleController::class,'deleteArchive']);
+        //search
+        Route::get('/search/{key}',[RuleController::class,'search']);
+
+
+    });
+
+    Route::group(['prefix'=>'incentives','as'=>'incentives.'],function(){
+        //select all
+        Route::get('/',[SellingIncentivesController::class,'all']);
+        //select one
+        Route::get('/show/{id}',[SellingIncentivesController::class,'show']);
+        //create
+        Route::post('/',[SellingIncentivesController::class,'create']);
+        //update
+        Route::put('/{id}',[SellingIncentivesController::class,'update']);
+        //soft delete
+        Route::delete('/delete/{id}',[SellingIncentivesController::class,'destroy']);
+        Route::get('/archive',[SellingIncentivesController::class,'archive']);
+        Route::post('/restore/{id}',[SellingIncentivesController::class,'restore']);
+        Route::delete('/deleteArchive/{id}',[SellingIncentivesController::class,'deleteArchive']);
+        //filter
+        Route::get('/filter',[SellingIncentivesController::class,'filter']);
+
+    });
+
+    Route::group(['prefix'=>'offers','as'=>'offers.'],function(){
+        //select all
+        Route::get('/',[OfferController::class,'all']);
+        //select one
+        Route::get('/show/{id}',[OfferController::class,'show']);
+        //create
+        Route::post('/',[OfferController::class,'store']);
+        //update
+        Route::put('/{id}',[OfferController::class,'update']);
+        // soft delete
+        Route::delete('/delete/{id}',[OfferController::class,'destroy']);
+        Route::get('/archive',[OfferController::class,'archive']);
+        Route::post('/restore/{id}',[OfferController::class,'restore']);
+        Route::delete('/deleteArchive/{id}',[OfferController::class,'deleteArchive']);
+         //search
+         Route::get('/search/{key}',[OfferController::class,'search']);
+
+    });
+
+    Route::group(['prefix'=>'companies','as'=>'companies.'],function(){
+        //select all
+        Route::get('/',[CompanyController::class,'all']);
+        //select one
+        Route::get('/show/{id}',[CompanyController::class,'show']);
+        //create
+        Route::post('/',[CompanyController::class,'store']);
+        //update
+        Route::put('/{id}',[CompanyController::class,'update']);
+        // soft delete
+        Route::delete('/delete/{id}',[CompanyController::class,'destroy']);
+        Route::get('/archive',[CompanyController::class,'archive']);
+        Route::post('/restore/{id}',[CompanyController::class,'restore']);
+        Route::delete('/deleteArchive/{id}',[CompanyController::class,'deleteArchive']);
+         //search
+         Route::get('/search/{key}',[CompanyController::class,'search']);
+
+    });
+
 
 });
 

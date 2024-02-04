@@ -98,6 +98,15 @@ class ShortcomingController extends Controller
             //upload new image
             $imageName = Storage::putFile("shortcomings", $request->productImage);
         }
+
+        // $name =''.$productImage;
+        // $request['productImage'] =$productImage;
+        // $request->merge([
+        //     'productImage' => $name,
+        // ]);
+        // dd($request['productImage']) ;
+        // $request->productImage =$productImage;
+
         //update
 
         $shortcoming->update([
@@ -242,6 +251,10 @@ class ShortcomingController extends Controller
             $shortcoming_query->where('isAvailable_inOtherBranch', false);
         }
 
+        if ($request->key) {
+            $key = $request->key;
+            $shortcoming_query->where('productName', 'like', "%$key%");
+        }
         $shortcomings = $shortcoming_query->orderBy('created_at', 'DESC')->get();
 
         return ShortcomingResource::collection($shortcomings);

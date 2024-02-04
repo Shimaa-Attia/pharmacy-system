@@ -22,8 +22,8 @@ class SalePointController extends Controller
         $point = Sale_point::find($id);
         if ($point == null) {
             return response()->json([
-                "message" => "نقطة بيع غير موجودة", 404
-            ]);
+                "message" => "نقطة بيع غير موجودة"
+            ], 404);
         }
         return new  SalePointRecource($point);
 
@@ -35,7 +35,7 @@ class SalePointController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:255',
         ]);
-        
+
         if ($validator->fails()) {
             return response()->json([
                 "message" => $validator->errors()
