@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\CustomField;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -14,7 +15,7 @@ class OrderResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-
+        $address = CustomField::where('customer_id',$this->customer->id)->where('name','address')->get();
         return [
             'id'=>$this->id,
             'cost'=>$this->cost,
@@ -28,7 +29,7 @@ class OrderResource extends JsonResource
             'isPaid_theOtherSystem'=>boolval($this->isPaid_theOtherSystem),
             'customer'=>$this->customer,
             'customer_phone'=>$this->customer_phone,
-            'customer_address'=>$this->customer_address,
+            'customer_address'=>$address,
             'delivery_man'=>$this->user,
             'sale_point'=>$this->sale_point,
 

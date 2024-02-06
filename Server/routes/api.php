@@ -168,6 +168,9 @@ Route::middleware(['auth:api'])->group(function(){
         Route::get('/filter',[ShortcomingController::class,'filter']);
         //update status
         Route::post('/updateStatus/{id}',[ShortcomingController::class,'updateStatus']);
+        //customersServiceProducts
+        Route::get('/customersServiceProducts',[ShortcomingController::class,'customersServiceProducts']);
+
 
     });
     Route::group(['prefix'=>'rules','as'=>'rules.'],function(){
@@ -237,13 +240,13 @@ Route::middleware(['auth:api'])->group(function(){
         Route::post('/',[CompanyController::class,'store']);
         //update
         Route::put('/{id}',[CompanyController::class,'update']);
-        // soft delete
-        Route::delete('/delete/{id}',[CompanyController::class,'destroy']);
-        Route::get('/archive',[CompanyController::class,'archive']);
-        Route::post('/restore/{id}',[CompanyController::class,'restore']);
-        Route::delete('/deleteArchive/{id}',[CompanyController::class,'deleteArchive']);
-         //search
-         Route::get('/search/{key}',[CompanyController::class,'search']);
+        // // soft delete
+        // Route::delete('/delete/{id}',[CompanyController::class,'destroy']);
+        // Route::get('/archive',[CompanyController::class,'archive']);
+        // Route::post('/restore/{id}',[CompanyController::class,'restore']);
+        // Route::delete('/deleteArchive/{id}',[CompanyController::class,'deleteArchive']);
+        //  //search
+        //  Route::get('/search/{key}',[CompanyController::class,'search']);
 
     });
 

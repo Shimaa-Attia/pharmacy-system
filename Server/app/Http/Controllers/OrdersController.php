@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\OrderResource;
-use App\Models\Customer;
-use App\Models\Order;
-use App\Models\User;
 use DateTime;
+use App\Models\User;
+use App\Models\Order;
 use http\Env\Response;
+use App\Models\Customer;
+use App\Models\CustomField;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 use PhpParser\Node\Stmt\Return_;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\OrderResource;
+use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Test\Constraint\ResponseIsRedirected;
 
 class OrdersController extends Controller
@@ -49,7 +50,9 @@ class OrdersController extends Controller
                 'total_ammount' => 'numeric|required|gt:0',
                 'customer_code' => 'required',
                 'user_code' => 'required|exists:users,code',
-                'sale_point_id' => 'required|exists:sale_points,id'
+                'sale_point_id' => 'required|exists:sale_points,id',
+                'customer_area.value.*'=>'nullable|string|min:5'
+
             ]);
         }else{
         $validator = Validator::make($request->all(), [
@@ -58,6 +61,7 @@ class OrdersController extends Controller
             'customer_code' => 'required',
             //    'customer_phone'=>'required|regex:/^01[0125][0-9]{8}$/|exists:custom_fields,value',
             //    'customer_address'=>'required|exists:custom_fields,value',
+            'customer_area.value.*'=>'nullable|string|min:5',
             'user_code' => 'required|exists:users,code',
             'sale_point_id' => 'required|exists:sale_points,id'
         ]);
@@ -78,6 +82,16 @@ class OrdersController extends Controller
                 "name" => 'غير محدد',
             ]);
         }
+        if ($request->has("customer_area")) {
+            foreach($request->customer_area as $address){
+                CustomField::updateOrCreate(
+                    ['id' =>  $address['id']??null],
+                    ['value' => $address['value'], 'name' =>'address', "customer_id" => $customer->id]
+                );
+            }
+        }
+
+
         //create
 
         $order = Order::create([
@@ -108,20 +122,22 @@ class OrdersController extends Controller
         //validation
         if($order->user->role =='delivery' && $order->cost == null){
             $validator = Validator::make($request->all(), [
-                'total_ammount' => 'numeric|required|gt:0',
-                'paid' => 'numeric|required|lte:total_ammount',
-                'customer_code' => 'required',
-                'user_code' => 'required|exists:users,code',
-                'sale_point_id' => 'required|exists:sale_points,id'
+                'total_ammount' => 'numeric|nullable|gt:0',
+                'paid' => 'numeric|nullable|lte:total_ammount',
+                'customer_code' => 'nullable',
+                'user_code' => 'nullable|exists:users,code',
+                'customer_area.value.*'=>'nullable|string|min:5',
+                'sale_point_id' => 'nullable|exists:sale_points,id'
             ]);
         }else{
             $validator = Validator::make($request->all(), [
-                'cost' => 'numeric|required|gt:0',
-                'total_ammount' => 'numeric|required|gte:cost',
-                'paid' => 'numeric|required|lte:total_ammount',
-                'customer_code' => 'required',
-                'user_code' => 'required|exists:users,code',
-                'sale_point_id' => 'required|exists:sale_points,id'
+                'cost' => 'numeric|nullable|gt:0',
+                'total_ammount' => 'numeric|nullable|gte:cost',
+                'paid' => 'numeric|nullable|lte:total_ammount',
+                'customer_code' => 'nullable',
+                'user_code' => 'nullable|exists:users,code',
+                'customer_area.value.*'=>'nullable|string|min:5',
+                'sale_point_id' => 'nullable|exists:sale_points,id'
             ]);
         }
         if ($validator->fails()) {
@@ -129,10 +145,12 @@ class OrdersController extends Controller
                 "message" => $validator->errors()
             ], 409);
         }
-
+       if($request->user_code){
         $user = User::where('code', $request->user_code)->first('id');
-        $customer = Customer::where('code', $request->customer_code)->first('id');
+        $request->request->add(['user_id'=>$user->id]);}
 
+        if($request->customer_code){
+        $customer = Customer::where('code', $request->customer_code)->first('id');
         // create customer if not exist
         if (!$customer) {
             $customer = Customer::create([
@@ -140,23 +158,34 @@ class OrdersController extends Controller
                 "name" => 'غير محدد',
             ]);
         }
+        $request->request->add(['customer_id'=>$customer->id]);
+        if ($request->has("customer_area")) {
+            foreach($request->customer_area as $address){
+                CustomField::updateOrCreate(
+                    ['id' =>  $address['id']??null],
+                    ['value' => $address['value'], 'name' =>'address', "customer_id" => $customer->id]
+                );
+            }
+        }
+    }
         //update
 
-        $order->update([
-            "cost" => $request->cost,
-            "totalAmmount" => $request->total_ammount,
-            "paid" => $request->paid,
-            "notes" => $request->notes,
-            "customer_id" => $customer->id,
-            // "customer_phone" => $request->customer_phone,
-            // "customer_address" => $request->customer_address,
-            "user_id" => $user->id,
-            "sale_point_id" => $request->sale_point_id
+        // $order->update([
+        //     "cost" => $request->cost,
+        //     "totalAmmount" => $request->total_ammount,
+        //     "paid" => $request->paid,
+        //     "notes" => $request->notes,
+        //     "customer_id" => $customer->id,
 
-        ]);
+        //     "user_id" => $user->id,
+        //     "sale_point_id" => $request->sale_point_id
+
+        // ]);
+
+        $order->update($request->all());
         //response
         return response()->json([
-            "message" => "تم تعديل  الطلب بنجاح", "order " => $order
+            "message" => "تم تعديل  الطلب بنجاح", "order " => new OrderResource($order)
         ], 200);
 
 

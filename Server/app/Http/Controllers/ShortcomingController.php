@@ -16,9 +16,23 @@ class ShortcomingController extends Controller
 {
     public function all()
     {
+        // $data = Category::paginate(request()->all());
+        // return Response::json($data, 200);
         $shortcomings = Shortcoming::all()->sortByDesc("created_at");
         return
             ShortcomingResource::collection($shortcomings);
+    }
+
+    public function customersServiceProducts(){
+        $shortcomings= Shortcoming::whereNotNull('clientInfo')
+                    ->where(function ($query){
+                    $query->whereHas('status', function ($query)  {
+                            $query->where('name','متوفر وتم الطلب');
+                        })->orWhereHas('status', function ($query)  {
+                            $query->where('name','غير متوفر');
+                        });
+                    })->get();
+        return ShortcomingResource::collection($shortcomings);
     }
 
     public function show($id)
@@ -80,43 +94,45 @@ class ShortcomingController extends Controller
         }
         //validation
         $validator = Validator::make($request->all(), [
-            'productName' => 'required|max:255',
-            "productImage"=>'nullable|image|mimes:png,jpg,jpeg,gif,webp',
-            "isAvailable_inOtherBranch"=>'required|boolean',
-            "productType" => 'required|in:أدوية,تركيبات,كوزمو,مستلزمات طبية',
+            'productName' => 'nullable|max:255',
+            "image"=>'nullable|image|mimes:png,jpg,jpeg,gif,webp',
+            "isAvailable_inOtherBranch"=>'nullable|boolean',
+            "productType" => 'nullable|in:أدوية,تركيبات,كوزمو,مستلزمات طبية',
+            "clientInfo"=>'nullable|string',
+            "notes"=>'nullable|string',
+            "avillable_fromWhere"=>'nullable|string'
         ]);
         if ($validator->fails()) {
             return response()->json([
                 "message" => $validator->errors()
                 ],409);
         }
-        $imageName=$shortcoming->productImage;
-        if($request->productImage != null){ //check if there is image
+        // $imageName=$shortcoming->productImage;
+        if($request->image != null){ //check if there is image
             //delete old image
             // Storage::delete($shortcoming->productImage); ?
-            Storage::disk('public')->delete($shortcoming->productImage);
+            if($shortcoming->productImage != null){
+                 Storage::disk('public')->delete($shortcoming->productImage);
+            }
             //upload new image
-            $imageName = Storage::putFile("shortcomings", $request->productImage);
+            $imageName = Storage::putFile("shortcomings", $request->image);
+            $request->request->add(['productImage'=>"".$imageName]);
+            // return($request->productImage);
         }
 
-        // $name =''.$productImage;
-        // $request['productImage'] =$productImage;
-        // $request->merge([
-        //     'productImage' => $name,
-        // ]);
-        // dd($request['productImage']) ;
-        // $request->productImage =$productImage;
+
 
         //update
 
-        $shortcoming->update([
-            "productName" => $request->productName,
-            "productImage" => $imageName,
-            "clientInfo" =>$request->clientInfo,
-            "notes"=>$request->notes,
-            "isAvailable_inOtherBranch"=>$request->boolean('isAvailable_inOtherBranch'),
-            "productType"=>$request->productType,
-        ]);
+        // $shortcoming->update([
+        //     "productName" => $request->productName,
+        //     "productImage" => $imageName,
+        //     "clientInfo" =>$request->clientInfo,
+        //     "notes"=>$request->notes,
+        //     "isAvailable_inOtherBranch"=>$request->boolean('isAvailable_inOtherBranch'),
+        //     "productType"=>$request->productType,
+        // ]);
+        $shortcoming->update($request->all());
         //response
         return response()->json([
             "message" => "تم التعديل",
@@ -249,6 +265,8 @@ class ShortcomingController extends Controller
             $shortcoming_query->where('isAvailable_inOtherBranch', true);
         } elseif ($request->isAvailable_inOtherBranch == "no") {
             $shortcoming_query->where('isAvailable_inOtherBranch', false);
+        }if($request->clientInfo == "notNull"){
+            $shortcoming_query->whereNotNull('clientInfo');
         }
 
         if ($request->key) {

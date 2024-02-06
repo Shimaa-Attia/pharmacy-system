@@ -86,62 +86,62 @@ class CompanyController extends Controller
     }
 
 
-    public function destroy($id)
-    {
-        $company = Company::find($id);
-        if ($company == null) {
-            return response()->json([
-                "message" =>  "الشركة غير موجودة"
-            ]);
-        }
-        $company->delete();
-        return response()->json([
-            "message" => "تمت أرشفة الشركة "], 200);
-    }
+    // public function destroy($id)
+    // {
+    //     $company = Company::find($id);
+    //     if ($company == null) {
+    //         return response()->json([
+    //             "message" =>  "الشركة غير موجودة"
+    //         ]);
+    //     }
+    //     $company->delete();
+    //     return response()->json([
+    //         "message" => "تمت أرشفة الشركة "], 200);
+    // }
 
 
-    public function archive()
-    {
+    // public function archive()
+    // {
 
-        $companies = Company::onlyTrashed()->orderBy('created_at', 'DESC')->get();
+    //     $companies = Company::onlyTrashed()->orderBy('created_at', 'DESC')->get();
 
-        return $companies;
+    //     return $companies;
 
 
-    }
+    // }
 
-    public function restore($id)
-    {
-        $company = Company::onlyTrashed()->find($id);
-        if ($company == null) {
-            return response()->json([
-                "message" => "الشركة غير موجودة بالأرشيف"
-            ], 404);
-        }
-        $company->restore();
-        return response()->json([
-                "message" => "تم إستعادة الشركة",
-        ], 200);
-    }
+    // public function restore($id)
+    // {
+    //     $company = Company::onlyTrashed()->find($id);
+    //     if ($company == null) {
+    //         return response()->json([
+    //             "message" => "الشركة غير موجودة بالأرشيف"
+    //         ], 404);
+    //     }
+    //     $company->restore();
+    //     return response()->json([
+    //             "message" => "تم إستعادة الشركة",
+    //     ], 200);
+    // }
 
-    public function deleteArchive($id)
-    {
-        $company = Company::onlyTrashed()->find($id);
-        if ($company == null) {
-            return response()->json([
-                "message" => "الشركة غير موجودة بالأرشيف"
-            ],404);
-        }
-        $company->forceDelete();
-        return response()->json([
-            "message" => "تم الحذف"], 200);
-    }
+    // public function deleteArchive($id)
+    // {
+    //     $company = Company::onlyTrashed()->find($id);
+    //     if ($company == null) {
+    //         return response()->json([
+    //             "message" => "الشركة غير موجودة بالأرشيف"
+    //         ],404);
+    //     }
+    //     $company->forceDelete();
+    //     return response()->json([
+    //         "message" => "تم الحذف"], 200);
+    // }
 
-    public function search($key)
-    {
-        $companies = Company::where('name', 'like', "%$key%")
-        ->orderBy('created_at', 'DESC')->get();
-        return $companies;
+    // public function search($key)
+    // {
+    //     $companies = Company::where('name', 'like', "%$key%")
+    //     ->orderBy('created_at', 'DESC')->get();
+    //     return $companies;
 
-    }
+    // }
 }

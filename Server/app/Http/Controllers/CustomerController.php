@@ -61,6 +61,9 @@ class CustomerController extends Controller
             'code' => 'required|unique:customers,code',
             "phones.*" => 'nullable|min:11|max:11|unique:custom_fields,value',
             "addresses.*" => 'nullable|min:5',
+            "notes"=>'nullable|string',
+            'onHim'=>'numeric|nullable|gt:0',
+            'forHim'=>'numeric|nullable|gt:0',
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -69,11 +72,13 @@ class CustomerController extends Controller
 
 
         DB::transaction(function () use ($request) {
-            $customer = Customer::create([
-                "code" => $request->code,
-                "name" => $request->name,
-                "notes" => $request->notes ?? null
-            ]);
+            // $customer = Customer::create([
+            //     "code" => $request->code,
+            //     "name" => $request->name,
+            //     "notes" => $request->notes ?? null
+            // ]);
+
+            $customer=Customer::create($request->all());
 
             if ($request->has("phones")) {
                 foreach ($request->phones as $phone) {
@@ -113,10 +118,13 @@ class CustomerController extends Controller
 
         $validator = Validator::make($request->all(), [
             "id" => 'required|exists:customers,id',
-            'name' => 'required',
-            'code' => 'required|unique:customers,code,' . $id,
-            "phones.value.*" => 'required|regex:/^01[0125][0-9]{8}$/|unique:custom_fields,value,' . $id . ',customer_id',
-            "addresses.value.*" => 'required|min:5',
+            'name' => 'nullable',
+            'code' => 'nullable|unique:customers,code,' . $id,
+            "phones.value.*" => 'nullable|regex:/^01[0125][0-9]{8}$/|unique:custom_fields,value,' . $id . ',customer_id',
+            "addresses.value.*" => 'nullable|min:5',
+            "notes"=>'nullable|string',
+            'onHim'=>'numeric|nullable|gt:0',
+            'forHim'=>'numeric|nullable|gt:0',
 
         ]);
         if ($validator->fails()) {
@@ -127,21 +135,20 @@ class CustomerController extends Controller
 
         DB::transaction(function () use ($request, $id) {
             $customer = customer::find($id);
-            $customer->update([
-                "code" => $request->code,
-                "name" => $request->name,
-                "notes" => $request->notes
-            ]);
-
-            foreach ($request->phones as $phone) {
-                CustomField::where("id", $phone["id"])->update([
-                    "value" => $phone['value']
-                ]);
+            $customer->update($request->all());
+            if($request->phones){
+                foreach ($request->phones as $phone) {
+                    CustomField::where("id", $phone["id"])->update([
+                        "value" => $phone['value']
+                    ]);
+                }
             }
-            foreach ($request->addresses as $address) {
-                CustomField::where("id", $address["id"])->update([
-                    "value" => $address['value']
-                ]);
+            if($request->addresses){
+                foreach ($request->addresses as $address) {
+                    CustomField::where("id", $address["id"])->update([
+                        "value" => $address['value']
+                    ]);
+                }
             }
 
         });
