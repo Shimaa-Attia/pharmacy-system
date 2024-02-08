@@ -21,6 +21,7 @@ class OrdersController extends Controller
     public function all()
     {
         $orders = Order::all()->sortByDesc("created_at");
+        $orders = Order::orderBy("created_at","DESC")->paginate(100);
         // return $orders;
         return
             OrderResource::collection($orders);
@@ -209,7 +210,7 @@ class OrdersController extends Controller
     public function archive()
     {
 
-        $orders = Order::onlyTrashed()->orderBy('created_at', 'DESC')->get();
+        $orders = Order::onlyTrashed()->orderBy('created_at', 'DESC')->paginate(100);
 
         return response()->json([
             'orders' => OrderResource::collection($orders),
@@ -256,7 +257,7 @@ class OrdersController extends Controller
                 $query->where('name', 'like', "%$key%")
                     ->OrWhere('code', $key);
             })
-            ->orderBy('created_at', 'DESC')->get();
+            ->orderBy('created_at', 'DESC')->paginate(100);
         return OrderResource::collection($orders);
 
     }
@@ -272,12 +273,12 @@ class OrdersController extends Controller
                         ->orWhereHas('customer', function ($query) use ($key) {
                             $query->where('code', 'like', "%$key%");
                         });
-                })->orderBy('created_at', 'DESC')->get();
+                })->orderBy('created_at', 'DESC')->paginate(100);
             return OrderResource::collection($orders);
 
         } else {
             $orders = Order::where('user_id', $id)
-                ->orderBy('created_at', 'DESC')->get();
+                ->orderBy('created_at', 'DESC')->paginate(100);
             return OrderResource::collection($orders);
 
         }

@@ -18,7 +18,8 @@ class ShortcomingController extends Controller
     {
         // $data = Category::paginate(request()->all());
         // return Response::json($data, 200);
-        $shortcomings = Shortcoming::all()->sortByDesc("created_at");
+        // $shortcomings = Shortcoming::all()->sortByDesc("created_at");
+        $shortcomings = Shortcoming::orderBy("created_at","DESC")->paginate(100);
         return
             ShortcomingResource::collection($shortcomings);
     }
@@ -31,7 +32,7 @@ class ShortcomingController extends Controller
                         })->orWhereHas('status', function ($query)  {
                             $query->where('name','غير متوفر');
                         });
-                    })->get();
+                    })->paginate(100);
         return ShortcomingResource::collection($shortcomings);
     }
 
@@ -192,7 +193,7 @@ class ShortcomingController extends Controller
     public function archive()
     {
 
-        $shortcomings = Shortcoming::onlyTrashed()->orderBy('created_at', 'DESC')->get();
+        $shortcomings = Shortcoming::onlyTrashed()->orderBy('created_at', 'DESC')->paginate(100);
 
         return  ShortcomingResource::collection($shortcomings);
 
@@ -238,7 +239,7 @@ class ShortcomingController extends Controller
                             $query->where('type', 'status')
                                   ->Where('name','like',"%$key%");
                         })
-        ->orderBy('created_at', 'DESC')->get();
+        ->orderBy('created_at', 'DESC')->paginate(100);
         return ShortcomingResource::collection($shortcoming);
 
     }
@@ -273,7 +274,7 @@ class ShortcomingController extends Controller
             $key = $request->key;
             $shortcoming_query->where('productName', 'like', "%$key%");
         }
-        $shortcomings = $shortcoming_query->orderBy('created_at', 'DESC')->get();
+        $shortcomings = $shortcoming_query->orderBy('created_at', 'DESC')->paginate(100);
 
         return ShortcomingResource::collection($shortcomings);
     }
