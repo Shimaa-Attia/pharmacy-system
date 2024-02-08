@@ -25,7 +25,7 @@ class UserController extends Controller
             'name' => 'required|max:255',
             'phone' => 'required|regex:/^01[0125][0-9]{8}$/',
             'password' => 'required|confirmed|min:6',
-            'role' => 'required|in:delivery,admin,doctor',
+            'role' => 'required|in:delivery,admin,doctor,purchases',
             'code' => 'required',
             'hourRate' => 'numeric|nullable',
             'branch_id'=>'exists:custom_properties,id',
@@ -185,7 +185,7 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:255',
             'phone' => "required|regex:/^01[0125][0-9]{8}$/|unique:users,phone,$user->id",
-            'role' => 'required|in:doctor,delivery,admin',
+            'role' => 'required|in:doctor,delivery,admin,purchases',
             'code' => 'required|unique:users,code,' . $user->id,
             'hourRate' => 'numeric|nullable',
             'salary' => 'numeric|nullable',
