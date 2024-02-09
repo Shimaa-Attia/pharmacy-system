@@ -39,6 +39,9 @@ export default function Login({ saveUserData}) {
                 case 'doctor':
                     navigate(`/doctorOrders/${data.user.id}`);
                     break;
+                case 'purchases':
+                    navigate(`/doctorOrders/${data.user.id}`);
+                    break;
 
                 default:
                     navigate("/home");

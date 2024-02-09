@@ -1,9 +1,10 @@
+
 import React, { useContext, useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
-import { AuthContext } from '../../Context/AuthStore';
+import { AuthContext } from '../../../Context/AuthStore';
 import axios from 'axios';
 
-export default function Rules() {
+export default function DoctorRules() {
   let { accessToken } = useContext(AuthContext);
   let [managmentRules, setManagmentRules] = useState([]);
   let [clientsRules, setClientsRules] = useState([]);
@@ -70,14 +71,10 @@ export default function Rules() {
     <>
       <div className="container-fluid p-3 ">
 
-        <div className=" my-3 text-center row mx-2  ">
-          <div className="col-md-6">
+        
+          <div className=" w-75 m-auto mb-3">
             <input type="text" className='form-control text-end ' onChange={handleSearchChange} placeholder=' ...بحث   ' />
           </div>
-          <div className="col-md-6">
-            <NavLink to='/rules/add' className='btn btn-primary mt-1' >إضافة تعليمات</NavLink>
-          </div>
-        </div>
         {searchRuslet.length > 0 ? (
           <div>
             {searchRuslet.map((res) => (
@@ -94,9 +91,6 @@ export default function Rules() {
                 <div key={mangRule.id}>
                   <div className='p-2'>
                     {mangRule.body}
-                    <NavLink to={`/rules/edite/${mangRule.id}`}>
-                      <i className='bi bi-pencil-square mx-4 text-primary fs-5'></i>
-                    </NavLink>
                   </div>
                 </div>
               ))}
@@ -107,9 +101,6 @@ export default function Rules() {
                 <div key={clientRule.id}>
                   <div className='p-2'>
                     {clientRule.body}
-                    <NavLink to={`/rules/edite/${clientRule.id}`}>
-                      <i className='bi bi-pencil-square mx-4 text-primary fs-5'></i>
-                    </NavLink>
                   </div>
                 </div>
               ))}
@@ -120,9 +111,6 @@ export default function Rules() {
                 <div key={colleRule.id}>
                   <div className='p-2'>
                     {colleRule.body}
-                    <NavLink to={`/rules/edite/${colleRule.id}`}>
-                      <i className='bi bi-pencil-square mx-4 text-primary fs-5'></i>
-                    </NavLink>
                   </div>
                 </div>
               ))}
