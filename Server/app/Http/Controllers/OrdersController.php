@@ -314,7 +314,7 @@ class OrdersController extends Controller
             ]);
         } else {
             $payed_at =null;
-            if($newPaid = $order->totalAmmount){
+            if($newPaid == $order->totalAmmount){
               $payed_at = now();
             }
             $order->update([

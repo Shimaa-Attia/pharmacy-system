@@ -26,15 +26,15 @@ class ShortcomingResource extends JsonResource
             'id'=>$this->id,
             'productName'=>$this->productName,
             'clientInfo'=>$this->clientInfo,
-            // 'imageName'=>$path,
-            // 'branch'=>$this->creatorUser->branch,
-            // 'isAvailable_inOtherBranch'=>$this->isAvailable_inOtherBranch,
-            // 'productType'=>$this->productType,
-            // 'created_at'=>$this->created_at->format('Y/m/d h:i A'),
-            // 'creatorUser'=>$this->creatorUser,
-            // 'updaterUser'=>$this->updaterUser,
-            // 'status'=>$this->status,
-            // 'notes'=>$this->notes
+            'imageName'=>$path,
+            'branch'=>$this->creatorUser->branch,
+            'isAvailable_inOtherBranch'=>$this->isAvailable_inOtherBranch,
+            'productType'=>$this->productType,
+            'created_at'=>$this->created_at->format('Y/m/d h:i A'),
+            'creatorUser'=>$this->creatorUser,
+            'updaterUser'=>$this->updaterUser,
+            'status'=>$this->status,
+            'notes'=>$this->notes
         ];
     }
 }
