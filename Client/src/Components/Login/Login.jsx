@@ -9,6 +9,7 @@ import logo from '../../imgs/logo.jpg'
 
 export default function Login({ saveUserData}) {
 
+
     let navigate = useNavigate();
     let [isLoading, setIsLoading] = useState(false);
     let [users, setUsers] = useState({
@@ -30,12 +31,13 @@ export default function Login({ saveUserData}) {
             toast.success(data.message, {
                 position: 'top-center',
             }); 
+  
             switch (data.user.role) {
                 case 'delivery':
-                    navigate(`/deliverylayout/deliveryOrders/${data.user.id}`);
+                    navigate(`/deliveryOrders/${data.user.id}`);
                     break;
                 case 'doctor':
-                    navigate(`/doctorlayout/doctorOrders/${data.user.id}`);
+                    navigate(`/doctorOrders/${data.user.id}`);
                     break;
 
                 default:

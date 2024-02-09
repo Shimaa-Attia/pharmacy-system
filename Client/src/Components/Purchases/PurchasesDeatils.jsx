@@ -36,9 +36,7 @@ export default function PurchasesDeatils() {
         <title> purchases Details</title>
       </Helmet>
       <h4 className='text-center alert alert-primary m-3 '>({purchasesData?.productName})</h4>
-      <div className="col-md-2 m-auto ">
-        <NavLink to='/purchases' className='btn  btn-secondary form-control mx-2 '>رجوع</NavLink>
-      </div>
+  
       <div className="card mx-3 m-auto my-3 p-5 ">
         <div className="row  ">
           <div className=' col-md-6  ' >

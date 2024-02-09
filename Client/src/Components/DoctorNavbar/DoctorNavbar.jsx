@@ -41,13 +41,15 @@ export default function DoctorNavbar() {
                     </button>
                     <div className="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-                        <li className="nav-item">
-                                <NavLink className="nav-link active text-white fs-6 fw-bold " aria-current="page" to={`/doctorlayout/doctorpurchases`} >المشتريات</NavLink>
+                            <li className="nav-item">
+                                <NavLink className="nav-link  text-white fs-6 fw-bold " aria-current="page" to={`/doctoroffers`} >العروض</NavLink>
                             </li>
                             <li className="nav-item">
-                                <NavLink className="nav-link active text-white fs-6 fw-bold " aria-current="page" to={`/doctorlayout/doctorOrders/${users.id}`} >الأوردرات</NavLink>
+                                <NavLink className="nav-link  text-white fs-6 fw-bold " aria-current="page" to={`/doctorpurchases`} >المشتريات</NavLink>
                             </li>
-                       
+                            <li className="nav-item">
+                                <NavLink className="nav-link  text-white fs-6 fw-bold " aria-current="page" to={`/doctorOrders/${users.id}`} >الأوردرات</NavLink>
+                            </li>
                         </ul>
 
                     </div>

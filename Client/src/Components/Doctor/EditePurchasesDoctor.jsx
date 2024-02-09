@@ -6,6 +6,7 @@ import { Helmet } from 'react-helmet';
 import { NavLink, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../../Context/AuthStore';
+import EditePurchases from '../Purchases/EditePurchases';
 
 
 export default function EditePurchasesDoctor() {
@@ -131,69 +132,7 @@ export default function EditePurchasesDoctor() {
         <meta charSet="utf-8" />
         <title>Edite Shortcomings</title>
       </Helmet>
-      <h3 className='alert alert-primary text-center mx-5 my-2  fw-bold'> تعديل </h3>
-      <div className="mx-5 p-3 rounded rounded-3 bg-white">
-        <form onSubmit={submitEditedShortComingsForm} >
-          <div className="row gy-3">
-            <div className="col-md-4">
-              <label htmlFor="productName" className='form-label'>اسم المنتج</label>
-              <input type="text" className='form-control' name="productName" id="productName"
-                defaultValue={purchasesData?.productName}
-                onChange={getInputValue} />
-            </div>
-            {/* <div className="col-md-4">
-              <label htmlFor="productImage" className='form-label'>صورة المنتج</label>
-              <input type="file" accept='image/*' className='form-control' name="productImage" id="productImage" 
-              onChange={handleImageChange} />
-            </div> */}
-            <div className="col-md-4">
-              <label htmlFor="clientInfo" className='form-label'> كود أو اسم أو هاتف العميل</label>
-              <input type="text" className='form-control' name="clientInfo" id="clientInfo"
-                defaultValue={purchasesData?.clientInfo}
-                onChange={getInputValue} />
-            </div>
-            <div className="col-md-4">
-              <label htmlFor="isAvailable_inOtherBranch" className='form-label'>متوفر بالفرع الآخر</label>
-              <select name="isAvailable_inOtherBranch" defaultValue={0} className='form-control' id="isAvailable_inOtherBranch"
-                onChange={getInputValue}>
-                <option value={0} hidden disabled>اختار</option>
-                <option value={1}>نعم</option>
-                <option value={0}>لا</option>
-
-              </select>
-            </div>
-            <div className="col-md-4">
-              <label htmlFor="productType" className='form-label'>نوع المنتج</label>
-              <select name="productType" className='form-control' id="productType"
-                defaultValue={0}
-
-                onChange={getInputValue}>
-                <option value={0} hidden disabled>اختار</option>
-                <option value="أدوية" >أدوية</option>
-                <option value="تركيبات">تركيبات</option>
-                <option value="كوزمو">كوزمو</option>
-                <option value="مستلزمات طبية">مستلزمات طبية </option>
-              </select>
-             
-
-            </div>
-
-            <div className="col-md-12">
-              <label htmlFor="notes" className='form-label'>ملاحظات</label>
-              <textarea name="notes" id="notes" defaultValue={purchasesData?.notes} className='form-control' onChange={getInputValue} />
-            </div>
-            <div className="col-md-3">
-              <button type='submit' className='btn btn-primary form-control fs-5'>
-                {isLoading == true ? <i className='fa fa-spinner fa-spin'></i> : 'تعديل'}
-              </button>
-            </div>
-            <div className="col-md-3">
-              <NavLink to='/doctorlayout/doctorpurchases' className='btn  btn-secondary form-control fs-5'>رجوع</NavLink>
-
-            </div>
-          </div>
-        </form >
-      </div >
+      <EditePurchases/>
     </>
   )
 }

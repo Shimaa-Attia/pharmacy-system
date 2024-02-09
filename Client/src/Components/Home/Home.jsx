@@ -100,7 +100,7 @@ export default function Home() {
             : ''}
         </div>
         <div className="row " dir='rtl' >
-          {users.map((user) => <div key={user.user_id} className='col-md-3 m-auto my-2  text-center '>
+          {users.map((user) => <div key={user.user_id} className='col-md-3 my-2  text-center '>
             <div className=' card p-1'>
               <div className='bg-secondary-subtle rounded' >{user?.user_name}</div>
                 <div className='bg-secondary-subtle rounded my-1 ' >{user?.user_code}</div>

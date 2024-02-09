@@ -90,8 +90,8 @@ export default function EditePurchases() {
       productName:Joi.string().required(),
       productImage:Joi.any(),
       clientInfo:Joi.any(),
-      isAvailable_inOtherBranch: Joi.required(),
-      productType:Joi.string().required(),
+      isAvailable_inOtherBranch: Joi.any().empty(null),
+      productType:Joi.string().empty(null),
       notes:Joi.any().empty(''),
     });
     return schema.validate(shortComings, { abortEarly: false });
@@ -185,10 +185,6 @@ export default function EditePurchases() {
               <button type='submit' className='btn btn-primary form-control fs-5'>
                 {isLoading == true ? <i className='fa fa-spinner fa-spin'></i> : 'تعديل'}
               </button>
-            </div>
-            <div className="col-md-3">
-              <NavLink to='/purchases' className='btn  btn-secondary form-control fs-5'>رجوع</NavLink>
-
             </div>
           </div>
         </form >

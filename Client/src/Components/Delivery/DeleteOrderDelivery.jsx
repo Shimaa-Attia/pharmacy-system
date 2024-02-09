@@ -103,7 +103,6 @@ useEffect(() => {
 
 
       <div className="col-md-3 d-flex m-auto mt-3 ">
-        <NavLink to={`/deliverylayout/deliveryOrders/${users.id}`} className='btn  btn-secondary form-control mx-2 '>رجوع</NavLink>
         <button className='btn btn-danger form-control mx-2' onClick={deleteOrder} >حذف الأوردر</button>
       </div>
     </>

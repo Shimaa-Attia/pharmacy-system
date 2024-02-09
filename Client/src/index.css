@@ -7,7 +7,7 @@
  
 
 }
-a{
+a , span{
   cursor: pointer;
 }
 
@@ -42,5 +42,15 @@ code {
 .no-wrap-heading th {
   white-space: nowrap;
 
+}
+ul li span ,  ul li i {
+  color: black ;
+} 
+.nav-item .active {
+  background-color: rgb(100, 100, 128);
+  border-radius: 10px;
+}
+.nav-item .active  i , .nav-item .active span{
+  color: white !important;
 }
 

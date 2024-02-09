@@ -2,6 +2,7 @@ import React from 'react'
 import { Helmet } from 'react-helmet'
 
 
+
 export default function Settings() {
   return (
    <>
@@ -9,6 +10,7 @@ export default function Settings() {
         <meta charSet="utf-8" />
         <title>Settings</title>
       </Helmet>
+
   
 
    </>

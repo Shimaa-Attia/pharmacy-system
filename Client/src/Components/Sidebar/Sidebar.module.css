@@ -12,9 +12,7 @@
 i{
     cursor: pointer;
 }
-   ul li span ,  ul li i {
-    color: black ;
-} 
+
  /* ul li:hover {
     background-color: #0D6EFD;
   
@@ -25,12 +23,7 @@ i{
 }    */
 
 
- nav a.active *  {
 
-    color: white !important;
-    background-color: blueviolet !important;
-  
-}
 
 
 

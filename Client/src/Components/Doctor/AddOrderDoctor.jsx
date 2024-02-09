@@ -10,12 +10,10 @@ import CreatableSelect from 'react-select/creatable';
 
 export default function AddOrderDoctor() {
     let { accessToken } = useContext(AuthContext);
-    let formInputs = document.querySelectorAll('form input');
-    let formSelects = document.querySelectorAll('form select');
-    let textarea = document.querySelector('form textarea');
+    const formRef = useRef(null);
+    const clientSelectRef = useRef(null);
     let [isLoading, setIsLoading] = useState(false);
     let [clients, setClients] = useState([]);
-    let [users, setUsers] = useState([]);
     let [orders, setOrders] = useState({
         customer_code: '',
         total_ammount: '',
@@ -54,22 +52,7 @@ export default function AddOrderDoctor() {
         }
     }, [clients]);
 
-    let getUserData = async () => {
-        try {
-            let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/auth`, {
-                headers: {
-                    "Authorization": `Bearer ${accessToken}`
-                }
-            });
-            setUsers(data);
-        } catch (error) {
-            toast.error('حدث خطأ ما')
-        }
-       
-    };
-    useEffect(() => {
-        getUserData()
-    }, []);
+
     let getSelectedClient = (selectedOption) => {
         setOrders({
             ...orders,
@@ -111,13 +94,6 @@ export default function AddOrderDoctor() {
                 position: 'top-center'
             });
             setIsLoading(false);
-            formInputs.forEach((el) => {
-                el.value = '';
-            });
-            formSelects.forEach((el) => {
-                el.selectedIndex = '0';
-            });
-            textarea.value = '';
         }).catch((errors) => {
             setIsLoading(false);
             const errorList = errors?.response?.data?.message;
@@ -160,6 +136,8 @@ export default function AddOrderDoctor() {
         let validation = validateOrderForm();
         if (!validation.error) {
             sendOrderDataToApi();
+            formRef.current.reset();
+            clientSelectRef.current.clearValue();
         } else {
             setIsLoading(false);
             try {
@@ -197,12 +175,13 @@ export default function AddOrderDoctor() {
             </Helmet>
             <h3 className='alert alert-primary text-center mx-5 my-2  fw-bold'>إضافة أوردر </h3>
             <div className="mx-5 p-3 rounded rounded-3 bg-white">
-                <form onSubmit={submitOrderForm} >
+                <form ref={formRef} onSubmit={submitOrderForm} >
                     <div className="row gy-3">
 
                         <div className="col-md-4">
                             <label htmlFor="customer_code" className='form-label'>كود العميل  </label>
                             <CreatableSelect
+                            ref={clientSelectRef}
                                 name="customer_code"
                                 isClearable
                                 options={clientOptions}
@@ -238,10 +217,7 @@ export default function AddOrderDoctor() {
                                 {isLoading == true ? <i className='fa fa-spinner fa-spin'></i> : 'إضافة'}
                             </button>
                         </div>
-                        <div className="col-md-3">
-                            <NavLink to={`/doctorlayout/doctorOrders/${users?.id}`} className='btn btn-secondary form-control fs-5'>رجوع</NavLink>
-
-                        </div>
+                 
                     </div>
                 </form >
             </div >
