@@ -19,7 +19,7 @@ class RuleResource extends JsonResource
         return [
             'id'=>$this->id,
             'body'=>$this->body,
-            'type'=>$this->type->name,
+            'type'=>$this->type,
             'created_at'=>$this->created_at->format('Y/m/d h:i A'),
         ];
     }
