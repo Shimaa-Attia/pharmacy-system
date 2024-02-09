@@ -1,12 +1,13 @@
 
+
 import axios from 'axios';
 import React, { useContext, useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet';
 import { NavLink } from 'react-router-dom';
-import { AuthContext } from '../../Context/AuthStore';
+import { AuthContext } from '../../../Context/AuthStore';
 import { toast } from 'react-toastify';
 
-export default function InventoryProducts() {
+export default function DoctorInventoryProducts() {
   let { accessToken } = useContext(AuthContext);
   let [notDoneInventoryProducts, setNotDoneInventoryProducts] = useState([]);
 
@@ -129,8 +130,10 @@ export default function InventoryProducts() {
       </Helmet>
 
       <div className=" m-4">
-        <NavLink to='/inventoryproducts/add' className='btn btn-primary mb-1' >إضافة منتج</NavLink>
+        <NavLink to='/doctorinventoryproducts/add' className='btn btn-primary mb-1' >إضافة منتج</NavLink>
       </div>
+      <div className='container-fluid'>
+
       <div className="row" dir='rtl'>
         <div className="col-md-6">
           {showNotDoneInventoryProducts()}
@@ -139,6 +142,7 @@ export default function InventoryProducts() {
         <div className="col-md-6">
           {showDoneInventoryProducts()}
         </div>
+      </div>
       </div>
 
 

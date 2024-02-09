@@ -11,7 +11,7 @@ import Select from 'react-select';
 
 
 export default function DoctorOrders() {
-  let formInput = document.getElementById('paid');
+
   let { accessToken } = useContext(AuthContext);
   let { id } = useParams();
   let [orders, setOrders] = useState([]);
@@ -212,7 +212,7 @@ export default function DoctorOrders() {
       }
     }).then((res) => {
       toast.success(res.data.message);
-      formInput.value = '';
+      setPaid({ paid_value: '' }); 
     }).catch((errors) => {
       toast.error(errors?.response?.data?.message);
     })

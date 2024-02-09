@@ -1,4 +1,5 @@
 
+
 import axios from 'axios';
 import Joi from 'joi';
 import React, { useContext, useEffect, useRef, useState } from 'react'
@@ -9,23 +10,23 @@ import { AuthContext } from '../../Context/AuthStore';
 
 
 
-export default function AddInventoryProducts() {
+export default function AddNotification() {
     let { accessToken } = useContext(AuthContext);
 
     const formRef = useRef(null);
     let [isLoading, setIsLoading] = useState(false);
-    let [inventoryProducts, setInventoryProducts] = useState({
-        productName: ''
+    let [notifications, setNotification] = useState({
+        body: ''
     });
-    //get the values of input and put them in the inventoryProducts state
+    //get the values of input and put them in the notifications state
     let getInputValue = (event) => {
-        let myInventoryProducts = { ...inventoryProducts }; //deep copy
-        myInventoryProducts[event.target.name] = event.target.value;
-        setInventoryProducts(myInventoryProducts);
+        let myNotifications = { ...notifications }; //deep copy
+        myNotifications[event.target.name] = event.target.value;
+        setNotification(myNotifications);
     };
-    let sendinventoryProductsDataToApi = async () => {
+    let sendNotificationDataToApi = async () => {
         try {
-            await axios.post(`${process.env.REACT_APP_API_URL}/api/inventoryProducts`, inventoryProducts, {
+            await axios.post(`${process.env.REACT_APP_API_URL}/api/notifications`, notifications, {
                 headers: {
                     "Authorization": `Bearer ${accessToken}`
                 }
@@ -35,9 +36,6 @@ export default function AddInventoryProducts() {
                     position: 'top-center'
                 });
                 setIsLoading(false);
-                setInventoryProducts({
-                  productName: ''
-                })
             }).catch((errors) => {
          
                 setIsLoading(false);
@@ -57,18 +55,18 @@ export default function AddInventoryProducts() {
         }
     };
 
-    let validateInventoryProductsForm = () => {
+    let validateNotificationForm = () => {
         const schema = Joi.object({
-            productName: Joi.string().required(),
+            body: Joi.string().required(),
         });
-        return schema.validate(inventoryProducts, { abortEarly: false });
+        return schema.validate(notifications, { abortEarly: false });
     };
-    let submitInventoryProductsForm = (e) => {
+    let submitNotificationForm = (e) => {
         setIsLoading(true);
         e.preventDefault();
-        let validation = validateInventoryProductsForm();
+        let validation = validateNotificationForm();
         if (!validation.error) {
-            sendinventoryProductsDataToApi();
+            sendNotificationDataToApi();
         } else {
             setIsLoading(false);
             try {
@@ -83,14 +81,17 @@ export default function AddInventoryProducts() {
 
     return (
         <>
-           
-            <h3 className='alert alert-primary text-center mx-5 my-2  fw-bold'>إضافة منتج </h3>
+            <Helmet>
+                <meta charSet="utf-8" />
+                <title>Add Offer</title>
+            </Helmet>
+            <h3 className='alert alert-primary text-center mx-5 my-2  fw-bold'>إضافة عرض </h3>
             <div className="mx-5 p-3 rounded rounded-3 bg-white">
-                <form ref={formRef} onSubmit={submitInventoryProductsForm} >
+                <form ref={formRef} onSubmit={submitNotificationForm} >
                     <div className="row gy-3">
                     <div className="col-md-12">
-                            <label htmlFor="productName" className='form-label'>إسم المنتج</label>
-                            <input className='form-control' name="productName"
+                            <label htmlFor="body" className='form-label'>إشعار</label>
+                            <textarea className='form-control' name="body"
                                 onChange={getInputValue} />
                         </div>
              

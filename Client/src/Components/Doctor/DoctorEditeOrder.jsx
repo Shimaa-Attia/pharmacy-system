@@ -185,7 +185,7 @@ export default function DoctorEditeOrder() {
               <select name="sale_point_id" defaultValue={0} className='form-control ' id="sale_point_id"
                 onChange={getInputValue}>
                 <option value={0} hidden disabled>اختار</option>
-                {salePoints.map((point) => <option key={point.id} value={point?.id} selected={orderData?.sale_point?.id}  >{point.name}</option>)}
+                {salePoints.map((point) => <option key={point.id} value={point?.id}   >{point.name}</option>)}
               </select>
             </div>
             <div className="col-md-4">

@@ -94,6 +94,8 @@ export default function AddOrderDoctor() {
                 position: 'top-center'
             });
             setIsLoading(false);
+            formRef.current.reset();
+            clientSelectRef.current.clearValue();
         }).catch((errors) => {
             setIsLoading(false);
             const errorList = errors?.response?.data?.message;
@@ -136,8 +138,6 @@ export default function AddOrderDoctor() {
         let validation = validateOrderForm();
         if (!validation.error) {
             sendOrderDataToApi();
-            formRef.current.reset();
-            clientSelectRef.current.clearValue();
         } else {
             setIsLoading(false);
             try {

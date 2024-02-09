@@ -54,7 +54,7 @@ export default function Sidebar() {
                                         <li className="nav-item  ">
                                             <div onClick={toggleClientSubmenu} className="nav-link fw-bolder">
                                                 <span className='me-3 d-none d-sm-inline'>العملاء</span>
-                                                <i className={clientSubmenuOpen ? "bi bi-caret-up-fill" : "bi bi-caret-down-fill"}></i>
+                                                <i className="bi bi-people-fill "></i>
                                             </div>
                                             {clientSubmenuOpen &&
                                                 <div>
@@ -71,7 +71,7 @@ export default function Sidebar() {
                                             }
 
                                         </li>
-                               
+
                                         <li className="nav-item">
                                             <NavLink to='/offers' className="nav-link fw-bolder " >
                                                 <span className='me-3 d-none d-sm-inline'> العروض </span>
@@ -93,11 +93,11 @@ export default function Sidebar() {
 
                             <div>
                                 <ul className="nav flex-column mt-2">
-                                <li className="nav-item  ">
-                                            <NavLink to='salepoints' className="nav-link  fw-bolder" >
-                                                <span className='me-3 d-none d-sm-inline'>نقاط البيع</span>
-                                                <i className="bi bi-person-fill-add"></i>                                            </NavLink>
-                                        </li>
+                                    <li className="nav-item  ">
+                                        <NavLink to='salepoints' className="nav-link  fw-bolder" >
+                                            <span className='me-3 d-none d-sm-inline'>نقاط البيع</span>
+                                            <i className="bi bi-person-fill-add"></i>                                            </NavLink>
+                                    </li>
                                     <li className="nav-item">
                                         <NavLink to='/branches' className="nav-link  fw-bolder">
                                             <span className='me-3 d-none d-sm-inline'> الفروع</span>
@@ -115,10 +115,14 @@ export default function Sidebar() {
                                     <li className="nav-item ">
                                         <div onClick={toggleManagementSubmenu} className="nav-link fw-bolder">
                                             <span className='me-3 d-none d-sm-inline'>الإدارة</span>
-                                            <i className={managementSubmenuOpen ? "bi bi-caret-up-fill" : "bi bi-caret-down-fill"}></i>
+                                            <i className="bi bi-gear-fill"></i>
                                         </div>
                                         {managementSubmenuOpen &&
                                             <div>
+                                                <NavLink to='/notifications' className="nav-link me-4 fw-bolder" >
+                                                    <span className='me-3 d-none d-sm-inline '>الإشعارات</span>
+                                                    <i className="bi bi-bell-fill"></i>
+                                                </NavLink>
                                                 <NavLink to='/rules' className="nav-link me-4 fw-bolder" >
                                                     <span className='me-3 d-none d-sm-inline '>التعليمات</span>
                                                     <i className="bi bi-book-fill "></i>

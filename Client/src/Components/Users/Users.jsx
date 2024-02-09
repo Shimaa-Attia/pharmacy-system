@@ -57,7 +57,7 @@ export default function Users() {
                 <td data-label="كود المستخدم">{user?.code}</td>
                 <td data-label="اسم المستخدم">{user?.name}</td>
                 <td data-label="الفرع">{user?.branch?.name}</td>
-                <td data-label="الوظيفة">{user?.role}</td>
+                <td data-label="الوظيفة">{user?.role =='admin' ? 'أدمن' : user.role =='doctor' ? 'صيدلي':user.role =='delivery' ? 'طيار':user.role =='purchases' ? 'مشتريات':''}</td>
                 <td data-label="رقم الهاتف">{user?.phone}</td>
                 <td data-label="إجمالي المبلغ">{user?.unpaidAmount}</td>
                 <td data-label="خيارات">

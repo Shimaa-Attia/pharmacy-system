@@ -136,6 +136,7 @@ export default function AddUser() {
                                 <option value="admin">مشرف</option>
                                 <option value="doctor">صيدلي</option>
                                 <option value="delivery">طيار</option>
+                                <option value="purchases">مشتريات</option>
                             </select>
                         </div>
                         <div className="col-md-4">

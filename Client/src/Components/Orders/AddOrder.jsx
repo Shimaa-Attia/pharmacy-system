@@ -126,6 +126,18 @@ export default function AddOrder() {
                 position: 'top-center'
             });
             setIsLoading(false);
+            setOrders({
+                user_code: '',
+                customer_code: '',
+                total_ammount: '',
+                cost: '',
+                notes: '',
+                sale_point_id: ''
+
+            })
+            formRef.current.reset();
+            userSelectRef.current.clearValue();
+            clientSelectRef.current.clearValue();
         }).catch((errors) => {
             setIsLoading(false);
             const errorList = errors?.response?.data?.message;
@@ -176,18 +188,7 @@ export default function AddOrder() {
         let validation = validateOrderForm();
         if (!validation.error) {
             sendOrderDataToApi();
-            setOrders({
-                user_code: '',
-                customer_code: '',
-                total_ammount: '',
-                cost: '',
-                notes: '',
-                sale_point_id: ''
-
-            })
-            formRef.current.reset();
-            userSelectRef.current.clearValue();
-            clientSelectRef.current.clearValue();
+       
         } else {
             setIsLoading(false);
             try {

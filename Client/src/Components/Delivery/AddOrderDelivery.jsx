@@ -118,6 +118,13 @@ export default function AddOrderDelivery() {
                     el.selectedIndex = '0';
                 });
                 textarea.value = '';
+                setOrders({
+                    customer_code: '',
+                    total_ammount: '',
+                    // cost: '',
+                    notes: '',
+                    sale_point_id: ''
+                })
             }).catch((errors) => {
                 console.log(errors);
                 setIsLoading(false);
@@ -131,7 +138,7 @@ export default function AddOrderDelivery() {
                 } else {
                     toast.error("حدث خطأ ما");
                 }
-            });    
+            });
         } catch (error) {
             toast.error("حدث خطأ ما");
         }
@@ -221,7 +228,7 @@ export default function AddOrderDelivery() {
                             <label htmlFor="sale_point_id" className='form-label'>نقطة البيع </label>
                             <select name="sale_point_id" defaultValue={0} className='form-control' id="sale_point_id"
                                 onChange={getInputValue}>
-                                <option value={0} hidden  disabled>اختار</option>
+                                <option value={0} hidden disabled>اختار</option>
                                 {salePoints.map((point) => <option key={point.id} value={point.id}>{point.name}</option>)}
                             </select>
                         </div>
@@ -242,7 +249,7 @@ export default function AddOrderDelivery() {
                                 {isLoading == true ? <i className='fa fa-spinner fa-spin'></i> : 'إضافة'}
                             </button>
                         </div>
-            
+
                     </div>
                 </form >
             </div >

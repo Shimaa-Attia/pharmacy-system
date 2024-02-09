@@ -61,6 +61,13 @@ import Rules from '../Rules/Rules';
 import AddRules from '../Rules/AddRules';
 import EditeRule from '../Rules/EditeRule';
 import InventoryProducts from '../InventoryProducts/InventoryProducts';
+import Notifications from '../Notifications/Notifications';
+import AddNotification from '../Notifications/AddNotification';
+import DoctorNotifications from '../Doctor/Notifications/DoctorNotifications';
+import AddDoctorNotifications from '../Doctor/Notifications/AddDoctorNotifications';
+import AddInventoryProducts from '../InventoryProducts/AddInventoryProducts';
+import AddDoctorInventoryProducts from '../Doctor/InventoryProducts/AddDoctorInventoryProducts';
+import DoctorInventoryProducts from '../Doctor/InventoryProducts/DoctorInventoryProducts';
 
 
 
@@ -113,6 +120,9 @@ function App() {
             <Route path='rules/add' element={<ProtectedRoute ><AddRules /></ProtectedRoute>} ></Route>
             <Route path='rules/edite/:id' element={<ProtectedRoute ><EditeRule /></ProtectedRoute>} ></Route>
             <Route path='inventoryproducts' element={<ProtectedRoute ><InventoryProducts /></ProtectedRoute>} ></Route>
+            <Route path='inventoryproducts/add' element={<ProtectedRoute ><AddInventoryProducts /></ProtectedRoute>} ></Route>
+            <Route path='notifications' element={<ProtectedRoute ><Notifications /></ProtectedRoute>} ></Route>
+            <Route path='notifications/add' element={<ProtectedRoute ><AddNotification /></ProtectedRoute>} ></Route>
 
   
           </Route>
@@ -134,6 +144,10 @@ function App() {
             <Route path='/doctoroffers' element={<ProtectedRoute><DoctorOffers /></ProtectedRoute>}></Route>
             <Route path='/doctoroffers/add' element={<ProtectedRoute><AddOfferDoctor /></ProtectedRoute>}></Route>
             <Route path='/doctoroffers/edite/:id' element={<ProtectedRoute><EditeOffersDoctor /></ProtectedRoute>}></Route>
+            <Route path='/doctornotifications' element={<ProtectedRoute><DoctorNotifications /></ProtectedRoute>}></Route>
+            <Route path='/doctornotifications/add' element={<ProtectedRoute><AddDoctorNotifications /></ProtectedRoute>}></Route>
+            <Route path='/doctorinventoryproducts' element={<ProtectedRoute><DoctorInventoryProducts /></ProtectedRoute>}></Route>
+            <Route path='/doctorinventoryproducts/add' element={<ProtectedRoute><AddDoctorInventoryProducts /></ProtectedRoute>}></Route>
 
           </Route>
           <Route path='*' element={<ProtectedRoute ><NotFound /></ProtectedRoute>}></Route>
