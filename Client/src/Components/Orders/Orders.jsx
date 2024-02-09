@@ -78,7 +78,7 @@ export default function Orders() {
       urlApi += `user_id=${filterUserId}&`
     }
     if (filterIsPaid !== undefined && filterIsPaid.length > 0) {
-      urlApi += `is_paid=${filterIsPaid}&` 
+      urlApi += `is_paid=${filterIsPaid}&`
     }
     if (filterPointId !== undefined && filterPointId.length > 0) {
       urlApi += `point_id=${filterPointId}&`
@@ -99,9 +99,8 @@ export default function Orders() {
       setOrders(orderResult.data.data)
     }
   };
-  useEffect(() =>
-   { getOrderData() },
-    [filterUserId, filterIsPaid, filterPointId,filterDate , searchText]);
+  useEffect(() => { getOrderData() },
+    [filterUserId, filterIsPaid, filterPointId, filterDate, searchText]);
 
   let [orderId, setOrderId] = useState(''); // for making orders paids on the same system
   let sendIsPaidOnThOtherSystemToApi = async (ordId) => {
@@ -123,7 +122,7 @@ export default function Orders() {
     if (orders.length > 0) {
       return (
         <div className="shadow rounded rounded-4 bg-white mx-3 p-3 table-responsive">
-          <table dir="rtl"  className='table  table-hover text-center align-middle table-responsive-list '>
+          <table dir="rtl" className='table  table-hover text-center align-middle table-responsive-list '>
             <thead className='table-primary  no-wrap-heading'>
               <tr>
                 <th> تاريخ الإنشاء</th>
@@ -156,17 +155,17 @@ export default function Orders() {
                 }} style={{ backgroundColor: '#2a55a3' }}></i></td>
                 <td data-label="خيارات" style={{ minWidth: '150px' }}>
                   <NavLink to={`/orders/delete/${order.id}`} >
-                    <i className='bi bi-trash text-bg-danger p-1  rounded'></i>
+                    <i className='bi bi-trash text-danger fs-5   '></i>
                   </NavLink>
                   <NavLink to={`/orders/edite/${order.id}`} >
-                    <i className='bi bi-pencil-square text-bg-primary mx-1  p-1 rounded'></i>
+                    <i className='bi bi-pencil-square text-primary fs-5 mx-1   '></i>
                   </NavLink>
                   <NavLink to={`/orders/details/${order.id}`} >
-                    <i className='bi bi-list-ul text-bg-success mx-1  p-1 rounded'></i>
+                    <i className='bi bi-list-ul text-success mx-1 fs-5'></i>
                   </NavLink>
-                  {order.isPaid_theOtherSystem ? <i className='bi bi-check-circle-fill text-success fs-4'
+                  {order.isPaid_theOtherSystem ? <i className='bi bi-check-circle-fill text-success fs-5'
                     onClick={() => sendIsPaidOnThOtherSystemToApi(order.id)} ></i>
-                    : <i className='bi bi-x-circle-fill text-danger fs-4 '
+                    : <i className='bi bi-x-circle-fill text-danger fs-5 '
                       onClick={() => sendIsPaidOnThOtherSystemToApi(order.id)} ></i>}
                 </td>
               </tr>
@@ -180,22 +179,22 @@ export default function Orders() {
     } else {
       return (
         <div className=' d-flex justify-content-center  height-calc-70 align-items-center' >
-           {orders.length <= 0 && searchText.length <= 0 && filterPointId.length <= 0 && filterUserId.length <= 0 && filterIsPaid.length <= 0 && filterDate.length <=0 ?
+          {orders.length <= 0 && searchText.length <= 0 && filterPointId.length <= 0 && filterUserId.length <= 0 && filterIsPaid.length <= 0 && filterDate.length <= 0 ?
             <i className='fa fa-spinner fa-spin  fa-5x'></i>
-             : <div className='alert alert-danger w-50 text-center'>لا يوجد أوردرات</div>
+            : <div className='alert alert-danger w-50 text-center'>لا يوجد أوردرات</div>
           }
         </div>
       )
     }
   };
 
-  
-  const paidModal = document.getElementById('paidModal');
+  let [openPaidModal, setOpenPaidModal] = useState(false)
+
   function openModal() {
-    paidModal.style.display = 'block';
+    setOpenPaidModal(true);
   };
   function closeModal() {
-    paidModal.style.display = 'none';
+    setOpenPaidModal(false);
   };
 
   let [paid, setPaid] = useState({
@@ -286,7 +285,7 @@ export default function Orders() {
         </div>
       </div>
       {/* paid modal */}
-      <div id="paidModal" className={`${styles.modal} `}>
+      {openPaidModal && <div id="paidModal" className={`${styles.modal} `}>
         <div className={`${styles.modal_content}`}>
           <span className={`${styles.close} fs-3`} onClick={closeModal} >&times;</span>
           <form onSubmit={submitUnpaidAmountToApi} >
@@ -297,7 +296,8 @@ export default function Orders() {
             <button type='submit' className=' btn text-bg-success'>سدد</button>
           </form>
         </div>
-      </div>
+      </div>}
+
       {showOrders()}
     </>
   )

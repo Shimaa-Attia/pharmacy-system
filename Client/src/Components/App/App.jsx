@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter,  Route, Router, Routes } from 'react-router-dom';
 import '../../../src/App.css';
 import MasterLayout from '../Layouts/MasterLayout';
 import NotFound from '../NotFound/NotFound';
@@ -47,15 +47,31 @@ import DeleteOrderDelivery from '../Delivery/DeleteOrderDelivery';
 import EditePurchasesDoctor from '../Doctor/EditePurchasesDoctor';
 import DoctorEditeOrder from '../Doctor/DoctorEditeOrder';
 import DoctorOrderDetails from '../Doctor/DoctorOrderDetails';
+import Offers from '../Offers/Offers';
+import AddOffer from '../Offers/AddOffer';
+import DeleteOffer from '../Offers/DeleteOffer';
+import EditeOffer from '../Offers/EditeOffer';
+import Companies from '../Companies/Companies';
+import DoctorOffers from '../Doctor/Offers/DoctorOffers';
+import AddOfferDoctor from '../Doctor/Offers/AddOfferDoctor';
+import EditeOffersDoctor from '../Doctor/Offers/EditeOffersDoctor';
+import AddCompany from '../Companies/AddCompany';
+import EditeCompany from '../Companies/EditeCompany';
+import Rules from '../Rules/Rules';
+import AddRules from '../Rules/AddRules';
+import EditeRule from '../Rules/EditeRule';
+import InventoryProducts from '../InventoryProducts/InventoryProducts';
 
 
 
 function App() {
 
-  let { saveUserData } = useContext(AuthContext);
+  let { saveUserData  } = useContext(AuthContext);
+  
   return (
     <>
       <Offline> <div className='offline'>.أنت غير متصل بالإنترنت</div> </Offline>
+
       <BrowserRouter>
         <Routes>
           <Route index element={<Login saveUserData={saveUserData} />} ></Route>
@@ -86,25 +102,41 @@ function App() {
             <Route path='purchases/details/:id' element={<ProtectedRoute ><PurchasesDeatils /></ProtectedRoute>} ></Route>
             <Route path='customersservice' element={<ProtectedRoute ><CustomersService /></ProtectedRoute>} ></Route>
             <Route path='addstatus' element={<ProtectedRoute ><AddStatus /></ProtectedRoute>} ></Route>
-            <Route path='*' element={<ProtectedRoute ><NotFound /></ProtectedRoute>} ></Route>
+            <Route path='offers' element={<ProtectedRoute ><Offers /></ProtectedRoute>} ></Route>
+            <Route path='offers/add' element={<ProtectedRoute ><AddOffer /></ProtectedRoute>} ></Route>
+            <Route path='offers/delete/:id' element={<ProtectedRoute ><DeleteOffer /></ProtectedRoute>} ></Route>
+            <Route path='offers/edite/:id' element={<ProtectedRoute ><EditeOffer /></ProtectedRoute>} ></Route>
+            <Route path='companies' element={<ProtectedRoute ><Companies /></ProtectedRoute>} ></Route>
+            <Route path='companies/add' element={<ProtectedRoute ><AddCompany /></ProtectedRoute>} ></Route>
+            <Route path='companies/edite/:id' element={<ProtectedRoute ><EditeCompany /></ProtectedRoute>} ></Route>
+            <Route path='rules' element={<ProtectedRoute ><Rules /></ProtectedRoute>} ></Route>
+            <Route path='rules/add' element={<ProtectedRoute ><AddRules /></ProtectedRoute>} ></Route>
+            <Route path='rules/edite/:id' element={<ProtectedRoute ><EditeRule /></ProtectedRoute>} ></Route>
+            <Route path='inventoryproducts' element={<ProtectedRoute ><InventoryProducts /></ProtectedRoute>} ></Route>
+
+  
           </Route>
-          <Route path='deliverylayout' element={<ProtectedRoute><DeliveryLayout /></ProtectedRoute>}>
-            <Route path='deliveryOrders/:id' element={<ProtectedRoute><DeliveryOrders /></ProtectedRoute>}></Route>
-            <Route path='add/:id' element={<ProtectedRoute><AddOrderDelivery /></ProtectedRoute>}></Route>
-            <Route path='delete/:id' element={<ProtectedRoute><DeleteOrderDelivery /></ProtectedRoute>}></Route>
-            <Route path='*' element={<ProtectedRoute ><NotFound /></ProtectedRoute>}></Route>
+          <Route path='/' element={<ProtectedRoute><DeliveryLayout /></ProtectedRoute>}>
+            <Route path='/deliveryOrders/:id' element={<ProtectedRoute><DeliveryOrders /></ProtectedRoute>}></Route>
+            <Route path='/deliveryOrders/add/:id' element={<ProtectedRoute><AddOrderDelivery /></ProtectedRoute>}></Route>
+            <Route path='/deliveryOrders/delete/:id' element={<ProtectedRoute><DeleteOrderDelivery /></ProtectedRoute>}></Route>
+   
           </Route>
-          <Route path='doctorlayout' element={<ProtectedRoute><DoctorLayout /></ProtectedRoute>}>
-            <Route path='doctorpurchases' element={<ProtectedRoute ><DoctorPurchases /></ProtectedRoute>} ></Route>
-            <Route path='add' element={<ProtectedRoute ><AddShortComingsDoctor /></ProtectedRoute>} ></Route>
-            <Route path='doctorpurchases/details/:id' element={<ProtectedRoute><DoctorPurchasesDeatils /></ProtectedRoute>} ></Route>
-            <Route path='doctorpurchases/edite/:id' element={<ProtectedRoute><EditePurchasesDoctor /></ProtectedRoute>} ></Route>
-            <Route path='doctorOrders/:id' element={<ProtectedRoute><DoctorOrders /></ProtectedRoute>}></Route>
-            <Route path='add/:id' element={<ProtectedRoute><AddOrderDoctor /></ProtectedRoute>}></Route>
-            <Route path='edite/:id' element={<ProtectedRoute><DoctorEditeOrder /></ProtectedRoute>}></Route>
-            <Route path='details/:id' element={<ProtectedRoute><DoctorOrderDetails /></ProtectedRoute>}></Route>
-            <Route path='*' element={<ProtectedRoute ><NotFound /></ProtectedRoute>}></Route>
+          <Route path='/' element={<ProtectedRoute><DoctorLayout /></ProtectedRoute>}>
+            <Route  path='/doctorpurchases' element={<ProtectedRoute ><DoctorPurchases /></ProtectedRoute>} ></Route>
+            <Route path='/doctorpurchases/add' element={<ProtectedRoute ><AddShortComingsDoctor /></ProtectedRoute>} ></Route>
+            <Route path='/doctorpurchases/details/:id' element={<ProtectedRoute><DoctorPurchasesDeatils /></ProtectedRoute>} ></Route>
+            <Route path='/doctorpurchases/edite/:id' element={<ProtectedRoute><EditePurchasesDoctor /></ProtectedRoute>} ></Route>
+            <Route  path='/doctorOrders/:id' element={<ProtectedRoute><DoctorOrders /></ProtectedRoute>}></Route>
+            <Route path='/doctorOrders/add/:id' element={<ProtectedRoute><AddOrderDoctor /></ProtectedRoute>}></Route>
+            <Route path='/doctorOrders/edite/:id' element={<ProtectedRoute><DoctorEditeOrder /></ProtectedRoute>}></Route>
+            <Route path='/doctorOrders/details/:id' element={<ProtectedRoute><DoctorOrderDetails /></ProtectedRoute>}></Route>
+            <Route path='/doctoroffers' element={<ProtectedRoute><DoctorOffers /></ProtectedRoute>}></Route>
+            <Route path='/doctoroffers/add' element={<ProtectedRoute><AddOfferDoctor /></ProtectedRoute>}></Route>
+            <Route path='/doctoroffers/edite/:id' element={<ProtectedRoute><EditeOffersDoctor /></ProtectedRoute>}></Route>
+
           </Route>
+          <Route path='*' element={<ProtectedRoute ><NotFound /></ProtectedRoute>}></Route>
         </Routes>
       </BrowserRouter>
 

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import Joi from 'joi';
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Helmet } from 'react-helmet';
 import { NavLink } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -10,9 +10,9 @@ import Select from 'react-select';
 
 export default function AddOrder() {
     let { accessToken } = useContext(AuthContext);
-    let formInputs = document.querySelectorAll('form input');
-    let formSelects = document.querySelectorAll('form select');
-    let textarea = document.querySelector('form textarea');
+    const formRef = useRef(null);
+    const userSelectRef = useRef(null);
+    const clientSelectRef = useRef(null);
     let [isLoading, setIsLoading] = useState(false);
     let [users, setUsers] = useState([]);
     let [clients, setClients] = useState([]);
@@ -126,13 +126,6 @@ export default function AddOrder() {
                 position: 'top-center'
             });
             setIsLoading(false);
-            formInputs.forEach((el) => {
-                el.value = '';
-            });
-            formSelects.forEach((el) => {
-                el.selectedIndex = '0';
-            });
-            textarea.value = '';
         }).catch((errors) => {
             setIsLoading(false);
             const errorList = errors?.response?.data?.message;
@@ -192,6 +185,9 @@ export default function AddOrder() {
                 sale_point_id: ''
 
             })
+            formRef.current.reset();
+            userSelectRef.current.clearValue();
+            clientSelectRef.current.clearValue();
         } else {
             setIsLoading(false);
             try {
@@ -228,11 +224,12 @@ export default function AddOrder() {
             </Helmet>
             <h3 className='alert alert-primary text-center mx-5 my-2  fw-bold'>إضافة أوردر </h3>
             <div className="mx-5 p-3 rounded rounded-3 bg-white">
-                <form onSubmit={submitOrderForm} >
+                <form ref={formRef} onSubmit={submitOrderForm} >
                     <div className="row gy-3">
                         <div className="col-md-4">
                             <label htmlFor="user_code" className='form-label' >كود الموظف   </label>
                             <Select
+                              ref={userSelectRef}
                                 name="user_code"
                                 isClearable
                                 options={userOptions}
@@ -245,6 +242,7 @@ export default function AddOrder() {
                         <div className="col-md-4">
                             <label htmlFor="customer_code" className='form-label'>كود العميل  </label>
                             <CreatableSelect
+                              ref={clientSelectRef}
                                 name="customer_code"
                                 isClearable
                                 options={clientOptions}

@@ -114,7 +114,7 @@ export default function DeliveryOrders() {
                    : <i className='bi bi-check-circle-fill text-success fs-4 ' ></i>}
                 </td>
                 <td data-label=" خيارات">
-                <NavLink to={`/deliverylayout/delete/${order.id}`} >
+                <NavLink to={`/deliveryOrders/delete/${order.id}`} >
                     <i className='bi bi-trash text-bg-danger p-1 mx-1 rounded'></i>
                   </NavLink>
                 </td>
@@ -145,7 +145,7 @@ export default function DeliveryOrders() {
       <div className='container'>
         <div className=" my-3 text-center row   ">
           <div className="col-md-4 ">
-            <NavLink to={`/deliverylayout/add/${id}`} className='btn btn-primary mb-1' >إضافة أوردر</NavLink>
+            <NavLink to={`/deliveryOrders/add/${id}`} className='btn btn-primary mb-1' >إضافة أوردر</NavLink>
           </div>
           <div className="col-md-4">
             <input type="text" className='form-control text-end mt-1 ' placeholder=' ...بحث عن أوردر ' onChange={handleSearchChange} />

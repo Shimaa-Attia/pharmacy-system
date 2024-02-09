@@ -113,9 +113,9 @@ export default function EditeOrder() {
       user_code: Joi.string().required(),
       customer_code: Joi.string().required(),
       total_ammount: Joi.number().required(),
-      cost: Joi.number().required(),
+      cost: Joi.any().empty(''),
       sale_point_id: Joi.number().required(),
-      paid: Joi.string().empty(''),
+      paid: Joi.any().empty(''),
       notes: Joi.any().empty(""),
 
     });
@@ -125,7 +125,6 @@ export default function EditeOrder() {
   let editedOrederSubmit = (e) => {
     setIsLoading(true);
     e.preventDefault();
-    sendEditedDataToApi();
     let validation = validateEditedFrom();
     if (!validation.error) {
       sendEditedDataToApi();
@@ -186,7 +185,7 @@ export default function EditeOrder() {
               <select name="sale_point_id" defaultValue={0} className='form-control ' id="sale_point_id"
                 onChange={getInputValue}>
                 <option value={0} hidden disabled>اختار</option>
-                {salePoints.map((point) => <option key={point.id} value={point?.id} selected={orderData?.sale_point?.id}  >{point.name}</option>)}
+                {salePoints.map((point) => <option key={point.id} value={point?.id}  >{point.name}</option>)}
               </select>
             </div>
             <div className="col-md-4">

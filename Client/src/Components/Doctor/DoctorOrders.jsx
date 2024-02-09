@@ -163,10 +163,10 @@ export default function DoctorOrders() {
                   setOrderId(order.id)
                 }} style={{ backgroundColor: '#2a55a3' }}></i></td>
                    <td data-label="خيارات">
-                  <NavLink to={`/doctorlayout/edite/${order.id}`} >
+                  <NavLink to={`/doctorOrders/edite/${order.id}`} >
                     <i className='bi bi-pencil-square text-bg-primary mx-1  p-1 rounded'></i>
                   </NavLink>
-                  <NavLink to={`/doctorlayout/details/${order.id}`} >
+                  <NavLink to={`/doctorOrders/details/${order.id}`} >
                     <i className='bi bi-list-ul text-bg-success mx-1  p-1 rounded'></i>
                   </NavLink>
            
@@ -188,12 +188,13 @@ export default function DoctorOrders() {
 
     }
   };
-  const paidModal = document.getElementById('paidModal');
+  let [openPaidModal, setOpenPaidModal] = useState(false)
+
   function openModal() {
-    paidModal.style.display = 'block';
+    setOpenPaidModal(true);
   };
   function closeModal() {
-    paidModal.style.display = 'none';
+    setOpenPaidModal(false);
   };
   let [paid, setPaid] = useState({
     paid_value: '',
@@ -274,7 +275,7 @@ export default function DoctorOrders() {
     <>
       <Helmet>
         <meta charSet="utf-8" />
-        <title>Delivery Orders</title>
+        <title>Doctor Orders</title>
       </Helmet>
 
       <div className='container'>
@@ -306,7 +307,7 @@ export default function DoctorOrders() {
             </select>
           </div>
           <div className="col-md-2">
-            <NavLink to={`/doctorlayout/add/${id}`} className='btn btn-primary mb-1' >إضافة أوردر</NavLink>
+            <NavLink to={`/doctorOrders/add/${id}`} className='btn btn-primary mb-1' >إضافة أوردر</NavLink>
           </div>
           <div className="col-md-12 row m-auto d-flex " >
             <div className="col-md-4 mt-1">
@@ -322,7 +323,7 @@ export default function DoctorOrders() {
           </div>
         </div>
       </div>
-      <div id="paidModal" className={`${styles.modal}`}>
+      {openPaidModal &&       <div id="paidModal" className={`${styles.modal}`}>
         <div className={`${styles.modal_content}`}>
           <span className={`${styles.close} fs-3`} onClick={closeModal} >&times;</span>
           <form onSubmit={submitUnpaidAmountToApi} >
@@ -334,7 +335,8 @@ export default function DoctorOrders() {
 
           </form>
         </div>
-      </div>
+      </div> }
+
 
       {showOrders()}
     </>

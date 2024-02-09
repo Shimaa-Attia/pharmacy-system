@@ -163,10 +163,10 @@ export default function DoctorPurchases() {
                 <td data-label="نوع المنتج"  >{purch?.productType}</td>
                 <td data-label="تاريخ الإنشاء"  >{purch?.created_at}</td>
                 <td data-label="خيارات" style={{ minWidth: '150px' }} >
-                  <NavLink to={`/doctorlayout/doctorpurchases/details/${purch.id}`} >
+                  <NavLink to={`/doctorpurchases/details/${purch.id}`} >
                     <i className='bi bi-list-ul text-bg-success mx-1  p-1 rounded'></i>
                   </NavLink>
-                  <NavLink to={`/doctorlayout/doctorpurchases/edite/${purch.id}`} >
+                  <NavLink to={`/doctorpurchases/edite/${purch.id}`} >
                     <i className='bi bi-pencil-square text-bg-primary mx-1  p-1 rounded'></i>
                   </NavLink>
                 </td>
@@ -206,7 +206,7 @@ export default function DoctorPurchases() {
       <div className='text-center m-3 fs-4 fw-bold  bg-secondary text-white rounded p-1 ' >المشتريات</div>
       <div className='row mx-2' dir='rtl'>
         <div className='col-md-12'>
-          <NavLink to='/doctorlayout/add' className='btn btn-danger mb-3 mx-3'>إضافة النواقص</NavLink>
+          <NavLink to='/doctorpurchases/add' className='btn btn-danger mb-3 mx-3'>إضافة النواقص</NavLink>
         </div>
         <div className="col-md-2 mb-1">
           <select name="productType" defaultValue={0} className='form-control'

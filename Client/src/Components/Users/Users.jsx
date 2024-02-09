@@ -81,11 +81,13 @@ export default function Users() {
     } else {
 
       return (
-        <div className=' d-flex justify-content-center height-calc-70 align-items-center' >
-          <i className='fa fa-spinner fa-spin fa-5x'></i>
-
-
-        </div>)
+        <div className=' d-flex justify-content-center  height-calc-70 align-items-center' >
+        {users.length <= 0 && searchText.length <= 0  ?
+         <i className='fa fa-spinner fa-spin  fa-5x'></i>
+          : <div className='alert alert-danger w-50 text-center'>لا يوجد تطابق لهذا البحث</div>
+       }
+     </div>
+        )
 
     }
   };
