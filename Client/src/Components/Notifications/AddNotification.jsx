@@ -85,7 +85,7 @@ export default function AddNotification() {
                 <meta charSet="utf-8" />
                 <title>Add Offer</title>
             </Helmet>
-            <h3 className='alert alert-primary text-center mx-5 my-2  fw-bold'>إضافة عرض </h3>
+            <h3 className='alert alert-primary text-center mx-5 my-2  fw-bold'>إضافة إشعار </h3>
             <div className="mx-5 p-3 rounded rounded-3 bg-white">
                 <form ref={formRef} onSubmit={submitNotificationForm} >
                     <div className="row gy-3">

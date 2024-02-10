@@ -8,10 +8,12 @@ import { toast } from 'react-toastify';
 import Joi from 'joi';
 import Select from 'react-select';
 
+
 export default function Orders() {
   let { accessToken } = useContext(AuthContext);
-  let formInput = document.getElementById('paid');
   let [orders, setOrders] = useState([]);
+  let [pagination, setPagination] = useState(null);
+  let [currentPage, setCurrentPage] = useState(1); // Current page state
   let [unpaid, setUnpaid] = useState('')
   let [salePoints, setSalePoints] = useState([]);
   let getSalePointsData = async () => {
@@ -71,7 +73,7 @@ export default function Orders() {
     setFilterDate(event.target.value)
   }
 
-  let getOrderData = async () => {
+  let getOrderData = async (page = 1) => {
     let orderResult;
     let urlApi = `${process.env.REACT_APP_API_URL}/api/orders/filter?`;
     if (filterUserId !== undefined && filterUserId.length > 0) {
@@ -88,19 +90,74 @@ export default function Orders() {
     }
     if (searchText !== undefined && searchText.trim().length > 0) {
       urlApi += `key=${searchText}`
-      console.log(urlApi);
     }
+    urlApi += `page=${page}`
     orderResult = await axios.get(urlApi, {
       headers: {
         "Authorization": `Bearer ${accessToken}`
       }
     })
+
     if (orderResult) {
-      setOrders(orderResult.data.data)
+      setOrders(orderResult.data.data);
+      setPagination(orderResult.data.meta); // Set pagination data
+      setCurrentPage(page); // Set current page
+
     }
   };
   useEffect(() => { getOrderData() },
     [filterUserId, filterIsPaid, filterPointId, filterDate, searchText]);
+    let handlePageChange = (page) => {
+      getOrderData(page);
+    };
+  
+ // Render pagination controls
+const renderPaginationControls = () => {
+  if (!pagination) return null;
+  const totalPages = pagination.last_page;
+  const maxVisiblePages = 3;
+
+  let startPage = 1;
+  let endPage = Math.min(totalPages, maxVisiblePages);
+
+  if (currentPage > Math.floor(maxVisiblePages / 2)) {
+    startPage = currentPage - Math.floor(maxVisiblePages / 2);
+    endPage = Math.min(totalPages, currentPage + Math.floor(maxVisiblePages / 2));
+  }
+
+  const pages = [];
+  for (let i = startPage; i <= endPage; i++) {
+    pages.push(
+      <button
+        key={i}
+        className={`btn ${currentPage === i ? 'btn-primary' : 'btn-outline-primary'}`}
+        onClick={() => handlePageChange(i)}
+      >
+        {i}
+      </button>
+    );
+  }
+
+  return (
+    <div className="btn-group">
+      <button
+        className="btn btn-outline-primary"
+        onClick={() => handlePageChange(currentPage - 1)}
+        disabled={currentPage === 1}
+      >
+        السابق
+      </button>
+      {pages}
+      <button
+        className="btn btn-outline-primary"
+        onClick={() => handlePageChange(currentPage + 1)}
+        disabled={currentPage === totalPages}
+      >
+        التالي
+      </button>
+    </div>
+  );
+};
 
   let [orderId, setOrderId] = useState(''); // for making orders paids on the same system
   let sendIsPaidOnThOtherSystemToApi = async (ordId) => {
@@ -213,7 +270,6 @@ export default function Orders() {
       }
     }).then((res) => {
       toast.success(res.data.message);
-      formInput.value = '';
       getOrderData()
     }).catch((errors) => {
       toast.error(errors?.response?.data?.message);
@@ -243,6 +299,7 @@ export default function Orders() {
     }
 
   };
+
 
   return (
     <>
@@ -298,6 +355,8 @@ export default function Orders() {
         </div>
       </div>}
 
+ 
+      <div className="text-center my-3">{renderPaginationControls()}</div>
       {showOrders()}
     </>
   )

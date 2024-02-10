@@ -126,7 +126,7 @@ export default function AddOrderDelivery() {
                     sale_point_id: ''
                 })
             }).catch((errors) => {
-                console.log(errors);
+
                 setIsLoading(false);
                 const errorList = errors?.response?.data?.message;
                 if (errorList !== undefined) {

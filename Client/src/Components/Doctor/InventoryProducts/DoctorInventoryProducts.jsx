@@ -139,7 +139,7 @@ export default function DoctorInventoryProducts() {
           {showNotDoneInventoryProducts()}
         </div>
 
-        <div className="col-md-6">
+        <div className="col-md-6 ">
           {showDoneInventoryProducts()}
         </div>
       </div>

@@ -5,18 +5,17 @@ import { NavLink, useParams } from 'react-router-dom';
 import { AuthContext } from '../../Context/AuthStore';
 import { toast } from 'react-toastify';
 
-
-
 export default function DeliveryOrders() {
-  
   let { accessToken } = useContext(AuthContext);
+  let [pagination, setPagination] = useState(null);
+  let [currentPage, setCurrentPage] = useState(1); // Current page state
   let { id } = useParams();
   let [orders, setOrders] = useState([]);
   let [searchText, setSearchText] = useState('');
   function handleSearchChange(event) {
     setSearchText(event.target.value)
   };
-  let getOrderData = async () => {
+  let getOrderData = async (page=1) => {
     let searchResult;
     if (searchText !== undefined && searchText.trim().length > 0) {
       try {
@@ -32,12 +31,14 @@ export default function DeliveryOrders() {
       } 
     } else {
       try {
-        searchResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/user/${id}`, {
+        searchResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/user/${id}?page=${page}`, {
           headers: {
             "Authorization": `Bearer ${accessToken}`
           }
         });
         setOrders(searchResult.data.data);
+        setPagination(searchResult.data.meta); // Set pagination data
+        setCurrentPage(page); // Set current page
       } catch (error) {
         toast.error('حدث خطأ ما')
       }
@@ -47,6 +48,59 @@ export default function DeliveryOrders() {
   useEffect(() => {
     getOrderData();
   }, [searchText]);
+
+  let handlePageChange = (page) => {
+    getOrderData(page);
+  };
+  
+// Render pagination controls
+const renderPaginationControls = () => {
+  if (!pagination) return null;
+  const totalPages = pagination.last_page;
+  const maxVisiblePages = 3;
+  
+  let startPage = 1;
+  let endPage = Math.min(totalPages, maxVisiblePages);
+  
+  if (currentPage > Math.floor(maxVisiblePages / 2)) {
+    startPage = currentPage - Math.floor(maxVisiblePages / 2);
+    endPage = Math.min(totalPages, currentPage + Math.floor(maxVisiblePages / 2));
+  }
+  
+  const pages = [];
+  for (let i = startPage; i <= endPage; i++) {
+    pages.push(
+      <button
+        key={i}
+        className={`btn ${currentPage === i ? 'btn-primary' : 'btn-outline-primary'}`}
+        onClick={() => handlePageChange(i)}
+      >
+        {i}
+      </button>
+    );
+  }
+  
+  return (
+    <div className="btn-group">
+      <button
+        className="btn btn-outline-primary"
+        onClick={() => handlePageChange(currentPage - 1)}
+        disabled={currentPage === 1}
+      >
+        السابق
+      </button>
+      {pages}
+      <button
+        className="btn btn-outline-primary"
+        onClick={() => handlePageChange(currentPage + 1)}
+        disabled={currentPage === totalPages}
+      >
+        التالي
+      </button>
+    </div>
+  );
+  };
+  
 
     //get total money with the delivery from all orders
    let [unpaidAmount , setUnpaidAmmount] = useState([]);
@@ -156,7 +210,7 @@ export default function DeliveryOrders() {
           </div>
         </div>
       </div>
-
+      <div className="text-center mb-3">{renderPaginationControls()}</div>
       {showOrders()}
     </>
   )

@@ -82,7 +82,7 @@ export default function Rules() {
           <div>
             {searchRuslet.map((res) => (
               <div key={res.id} className='card p-2 mb-4'>
-                {res.body}
+                {res?.body}
               </div>
             ))}
           </div>
@@ -93,7 +93,7 @@ export default function Rules() {
               {managmentRules.map((mangRule) => (
                 <div key={mangRule.id}>
                   <div className='p-2'>
-                    {mangRule.body}
+                    {mangRule?.body}
                     <NavLink to={`/rules/edite/${mangRule.id}`}>
                       <i className='bi bi-pencil-square mx-4 text-primary fs-5'></i>
                     </NavLink>
@@ -106,7 +106,7 @@ export default function Rules() {
               {clientsRules.map((clientRule) => (
                 <div key={clientRule.id}>
                   <div className='p-2'>
-                    {clientRule.body}
+                    {clientRule?.body}
                     <NavLink to={`/rules/edite/${clientRule.id}`}>
                       <i className='bi bi-pencil-square mx-4 text-primary fs-5'></i>
                     </NavLink>
@@ -119,7 +119,7 @@ export default function Rules() {
               {colleaguesRules.map((colleRule) => (
                 <div key={colleRule.id}>
                   <div className='p-2'>
-                    {colleRule.body}
+                    {colleRule?.body}
                     <NavLink to={`/rules/edite/${colleRule.id}`}>
                       <i className='bi bi-pencil-square mx-4 text-primary fs-5'></i>
                     </NavLink>

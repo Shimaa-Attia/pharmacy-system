@@ -41,7 +41,7 @@ export default function DoctorNotifications() {
     let showNotDoneNotifications = () => {
         if (notDoneNotifications.length > 0) {
             return (
-                <div className="shadow rounded rounded-4 bg-white mx-3 p-3 table-responsive">
+                <div className="shadow rounded rounded-4 bg-white m-2 p-3 table-responsive">
                     <p className='text-center bg-warning p-1 rounded fs-5 fw-bold'>إشعارات غير منفذة</p>
                     <table dir="rtl" responsive='md' className='table  table-hover  align-middle table-responsive-list  '>
 
@@ -87,7 +87,7 @@ export default function DoctorNotifications() {
     let showDoneNotifications = () => {
         if (doneNotifications.length > 0) {
             return (
-                <div className="shadow rounded rounded-4 bg-white mx-3 p-3 table-responsive">
+                <div className="shadow rounded rounded-4 bg-white m-2 p-3 table-responsive">
                     <p className='text-center bg-success p-1 rounded fs-5 fw-bold'>إشعارات  منفذة</p>
                     <table dir="rtl" responsive='md' className='table  table-hover  align-middle table-responsive-list  '>
                         <tbody>
