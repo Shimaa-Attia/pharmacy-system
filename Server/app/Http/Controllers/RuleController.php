@@ -12,16 +12,23 @@ class RuleController extends Controller
 {
     public function all($type)
     {
-
-        $type = CustomProperties::where('name',$type)->first();
-        if($type == null){
+         $name = '';
+        if($type == "management"){
+            $name = "الإدراة";
+        } elseif($type == "clients"){
+            $name = "العملاء";
+        }elseif($type == "colleagues"){
+            $name = "الزملاء";
+        }
+        if($name !=null){
+            $type = CustomProperties::where('name',$name)->first();
+             $rules= $type->rules??null;
+            return RuleResource::collection($rules);
+        }else{
             return response()->json([
                 "message" => "نوع تعليمات غير موجودد",
         ],404);
         }
-         $rules = $type->rules;
-
-        return RuleResource::collection($rules);
     }
 
     public function show($id)
