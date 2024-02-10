@@ -36,7 +36,6 @@ export default function Rules() {
         "Authorization": `Bearer ${accessToken}`
       }
     });
-    console.log(data);
     setManagmentRules(data.data);
   };
   useEffect(() => {
@@ -81,7 +80,9 @@ export default function Rules() {
           <div>
             {searchRuslet.map((res) => (
               <div key={res.id} className='card p-2 mb-4'>
-                {res?.body}
+                <div className='fw-bolder'>{res?.type?.name}:</div>
+                <div>{res?.body}</div>
+            
               </div>
             ))}
           </div>

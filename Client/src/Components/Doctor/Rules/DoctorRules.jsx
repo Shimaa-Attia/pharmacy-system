@@ -33,7 +33,7 @@ export default function DoctorRules() {
   }
   useEffect(() => { handleSearchData() }, [searchText])
   let getMangmentRulesData = async () => {
-    let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/rules/الإدارة`, {
+    let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/rules/management`, {
       headers: {
         "Authorization": `Bearer ${accessToken}`
       }
@@ -45,7 +45,7 @@ export default function DoctorRules() {
   }, []);
   let getClientsRulesData = async () => {
 
-    let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/rules/العملاء`, {
+    let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/rules/clients`, {
       headers: {
         "Authorization": `Bearer ${accessToken}`
       }
@@ -57,7 +57,7 @@ export default function DoctorRules() {
   }, []);
   let getColleaguesRulesData = async () => {
 
-    let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/rules/الزملاء`, {
+    let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/rules/colleagues`, {
       headers: {
         "Authorization": `Bearer ${accessToken}`
       }
@@ -79,7 +79,8 @@ export default function DoctorRules() {
           <div>
             {searchRuslet.map((res) => (
               <div key={res.id} className='card p-2 mb-4'>
-                {res.body}
+                 <div className='fw-bolder'>{res?.type?.name}:</div>
+                <div>{res?.body}</div>
               </div>
             ))}
           </div>
