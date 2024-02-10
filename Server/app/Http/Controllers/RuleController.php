@@ -14,7 +14,7 @@ class RuleController extends Controller
     {
          $name = '';
         if($type == "management"){
-            $name = "الإدراة";
+            $name = "الإدارة";
         } elseif($type == "clients"){
             $name = "العملاء";
         }elseif($type == "colleagues"){
@@ -22,7 +22,7 @@ class RuleController extends Controller
         }
         if($name !=null){
             $type = CustomProperties::where('name',$name)->first();
-             $rules= $type->rules;
+            $rules= $type->rules;
             return RuleResource::collection($rules);
         }else{
             return response()->json([
