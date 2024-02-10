@@ -22,7 +22,7 @@ class RuleController extends Controller
         }
         if($name !=null){
             $type = CustomProperties::where('name',$name)->first();
-             $rules= $type->rules??null;
+             $rules= $type->rules;
             return RuleResource::collection($rules);
         }else{
             return response()->json([
