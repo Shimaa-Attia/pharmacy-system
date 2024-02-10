@@ -12,7 +12,6 @@ export default function Rules() {
   let [searchText, setSearchText] = useState('');
   function handleSearchChange(event) {
     setSearchText(event.target.value);
-  
     if (event.target.value.length === 0) {
       setSearchRuslet([])
     }
@@ -32,23 +31,23 @@ export default function Rules() {
   }
   useEffect(() => { handleSearchData() }, [searchText])
   let getMangmentRulesData = async () => {
-    let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/rules/الإدارة`, {
+    let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/rules/management`, {
       headers: {
         "Authorization": `Bearer ${accessToken}`
       }
-    });;
+    });
+    console.log(data);
     setManagmentRules(data.data);
   };
   useEffect(() => {
     getMangmentRulesData()
   }, []);
   let getClientsRulesData = async () => {
-
-    let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/rules/العملاء`, {
+    let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/rules/clients`, {
       headers: {
         "Authorization": `Bearer ${accessToken}`
       }
-    });;
+    });
     setClientsRules(data.data);
   };
   useEffect(() => {
@@ -56,7 +55,7 @@ export default function Rules() {
   }, []);
   let getColleaguesRulesData = async () => {
 
-    let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/rules/الزملاء`, {
+    let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/rules/colleagues`, {
       headers: {
         "Authorization": `Bearer ${accessToken}`
       }
