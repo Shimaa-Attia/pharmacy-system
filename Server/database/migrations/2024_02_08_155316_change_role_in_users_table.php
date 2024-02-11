@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->decimal("incentivesPercentatge", 4, 2)->nullable()->change();
+            $table->enum('role', ['doctor', 'delivery', 'admin','purchases'])->default('delivery')->change();
         });
     }
 
