@@ -75,6 +75,7 @@ import DeliveryRules from '../Delivery/Rules/DeliveryRules';
 import ReasonsOfIncentives from '../SellingIncentives/ReasonsOfIncentives';
 import DeleteSellingIncentives from '../SellingIncentives/DeleteSellingIncentives';
 import EditeSellingIncentives from '../SellingIncentives/EditeSellingIncentives';
+import DoctorSellingIncentives from '../Doctor/SellingIncentives/DoctorSellingIncentives';
 
 
 
@@ -163,6 +164,7 @@ function App() {
             <Route path='/doctorinventoryproducts' element={<ProtectedRoute><DoctorInventoryProducts /></ProtectedRoute>}></Route>
             <Route path='/doctorinventoryproducts/add' element={<ProtectedRoute><AddDoctorInventoryProducts /></ProtectedRoute>}></Route>
             <Route path='/doctorrules' element={<ProtectedRoute><DoctorRules /></ProtectedRoute>}></Route>
+            <Route path='/doctorsellingincentives' element={<ProtectedRoute><DoctorSellingIncentives /></ProtectedRoute>}></Route>
 
           </Route>
           <Route path='*' element={<ProtectedRoute ><NotFound /></ProtectedRoute>}></Route>
