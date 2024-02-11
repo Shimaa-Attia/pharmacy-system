@@ -27,12 +27,12 @@ class ShortcomingController extends Controller
     public function customersServiceProducts(){
         $shortcomings= Shortcoming::whereNotNull('clientInfo')
                     ->where(function ($query){
-                    $query->whereHas('status', function ($query)  {
-                            $query->where('name','متوفر وتم الطلب');
-                        })->orWhereHas('status', function ($query)  {
-                            $query->where('name','غير متوفر');
-                        });
-                    })->paginate(20);
+                        $query->whereHas('status', function ($query)  {
+                                $query->where('name','متوفر وتم الطلب');
+                            })->orWhereHas('status', function ($query)  {
+                                $query->where('name','غير متوفر');
+                            });
+                    })->orderBy("created_at","DESC")->paginate(20);
         return ShortcomingResource::collection($shortcomings);
     }
 

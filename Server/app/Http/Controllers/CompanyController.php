@@ -137,11 +137,11 @@ class CompanyController extends Controller
     //         "message" => "تم الحذف"], 200);
     // }
 
-    // public function search($key)
-    // {
-    //     $companies = Company::where('name', 'like', "%$key%")
-    //     ->orderBy('created_at', 'DESC')->get();
-    //     return $companies;
+    public function search($key)
+    {
+        $companies = Company::where('name', 'like', "%$key%")
+        ->orderBy('created_at', 'DESC')->get();
+        return $companies;
 
-    // }
+    }
 }
