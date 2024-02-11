@@ -142,6 +142,5 @@ class CompanyController extends Controller
         $companies = Company::where('name', 'like', "%$key%")
         ->orderBy('created_at', 'DESC')->get();
         return $companies;
-
     }
 }
