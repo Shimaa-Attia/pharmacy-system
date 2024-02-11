@@ -14,6 +14,10 @@ export default function Sidebar() {
     let toggleManagementSubmenu = () => {
         setManagementSubmenuOpen(!managementSubmenuOpen);
     }
+    let [sellingIncentivesSubmenuOpen, setSellingIncentivesSubmenuOpen] = useState(false);
+    let toggleSellingIncentivesSubmenu = () => {
+        setSellingIncentivesSubmenuOpen(!sellingIncentivesSubmenuOpen);
+    }
 
     return (
         <>
@@ -94,9 +98,24 @@ export default function Sidebar() {
                             <div>
                                 <ul className="nav flex-column mt-2">
                                     <li className="nav-item  ">
-                                        <NavLink to='/sellingincentives' className="nav-link  fw-bolder" >
-                                            <span className='me-3 d-none d-sm-inline'>حوافز البيع</span>
-                                            <i className="bi bi-person-fill-add"></i>                                            </NavLink>
+                                    <div onClick={toggleSellingIncentivesSubmenu} className="nav-link fw-bolder">
+                                                <span className='me-3 d-none d-sm-inline'>حوافز البيع</span>
+                                                <i className="bi bi-cash-coin "></i>
+                                            </div>
+                                            {sellingIncentivesSubmenuOpen &&
+                                                <div>
+                                                    <NavLink to='/reasonsofincentives' className="nav-link me-4 fw-bolder" >
+                                                        <span className='me-3 d-none d-sm-inline'>الأسباب</span>
+                                                        <i className="bi bi-card-list"></i>
+                                                    </NavLink>
+
+                                                    <NavLink to='/sellingincentives' className="nav-link me-4 fw-bolder" >
+                                                        <span className='me-3 d-none d-sm-inline '>المنتجات</span>
+                                                        <i className="bi bi-capsule-pill"></i>
+                                                    </NavLink>
+                                                </div>
+                                            }
+                                       
                                     </li>
                                     <li className="nav-item">
                                         <NavLink to='/branches' className="nav-link  fw-bolder">

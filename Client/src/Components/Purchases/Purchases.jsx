@@ -10,6 +10,10 @@ export default function Purchases() {
   let [pagination, setPagination] = useState(null);
   let [currentPage, setCurrentPage] = useState(1); // Current page state
   let [filterBranchId, setFilterBranchId] = useState('');
+  let [searchText, setSearchText] = useState('');
+  function handleSearchChange(event) {
+    setSearchText(event?.target?.value)
+  };
   function handleBranchChange(event) {
     setFilterBranchId(event?.target?.value)
   }
@@ -48,7 +52,9 @@ export default function Purchases() {
     }
     if (filterDate !== undefined && filterDate.length > 0) {
       urlApi += `fromDate=${filterDate}&`
-
+    }
+    if (searchText !== undefined && searchText.trim().length > 0) {
+      urlApi += `key=${searchText}&`
     }
     urlApi += `page=${page}`
     purchResult = await axios.get(urlApi, {
@@ -63,7 +69,7 @@ export default function Purchases() {
   }
   useEffect(() => {
     getPurchasesData()
-  }, [filterProductType, filterBranchId, filterStatusId, filterIsAvailableInOtherBranch, filterDate]);
+  }, [filterProductType, filterBranchId, filterStatusId, filterIsAvailableInOtherBranch, filterDate , searchText]);
     //for handle page change
     let handlePageChange = (page) => {
       getPurchasesData(page);
@@ -191,7 +197,7 @@ export default function Purchases() {
     } else {
       return (
         <div className=' d-flex justify-content-center  height-calc-70 align-items-center' >
-          {purchasesData.length <= 0 && filterBranchId.length <= 0 && filterProductType.length <= 0 && filterBranchId.length <= 0 && filterDate.length <= 0 && filterIsAvailableInOtherBranch.length <= 0 && filterStatusId.length <= 0 ?
+          {purchasesData.length <= 0 && filterBranchId.length <= 0 && filterProductType.length <= 0 && filterBranchId.length <= 0 && filterDate.length <= 0 && filterIsAvailableInOtherBranch.length <= 0 && filterStatusId.length <= 0 && searchText.length <= 0 ?
             <i className='fa fa-spinner fa-spin  fa-5x'></i>
             : <div className='alert alert-danger w-50 text-center'>لا يوجد مشتريات</div>
           }
@@ -215,8 +221,11 @@ export default function Purchases() {
 
       <div className='text-center m-3 fs-4 fw-bold  bg-secondary text-white rounded p-1 ' >المشتريات</div>
       <div className='row mx-2' dir='rtl'>
-        <div className='col-md-12'>
+        <div className='col-md-6'>
           <NavLink to='/shortcomings/add' className='btn btn-danger mb-2 '>إضافة النواقص</NavLink>
+        </div>
+        <div className="col-md-6" >
+          <input type="text" className='form-control text-end mb-1' placeholder='بحث  ...' onChange={handleSearchChange} />
         </div>
         <div className="col-md-2 mb-1">
           <select name="productType" defaultValue={0} className='form-control'

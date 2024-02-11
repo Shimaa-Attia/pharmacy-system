@@ -1,11 +1,12 @@
+
 import axios from 'axios';
 import React, { useContext, useEffect, useState } from 'react'
 
 import { Helmet } from 'react-helmet';
 import { NavLink } from 'react-router-dom';
-import { AuthContext } from '../../Context/AuthStore';
+import { AuthContext } from '../../../Context/AuthStore';
 
-export default function SellingIncentives() {
+export default function DoctorSellingIncentives() {
     let { accessToken } = useContext(AuthContext);
     let [sellingIncentives, setSellingIncentives] = useState([]);
 
@@ -55,7 +56,7 @@ export default function SellingIncentives() {
                                 <th>السبب</th>
                                 <th>نسبة الحافز</th>
                                 <th>ملاحظات</th>
-                                <th>خيارات</th>
+                                {/* <th>خيارات</th> */}
                             </tr>
                         </thead>
                         <tbody>
@@ -66,7 +67,7 @@ export default function SellingIncentives() {
                                 <td data-label="السبب">{incentive?.incentiveReason ? incentive?.incentiveReason.name : '...'}</td>
                                 <td data-label="نسبة الحافز">{incentive?.incentivesPercentatge ? incentive?.incentivesPercentatge : '...'}</td>
                                 <td data-label="ملاحظات">{incentive?.notes ? incentive.notes : '...'}</td>
-                                <td data-label="خيارات" style={{ minWidth: '90px' }}>
+                                {/* <td data-label="خيارات" style={{ minWidth: '90px' }}>
                                     <NavLink to={`/sellingincentives/delete/${incentive.id}`}>
                                         <i className='bi bi-trash text-bg-danger p-1 mx-1  rounded'></i>
                                     </NavLink>
@@ -74,7 +75,7 @@ export default function SellingIncentives() {
                                         <i className='bi bi-pencil-square text-bg-primary mx-1 p-1 rounded'></i>
                                     </NavLink>
 
-                                </td>
+                                </td> */}
                             </tr>
                             )}
                         </tbody>
@@ -114,9 +115,7 @@ export default function SellingIncentives() {
                     <title>Selling Incentive</title>
                 </Helmet>
                 <div className=" my-3 text-center row mx-2  " dir='rtl'>
-                    <div className="col-md-12">
-                        <NavLink to='/sellingincentives/add' className='btn btn-primary mb-1' >إضافة منتج </NavLink>
-                    </div>
+                  
                     <div className="col-md-6">
                         <input type="text" className='form-control text-end mt-1' onChange={handleSearchChange} placeholder=' بحث...   ' />
                     </div>
