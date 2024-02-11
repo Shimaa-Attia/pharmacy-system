@@ -7,6 +7,7 @@ import styles from '../Doctor/DoctorOrders.module.css'
 import { toast } from 'react-toastify';
 import Joi from 'joi';
 import Select from 'react-select';
+import Pagination from '../Pagination/Pagination';
 
 
 
@@ -97,7 +98,7 @@ export default function DoctorOrders() {
       urlApi += `fromDate=${filterDate}&`
     }
     if (searchText !== undefined && searchText.trim().length > 0) {
-      urlApi += `key=${searchText}`
+      urlApi += `key=${searchText}&`
     
     }
     urlApi += `page=${page}`
@@ -393,7 +394,10 @@ return (
         </div>
       </div> }
 
-      <div className="text-center mb-3">{renderPaginationControls()}</div>
+      <div className="text-center mb-3">
+      <Pagination pagination={pagination} currentPage={currentPage} handlePageChange={handlePageChange}/>
+
+      </div>
       {showOrders()}
 
     </>

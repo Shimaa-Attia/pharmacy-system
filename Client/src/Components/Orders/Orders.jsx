@@ -7,6 +7,7 @@ import { AuthContext } from '../../Context/AuthStore';
 import { toast } from 'react-toastify';
 import Joi from 'joi';
 import Select from 'react-select';
+import Pagination from '../Pagination/Pagination';
 
 
 export default function Orders() {
@@ -89,7 +90,7 @@ export default function Orders() {
       urlApi += `fromDate=${filterDate}&`
     }
     if (searchText !== undefined && searchText.trim().length > 0) {
-      urlApi += `key=${searchText}`
+      urlApi += `key=${searchText}&`
     }
     urlApi += `page=${page}`
     orderResult = await axios.get(urlApi, {
@@ -97,68 +98,19 @@ export default function Orders() {
         "Authorization": `Bearer ${accessToken}`
       }
     })
-
     if (orderResult) {
       setOrders(orderResult.data.data);
       setPagination(orderResult.data.meta); // Set pagination data
       setCurrentPage(page); // Set current page
-
     }
   };
   useEffect(() => { getOrderData() },
     [filterUserId, filterIsPaid, filterPointId, filterDate, searchText]);
+    //for handle page change
     let handlePageChange = (page) => {
       getOrderData(page);
     };
   
- // Render pagination controls
-const renderPaginationControls = () => {
-  if (!pagination) return null;
-  const totalPages = pagination.last_page;
-  const maxVisiblePages = 3;
-
-  let startPage = 1;
-  let endPage = Math.min(totalPages, maxVisiblePages);
-
-  if (currentPage > Math.floor(maxVisiblePages / 2)) {
-    startPage = currentPage - Math.floor(maxVisiblePages / 2);
-    endPage = Math.min(totalPages, currentPage + Math.floor(maxVisiblePages / 2));
-  }
-
-  const pages = [];
-  for (let i = startPage; i <= endPage; i++) {
-    pages.push(
-      <button
-        key={i}
-        className={`btn ${currentPage === i ? 'btn-primary' : 'btn-outline-primary'}`}
-        onClick={() => handlePageChange(i)}
-      >
-        {i}
-      </button>
-    );
-  }
-
-  return (
-    <div className="btn-group">
-      <button
-        className="btn btn-outline-primary"
-        onClick={() => handlePageChange(currentPage - 1)}
-        disabled={currentPage === 1}
-      >
-        السابق
-      </button>
-      {pages}
-      <button
-        className="btn btn-outline-primary"
-        onClick={() => handlePageChange(currentPage + 1)}
-        disabled={currentPage === totalPages}
-      >
-        التالي
-      </button>
-    </div>
-  );
-};
-
   let [orderId, setOrderId] = useState(''); // for making orders paids on the same system
   let sendIsPaidOnThOtherSystemToApi = async (ordId) => {
     await axios.post(`${process.env.REACT_APP_API_URL}/api/orders/isPaid_theOtherSystem/${ordId}`, {}, {
@@ -355,8 +307,9 @@ const renderPaginationControls = () => {
         </div>
       </div>}
 
- 
-      <div className="text-center my-3">{renderPaginationControls()}</div>
+      <div className="text-center mb-2">
+        <Pagination pagination={pagination} currentPage={currentPage} handlePageChange={handlePageChange}/>
+      </div>
       {showOrders()}
     </>
   )

@@ -4,9 +4,12 @@ import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../../Context/AuthStore';
 import { NavLink } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import Pagination from '../Pagination/Pagination';
 
 export default function DoctorPurchases() {
   let { accessToken } = useContext(AuthContext);
+  let [pagination, setPagination] = useState(null);
+  let [currentPage, setCurrentPage] = useState(1); // Current page state
   let [filterBranchId, setFilterBranchId] = useState('');
   function handleBranchChange(event) {
     setFilterBranchId(event?.target?.value)
@@ -29,7 +32,7 @@ export default function DoctorPurchases() {
   }
 
   let [purchasesData, setPurchasesData] = useState([]);
-  let getPurchasesData = async () => {
+  let getPurchasesData = async (page =1) => {
     let urlApi = `${process.env.REACT_APP_API_URL}/api/shortcomings/filter?`;
     let purchResult;
     if (filterProductType !== undefined && filterProductType.trim().length > 0) {
@@ -46,20 +49,26 @@ export default function DoctorPurchases() {
 
     }
     if (filterDate !== undefined && filterDate.length > 0) {
-      urlApi += `fromDate=${filterDate}`
-
+      urlApi += `fromDate=${filterDate}&`
     }
+    urlApi += `page=${page}`
     purchResult = await axios.get(urlApi, {
       headers: {
         "Authorization": `Bearer ${accessToken}`
       }
     })
     setPurchasesData(purchResult.data.data)
+    setPagination(purchResult.data.meta); // Set pagination data
+    setCurrentPage(page); // Set current page
 
   }
   useEffect(() => {
     getPurchasesData()
   }, [filterProductType, filterBranchId, filterStatusId, filterIsAvailableInOtherBranch, filterDate]);
+      //for handle page change
+      let handlePageChange = (page) => {
+        getPurchasesData(page);
+      };
   //get status data
   let [statusData, setStatusData] = useState([]);
   let getStatusData = async () => {
@@ -245,6 +254,9 @@ export default function DoctorPurchases() {
           </select>
         </div>
 
+      </div>
+      <div className="text-center mb-2">
+        <Pagination pagination={pagination} currentPage={currentPage} handlePageChange={handlePageChange}/>
       </div>
       {showPurchases()}
     </>

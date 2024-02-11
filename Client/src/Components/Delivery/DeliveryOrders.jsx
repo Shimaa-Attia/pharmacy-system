@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet';
 import { NavLink, useParams } from 'react-router-dom';
 import { AuthContext } from '../../Context/AuthStore';
 import { toast } from 'react-toastify';
+import Pagination from '../Pagination/Pagination';
 
 export default function DeliveryOrders() {
   let { accessToken } = useContext(AuthContext);
@@ -48,59 +49,10 @@ export default function DeliveryOrders() {
   useEffect(() => {
     getOrderData();
   }, [searchText]);
-
+//for handle page change
   let handlePageChange = (page) => {
     getOrderData(page);
   };
-  
-// Render pagination controls
-const renderPaginationControls = () => {
-  if (!pagination) return null;
-  const totalPages = pagination.last_page;
-  const maxVisiblePages = 3;
-  
-  let startPage = 1;
-  let endPage = Math.min(totalPages, maxVisiblePages);
-  
-  if (currentPage > Math.floor(maxVisiblePages / 2)) {
-    startPage = currentPage - Math.floor(maxVisiblePages / 2);
-    endPage = Math.min(totalPages, currentPage + Math.floor(maxVisiblePages / 2));
-  }
-  
-  const pages = [];
-  for (let i = startPage; i <= endPage; i++) {
-    pages.push(
-      <button
-        key={i}
-        className={`btn ${currentPage === i ? 'btn-primary' : 'btn-outline-primary'}`}
-        onClick={() => handlePageChange(i)}
-      >
-        {i}
-      </button>
-    );
-  }
-  
-  return (
-    <div className="btn-group">
-      <button
-        className="btn btn-outline-primary"
-        onClick={() => handlePageChange(currentPage - 1)}
-        disabled={currentPage === 1}
-      >
-        السابق
-      </button>
-      {pages}
-      <button
-        className="btn btn-outline-primary"
-        onClick={() => handlePageChange(currentPage + 1)}
-        disabled={currentPage === totalPages}
-      >
-        التالي
-      </button>
-    </div>
-  );
-  };
-  
 
     //get total money with the delivery from all orders
    let [unpaidAmount , setUnpaidAmmount] = useState([]);
@@ -210,7 +162,10 @@ const renderPaginationControls = () => {
           </div>
         </div>
       </div>
-      <div className="text-center mb-3">{renderPaginationControls()}</div>
+      <div className="text-center mb-3">
+      <Pagination pagination={pagination} currentPage={currentPage} handlePageChange={handlePageChange}/>
+
+      </div>
       {showOrders()}
     </>
   )
