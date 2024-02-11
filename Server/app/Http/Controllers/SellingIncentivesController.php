@@ -46,14 +46,15 @@ class SellingIncentivesController extends Controller
                 "message" => $validator->errors()
                 ], 409);
         }
+      if($request->incentiveReason_id){
+          $incentiveReason = CustomProperties::where('id',$request->incentiveReason_id)->first();
+          if($incentiveReason->type != 'incentiveReason'){
+              return response()->json([
+                  "message" => "سبب غير موجود",
+              ],404);
 
-        $incentiveReason = CustomProperties::where('id',$request->incentiveReason_id)->first();
-        if($incentiveReason->type != 'incentiveReason'){
-            return response()->json([
-                "message" => "سبب غير موجود",
-            ],404);
-
-        }
+          }
+      }
 
         //create
          SellingIncentives::create($request->all());
