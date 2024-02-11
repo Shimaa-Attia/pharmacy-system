@@ -72,6 +72,10 @@ import SellingIncentives from '../SellingIncentives/SellingIncentives';
 import AddSellingIncentives from '../SellingIncentives/AddSellingIncentives';
 import DoctorRules from '../Doctor/Rules/DoctorRules';
 import DeliveryRules from '../Delivery/Rules/DeliveryRules';
+import ReasonsOfIncentives from '../SellingIncentives/ReasonsOfIncentives';
+import DeleteSellingIncentives from '../SellingIncentives/DeleteSellingIncentives';
+import EditeSellingIncentives from '../SellingIncentives/EditeSellingIncentives';
+
 
 
 
@@ -129,6 +133,9 @@ function App() {
             <Route path='notifications/add' element={<ProtectedRoute ><AddNotification /></ProtectedRoute>} ></Route>
             <Route path='sellingincentives' element={<ProtectedRoute ><SellingIncentives /></ProtectedRoute>} ></Route>
             <Route path='sellingincentives/add' element={<ProtectedRoute ><AddSellingIncentives /></ProtectedRoute>} ></Route>
+            <Route path='sellingincentives/delete/:id' element={<ProtectedRoute ><DeleteSellingIncentives /></ProtectedRoute>} ></Route>
+            <Route path='sellingincentives/edite/:id' element={<ProtectedRoute ><EditeSellingIncentives /></ProtectedRoute>} ></Route>
+            <Route path='reasonsofincentives' element={<ProtectedRoute ><ReasonsOfIncentives /></ProtectedRoute>} ></Route>
 
   
           </Route>
