@@ -38,7 +38,7 @@ class SellingIncentivesController extends Controller
             'composition'=>'nullable|string',
             'incentiveReason_id'=>'nullable|exists:custom_properties,id',
             'notes'=>'nullable|string',
-            'incentivesPercentatge'=>'nullable|numeric'
+            'incentivesPercentatge'=>'nullable|numeric|gt:0'
         ]);
 
         if ($validator->fails()) {
@@ -80,7 +80,7 @@ class SellingIncentivesController extends Controller
             'composition'=>'nullable|string',
             'incentiveReason_id'=>'nullable|exists:custom_properties,id',
             'notes'=>'nullable|string',
-            'incentivesPercentatge'=>'nullable|numeric'
+            'incentivesPercentatge'=>'nullable|numeric|gt:0'
         ]);
 
         if ($validator->fails()) {
