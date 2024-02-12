@@ -246,7 +246,7 @@ Route::middleware(['auth:api'])->group(function(){
         // Route::post('/restore/{id}',[CompanyController::class,'restore']);
         // Route::delete('/deleteArchive/{id}',[CompanyController::class,'deleteArchive']);
         //  //search
-        //  Route::get('/search/{key}',[CompanyController::class,'search']);
+         Route::get('/search/{key}',[CompanyController::class,'search']);
 
     });
 

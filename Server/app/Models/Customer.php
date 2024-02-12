@@ -16,7 +16,8 @@ class Customer extends Model
         'code',
         'notes',
         'onHim',
-        'forHim'
+        'forHim',
+        'customer_area'
         ];
 
     public function orders(){

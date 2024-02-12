@@ -15,7 +15,7 @@ class OrderResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $address = CustomField::where('customer_id',$this->customer->id)->where('name','address')->get();
+        // $address = CustomField::where('customer_id',$this->customer->id)->where('name','address')->get();
         return [
             'id'=>$this->id,
             'cost'=>$this->cost,
@@ -24,12 +24,12 @@ class OrderResource extends JsonResource
             "unpaid"=>$this->totalAmmount-$this->paid,
             'notes'=>$this->notes,
             'created_at'=> $this->created_at->format('Y/m/d h:i A'),
-            // 'payed_at'=> $this->payed_at=== null ? '' : $this->payed_at->format('Y/m/d h:i A') ,
+            'payed_at'=> $this->payed_at=== null ? '' : $this->payed_at->format('Y/m/d h:i A') ,
             'payed_at'=> optional($this->payed_at)->format('Y/m/d h:i A') ,
             'isPaid_theOtherSystem'=>boolval($this->isPaid_theOtherSystem),
             'customer'=>$this->customer,
             'customer_phone'=>$this->customer_phone,
-            'customer_address'=>$address,
+            'customer_address'=>$this->customer_address,
             'delivery_man'=>$this->user,
             'sale_point'=>$this->sale_point,
 

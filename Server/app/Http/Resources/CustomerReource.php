@@ -23,6 +23,7 @@ class CustomerReource extends JsonResource
             'notes'=>$this->notes,
             'onHim'=>$this->onHim,
             'forHim'=>$this->forHim,
+            'customer_area'=>$this->customer_area,
             'created_at'=>$this->created_at->format('Y/m/d h:i A'),
             'contactInfo'=>$this->customFields,
 

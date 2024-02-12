@@ -13,9 +13,14 @@ use Illuminate\Support\Facades\Validator;
 
 class CustomerController extends Controller
 {
-    public function all()
+    public function all(Request $request)
     {
-        $customers = Customer::orderBy("created_at","DESC")->paginate(20);
+        // return $request->noPaginate;
+        if($request->noPaginate){
+             $customers=Customer::all()->sortByDesc("created_at");
+        }else{
+            $customers = Customer::orderBy("created_at","DESC")->paginate(10);
+        }
         return
             CustomerReource::collection($customers);
     }
@@ -57,13 +62,15 @@ class CustomerController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
+            'name' => 'required|required',
             'code' => 'required|unique:customers,code',
             "phones.*" => 'nullable|min:11|max:11|unique:custom_fields,value',
             "addresses.*" => 'nullable|min:5',
             "notes"=>'nullable|string',
             'onHim'=>'numeric|nullable|gt:0',
             'forHim'=>'numeric|nullable|gt:0',
+            'customer_area'=>'nullable|string|min:5',
+
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -125,6 +132,7 @@ class CustomerController extends Controller
             "notes"=>'nullable|string',
             'onHim'=>'numeric|nullable|gt:0',
             'forHim'=>'numeric|nullable|gt:0',
+            'customer_area'=>'nullable|string|min:5',
 
         ]);
         if ($validator->fails()) {
