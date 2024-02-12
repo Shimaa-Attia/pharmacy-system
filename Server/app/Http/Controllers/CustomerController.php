@@ -15,7 +15,7 @@ class CustomerController extends Controller
 {
     public function all()
     {
-        $customers = Customer::all()->sortByDesc("created_at");
+        $customers = Customer::orderBy("created_at","DESC")->paginate(20);
         return
             CustomerReource::collection($customers);
     }
@@ -160,8 +160,7 @@ class CustomerController extends Controller
 
     }
 
-    public
-    function destroy($id)
+    public function destroy($id)
     {
         $customer = Customer::find($id);
         if ($customer == null) {
@@ -176,18 +175,16 @@ class CustomerController extends Controller
     }
 
 
-    public
-    function archive()
+    public function archive()
     {
 
-        $customers = Customer::onlyTrashed()->orderBy('created_at', 'DESC')->get();
+        $customers = Customer::onlyTrashed()->orderBy('created_at', 'DESC')->paginate(20);
         return response()->json([
             'customers' =>  CustomerReource::collection($customers),
         ]);
     }
 
-    public
-    function restore($id)
+    public function restore($id)
     {
         $customer = Customer::onlyTrashed()->find($id);
         if ($customer == null) {
@@ -202,8 +199,7 @@ class CustomerController extends Controller
         ], 200);
     }
 
-    public
-    function deleteArchive($id)
+    public function deleteArchive($id)
     {
         $customer = Customer::onlyTrashed()->find($id);
         if ($customer == null) {
@@ -225,7 +221,7 @@ class CustomerController extends Controller
             ->orWhereHas('customFields', function ($query) use ($key) {
                 $query->where('value', 'like', "%$key%");
             })
-            ->orderBy('created_at', 'DESC')->get();
+            ->orderBy('created_at', 'DESC')->paginate(20);
         return CustomerReource::collection($customers);
 
     }
