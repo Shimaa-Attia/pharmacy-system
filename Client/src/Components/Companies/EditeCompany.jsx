@@ -60,7 +60,7 @@ export default function EditeCompany() {
                     position: 'top-center'
                 });
                 setIsLoading(false);
-                navigate('/companies')
+            
             }).catch((errors) => {
                 setIsLoading(false);
                 const errorList = errors?.response?.data?.message;
@@ -116,7 +116,7 @@ export default function EditeCompany() {
                 <meta charSet="utf-8" />
                 <title>Add Company</title>
             </Helmet>
-            <h3 className='alert alert-primary text-center mx-5 my-2  fw-bold'>إضافة شركة </h3>
+            <h3 className='alert alert-primary text-center mx-5 my-2  fw-bold'>تعديل شركة </h3>
             <div className="mx-5 p-3 rounded rounded-3 bg-white">
                 <form onSubmit={submitEditedCompaniesForm} >
                     <div className="row gy-3">
@@ -155,9 +155,7 @@ export default function EditeCompany() {
                                 {isLoading == true ? <i className='fa fa-spinner fa-spin'></i> : 'تعديل'}
                             </button>
                         </div>
-                        <div className="col-md-3">
-                            <NavLink to={`/companies`} className='btn  btn-secondary form-control fs-5'>رجوع</NavLink>
-                        </div>
+                       
                     </div>
                 </form >
             </div >

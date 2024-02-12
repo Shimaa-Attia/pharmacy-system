@@ -40,7 +40,7 @@ export default function Login({ saveUserData}) {
                     navigate(`/doctorOrders/${data.user.id}`);
                     break;
                 case 'purchases':
-                    navigate(`/doctorOrders/${data.user.id}`);
+                    navigate(`/purchasesuser`);
                     break;
 
                 default:

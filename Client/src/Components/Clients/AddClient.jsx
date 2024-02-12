@@ -20,11 +20,13 @@ export default function AddClient() {
         name: '',
         phones: [],
         addresses: [],
+        onHim:'',
+        forHim:'',
         notes: ''
     }
     let [clientData, setClientData] = useState({ ...initialValues });
 
-    let sendClientDataToApi = async (values, resetForm, setFieldValue) => {
+    let sendClientDataToApi = async (values) => {
 
         await axios.post(`${process.env.REACT_APP_API_URL}/api/customers`, values, {
             headers: {
@@ -36,25 +38,32 @@ export default function AddClient() {
             });
             setIsLoading(false);
           setClientData({ ...initialValues });
-            resetForm();
         }).catch((errors) => {
+            console.log(errors);
             setIsLoading(false);
-            const errorList = errors?.response?.data?.message;
-            if (errorList !== undefined) {
-                Object.keys(errorList).map((err) => {
-                    errorList[err].map((err) => {
-                        toast.error(err);
-                    })
-                });
+            try {
+                const errorList = errors?.response?.data?.message;
+                if (errorList !== undefined) {
+                    Object.keys(errorList).map((err) => {
+                        errorList[err].map((err) => {
+                            toast.error(err);
+                        })
+                    });
+                }
+            } catch (error) {
+                toast.error('حدث خطأ ما')
             }
+          
         });
     };
     let validateClientForm = (values) => {
         const schema = Joi.object({
-            name: Joi.string().min(3).required(),
+            name: Joi.string().empty(''),
             code: Joi.string().required(),
-            phones: Joi.required(),
-            addresses: Joi.required(),
+            phones: Joi.any().empty(''),
+            addresses: Joi.any().empty(''),
+            onHim:Joi.number().empty(''),
+            forHim:Joi.number().empty(''),
             notes: Joi.string().empty(''),
 
         });
@@ -68,7 +77,7 @@ export default function AddClient() {
         let validation = validateClientForm(values);
         if (!validation.error) {
             sendClientDataToApi(values);
-            setFormKey((prevKey) => prevKey + 1);
+        
          
         } else {
             setIsLoading(false);
@@ -87,7 +96,7 @@ export default function AddClient() {
     let toggleInput = () => {
         setShowInput(!showInput);
     }
-    const [formKey, setFormKey] = useState(0);
+
     return (
         <>
             <Helmet>
@@ -97,7 +106,7 @@ export default function AddClient() {
             <h3 className='alert alert-primary text-center mx-5 my-2  fw-bold'>إضافة عميل جديد</h3>
             <div className="mx-5 p-3 rounded rounded-3 bg-white">
 
-                <Formik key={formKey} initialValues={
+                <Formik  initialValues={
                     clientData
                 } onSubmit={(values, { resetForm  }) => {
                     submitClientForm(values );
@@ -136,10 +145,18 @@ export default function AddClient() {
 
                                         <Field type="text" id="addresses2" className='form-control' name="addresses[1]"  />
                                     </div>}
-                                    <div className="col-md-6 ">
+                                    <div className="col-md-12 ">
                                         <button type='button' className='btn btn-success' onClick={toggleInput} >
                                             {showInput === false ? 'إضافة المزيد' : 'إخفاء'}
                                         </button>
+                                    </div>
+                                    <div className="col-md-6">
+                                        <label htmlFor="onHim" className='form-label'>عليه</label>
+                                        <Field type="text" className='form-control' name="onHim" id="name" />
+                                    </div>
+                                    <div className="col-md-6">
+                                        <label htmlFor="forHim" className='form-label'>له</label>
+                                        <Field type="text" className='form-control' name="forHim" id="name" />
                                     </div>
 
                                     <div className="col-md-12">

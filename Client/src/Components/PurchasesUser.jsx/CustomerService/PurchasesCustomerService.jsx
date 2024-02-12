@@ -1,10 +1,11 @@
+
 import React, { useContext, useEffect, useState } from 'react'
-import { AuthContext } from '../../Context/AuthStore';
+import { AuthContext } from '../../../Context/AuthStore';
 import axios from 'axios';
 import { NavLink } from 'react-router-dom';
-import Pagination from '../Pagination/Pagination';
+import Pagination from '../../Pagination/Pagination';
 
-export default function CustomersService() {
+export default function PurchasesCustomerService() {
   let { accessToken } = useContext(AuthContext);
   let [pagination, setPagination] = useState(null);
   let [currentPage, setCurrentPage] = useState(1); // Current page state
@@ -67,10 +68,7 @@ export default function CustomersService() {
   };
   return (
     <>
-      <div>
-        <NavLink to='/addstatus' className='btn btn-primary my-3  mx-3'>إضافة حالة</NavLink>
-      </div>
-      <div className="text-center mb-2">
+      <div className="text-center my-3">
         <Pagination pagination={pagination} currentPage={currentPage} handlePageChange={handlePageChange}/>
       </div>
  {showCustomersServiceProducts()}

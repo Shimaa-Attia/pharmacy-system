@@ -76,6 +76,18 @@ import ReasonsOfIncentives from '../SellingIncentives/ReasonsOfIncentives';
 import DeleteSellingIncentives from '../SellingIncentives/DeleteSellingIncentives';
 import EditeSellingIncentives from '../SellingIncentives/EditeSellingIncentives';
 import DoctorSellingIncentives from '../Doctor/SellingIncentives/DoctorSellingIncentives';
+import PurchasesLayout from '../Layouts/PurchasesLayout';
+import PurchasesUser from '../PurchasesUser.jsx/Purchases/PurchasesUser';
+import PurchasesInventoryProducts from '../PurchasesUser.jsx/InventoryProducts/PurchasesInventoryProducts';
+import PurchasesCompanies from '../PurchasesUser.jsx/Companies/PurchasesCompanies';
+import PurchasesCustomerService from '../PurchasesUser.jsx/CustomerService/PurchasesCustomerService';
+import AddPurchasesCompanies from '../PurchasesUser.jsx/Companies/AddPurchasesCompanies';
+import EditePurchasesCompanies from '../PurchasesUser.jsx/Companies/EditePurchasesCompanies';
+import AddPurchasesInventoryProducts from '../PurchasesUser.jsx/InventoryProducts/AddPurchasesInventoryProducts';
+import AddShortComingsPurchases from '../PurchasesUser.jsx/Purchases/AddShortComingsPurchases';
+import EditePurchasesUser from '../PurchasesUser.jsx/Purchases/EditePurchasesUser';
+import DeletePurchasesUser from '../PurchasesUser.jsx/Purchases/DeletePurchasesUser';
+import PurchasesUserDetails from '../PurchasesUser.jsx/Purchases/PurchasesUserDetails';
 
 
 
@@ -145,6 +157,20 @@ function App() {
             <Route path='/deliveryOrders/add/:id' element={<ProtectedRoute><AddOrderDelivery /></ProtectedRoute>}></Route>
             <Route path='/deliveryOrders/delete/:id' element={<ProtectedRoute><DeleteOrderDelivery /></ProtectedRoute>}></Route>
             <Route path='/deliveryrules' element={<ProtectedRoute><DeliveryRules /></ProtectedRoute>}></Route>
+   
+          </Route>
+          <Route path='/' element={<ProtectedRoute><PurchasesLayout /></ProtectedRoute>}>
+            <Route path='/purchasesuser' element={<ProtectedRoute><PurchasesUser /></ProtectedRoute>}></Route>
+            <Route path='/purchasesuser/edite/:id' element={<ProtectedRoute><EditePurchasesUser /></ProtectedRoute>}></Route>
+            <Route path='/purchasesuser/delete/:id' element={<ProtectedRoute><DeletePurchasesUser /></ProtectedRoute>}></Route>
+            <Route path='/purchasesuser/details/:id' element={<ProtectedRoute><PurchasesUserDetails /></ProtectedRoute>}></Route>
+            <Route path='/shortcomingspurchases/add' element={<ProtectedRoute><AddShortComingsPurchases /></ProtectedRoute>}></Route>
+            <Route path='/purchasesinventoryproducts' element={<ProtectedRoute><PurchasesInventoryProducts /></ProtectedRoute>}></Route>
+            <Route path='/purchasesinventoryproducts/add' element={<ProtectedRoute><AddPurchasesInventoryProducts /></ProtectedRoute>}></Route>
+            <Route path='/purchasescompanies' element={<ProtectedRoute><PurchasesCompanies /></ProtectedRoute>}></Route>
+            <Route path='/purchasescompanies/add' element={<ProtectedRoute><AddPurchasesCompanies /></ProtectedRoute>}></Route>
+            <Route path='/purchasescompanies/edite/:id' element={<ProtectedRoute><EditePurchasesCompanies /></ProtectedRoute>}></Route>
+            <Route path='/purchasescustomerservice' element={<ProtectedRoute><PurchasesCustomerService /></ProtectedRoute>}></Route>
    
           </Route>
           <Route path='/' element={<ProtectedRoute><DoctorLayout /></ProtectedRoute>}>

@@ -141,9 +141,7 @@ export default function AddCompany() {
                                 {isLoading == true ? <i className='fa fa-spinner fa-spin'></i> : 'إضافة'}
                             </button>
                         </div>
-                        <div className="col-md-3">
-                            <NavLink to={`/companies`} className='btn  btn-secondary form-control fs-5'>رجوع</NavLink>
-                        </div>
+                     
                     </div>
                 </form >
             </div >

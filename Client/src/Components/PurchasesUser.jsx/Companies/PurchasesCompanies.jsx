@@ -3,9 +3,9 @@ import axios from 'axios';
 import React, { useContext, useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet';
 import { NavLink } from 'react-router-dom';
-import { AuthContext } from '../../Context/AuthStore';
+import { AuthContext } from '../../../Context/AuthStore';
 
-export default function Companies() {
+export default function PurchasesCompanies() {
   let { accessToken } = useContext(AuthContext);
   let [companies, setCompanies] = useState([]);
 
@@ -62,12 +62,9 @@ export default function Companies() {
                 <td data-label="تعليمات الإدخال">{company?.entryInstructions ? company.entryInstructions : '...'}</td>
                 <td data-label="ملاحظات">{company?.notes ? company.notes : '...'}</td>
                 <td data-label="خيارات" >
-            
-                  <NavLink to={`/companies/edite/${company.id}`} >
+                  <NavLink to={`/purchasescompanies/edite/${company.id}`} >
                     <i className='bi bi-pencil-square text-primary fs-5 mx-1   '></i>
                   </NavLink>
-             
-          
                 </td>
               </tr>
 
@@ -99,7 +96,7 @@ export default function Companies() {
         </Helmet>
         <div className=" my-3 text-center row mx-2  ">
           <div className="col-md-6">
-            <NavLink to='/companies/add' className='btn btn-primary mb-1' >إضافة شركة</NavLink>
+            <NavLink to='/purchasescompanies/add' className='btn btn-primary mb-1' >إضافة شركة</NavLink>
           </div>
           <div className="col-md-4">
             <input type="text" className='form-control text-end mt-1' onChange={handleSearchChange} placeholder=' ...بحث عن شركة ' />

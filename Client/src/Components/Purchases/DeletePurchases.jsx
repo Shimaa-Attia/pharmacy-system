@@ -36,7 +36,7 @@ export default function DeletePurchases() {
         }
       });
       toast.success(data.message);
-      navigate('/purchases')
+     
     } catch (error) {
       toast.error('حدث خطأ ما، حاول مرة أخرى')
 
@@ -52,7 +52,7 @@ export default function DeletePurchases() {
       </Helmet>
       <h4 className='text-center alert alert-primary m-3 '>؟({purchasesData?.productName})هل أنت متأكد من حذف</h4>
       <div className="col-md-3 d-flex m-auto mt-3 ">
-        <NavLink to='/purchases' className='btn  btn-secondary form-control mx-2 '>رجوع</NavLink>
+  
         <button className='btn btn-danger form-control mx-2' onClick={deletePurchases} >حذف </button>
       </div>
 

@@ -25,8 +25,10 @@ export default function DeliveryOrders() {
             "Authorization": `Bearer ${accessToken}`
           }
         });
-
+console.log(searchResult);
         setOrders(searchResult.data.data);
+        setPagination(searchResult.data.meta); // Set pagination data
+        setCurrentPage(page); // Set current page
       } catch (error) {
         toast.error('حدث خطأ ما')
       } 

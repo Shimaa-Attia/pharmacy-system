@@ -1,11 +1,12 @@
+
 import axios from 'axios';
 import React, { useContext, useEffect, useState } from 'react'
-import { AuthContext } from '../../Context/AuthStore';
+import { AuthContext } from '../../../Context/AuthStore';
 import { NavLink } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import Pagination from '../Pagination/Pagination';
+import Pagination from '../../Pagination/Pagination';
 
-export default function Purchases() {
+export default function PurchasesUser() {
   let { accessToken } = useContext(AuthContext);
   let [pagination, setPagination] = useState(null);
   let [currentPage, setCurrentPage] = useState(1); // Current page state
@@ -182,13 +183,13 @@ export default function Purchases() {
                 <td data-label="نوع المنتج"  >{purch?.productType}</td>
                 <td data-label="تاريخ الإنشاء"  >{purch?.created_at}</td>
                 <td data-label="خيارات" style={{ minWidth: '150px' }} >
-                  <NavLink to={`/purchases/delete/${purch.id}`} >
+                  <NavLink to={`/purchasesuser/delete/${purch.id}`} >
                     <i className='bi bi-trash text-bg-danger p-1 mx-1 rounded'></i>
                   </NavLink>
-                  <NavLink to={`/purchases/edite/${purch.id}`} >
+                  <NavLink to={`/purchasesuser/edite/${purch.id}`} >
                     <i className='bi bi-pencil-square text-bg-primary mx-1  p-1 rounded'></i>
                   </NavLink>
-                  <NavLink to={`/purchases/details/${purch.id}`} >
+                  <NavLink to={`/purchasesuser/details/${purch.id}`} >
                     <i className='bi bi-list-ul text-bg-success mx-1  p-1 rounded'></i>
                   </NavLink>
                 </td>
@@ -228,7 +229,7 @@ export default function Purchases() {
       <div className='text-center m-3 fs-4 fw-bold  bg-secondary text-white rounded p-1 ' >المشتريات</div>
       <div className='row mx-2' dir='rtl'>
         <div className='col-md-4'>
-          <NavLink to='/shortcomings/add' className='btn btn-danger mb-2 '>إضافة النواقص</NavLink>
+          <NavLink to='/shortcomingspurchases/add' className='btn btn-danger mb-2 '>إضافة النواقص</NavLink>
         </div>
         <div className="col-md-4 mb-1">
         
