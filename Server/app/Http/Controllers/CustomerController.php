@@ -19,7 +19,7 @@ class CustomerController extends Controller
         if($request->noPaginate){
              $customers=Customer::all()->sortByDesc("created_at");
         }else{
-            $customers = Customer::orderBy("created_at","DESC")->paginate(10);
+            $customers = Customer::orderBy("created_at","DESC")->paginate(20);
         }
         return
             CustomerReource::collection($customers);
@@ -67,14 +67,14 @@ class CustomerController extends Controller
             "phones.*" => 'nullable|min:11|max:11|unique:custom_fields,value',
             "addresses.*" => 'nullable|min:5',
             "notes"=>'nullable|string',
-            'onHim'=>'numeric|nullable|gt:0',
-            'forHim'=>'numeric|nullable|gt:0',
+            'onHim'=>'numeric|nullable|gte:0',
+            'forHim'=>'numeric|nullable|gte:0',
             'customer_area'=>'nullable|string|min:5',
 
         ]);
         if ($validator->fails()) {
             return response()->json([
-                "message" => $validator->errors()], 400);
+                "message" => $validator->errors()], 409);
         }
 
 
@@ -130,8 +130,8 @@ class CustomerController extends Controller
             "phones.value.*" => 'nullable|regex:/^01[0125][0-9]{8}$/|unique:custom_fields,value,' . $id . ',customer_id',
             "addresses.value.*" => 'nullable|min:5',
             "notes"=>'nullable|string',
-            'onHim'=>'numeric|nullable|gt:0',
-            'forHim'=>'numeric|nullable|gt:0',
+            'onHim'=>'numeric|nullable|gte:0',
+            'forHim'=>'numeric|nullable|gte:0',
             'customer_area'=>'nullable|string|min:5',
 
         ]);
