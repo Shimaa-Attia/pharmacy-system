@@ -18,14 +18,11 @@ export default function AddOrder() {
     let [clients, setClients] = useState([]);
     let [orders, setOrders] = useState({
         user_code: '',
-        // customer_address: '',
-        // customer_phone: '',
         customer_code: '',
         total_ammount: '',
         cost: '',
         notes: '',
         sale_point_id: ''
-
     });
     let [userOptions, setUserOptions] = useState([]);
     let getUserData = async () => {
@@ -55,7 +52,7 @@ export default function AddOrder() {
     let [clientOptions, setClientOptions] = useState([]);
     let getClientData = async () => {
         try {
-            let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers`, {
+            let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers?noPaginate=1`, {
                 headers: {
                     "Authorization": `Bearer ${accessToken}`
                 }
@@ -69,33 +66,58 @@ export default function AddOrder() {
     useEffect(() => {
         getClientData()
     }, []);
-
+    //for dispaly area, onhim , forhim
+    let [customerCodeChanged, setCustomerCodeChanged] = useState(false);
+    useEffect(() => {
+        if (orders.customer_code !== '') {
+            setCustomerCodeChanged(true);
+        } else {
+            setCustomerCodeChanged(false);
+        }
+    }, [orders.customer_code]);
     useEffect(() => {
         let mapClient = clients?.map((client) => ({
-            value: `${client?.id}`,
-            label: `${client?.code}`
+            value: `${client?.code}`,
+            label: `${client?.code}`,
+            id:`${client.id}`,
+            onHim:`${client.onHim}`,
+            forHim:`${client.forHim}`,
+            customer_area:`${client.customer_area}`
         }));
         setClientOptions(mapClient);
+        
     }, [clients]);
-    //get contac info (phones and adresess)
-    // let [contacts, setContacts] = useState([]);
+
     // useEffect(() => {
-    //     if (orders.customer_id === '') {
+    //     if (orders.customer_code === '') {
     //         return;
     //     } else {
-    //         getContactValue(orders.customer_id);
+    //         getContactValue(orders.customer_code);
     //     }
+    // }, [orders.customer_code]);
 
-    // }, [orders.customer_id]);
+
+    // get contac info (phones and adresess)
+    // let [contacts, setContacts] = useState([]);
     // let getContactValue = async (id) => {
     //     let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers/contact/${id}`, {
     //         headers: {
     //             "Authorization": `Bearer ${accessToken}`
     //         }
     //     });
-
+    //     // console.log(data);
     //     setContacts(data);
     // };
+    // useEffect(() => {
+    //     if (orders.customer_code === '') {
+    //         return;
+    //     } else {
+    //         getContactValue(orders.customer_code);
+    //     }
+    // }, [orders.customer_code]);
+
+
+let [customerData , setCustomerData] = useState([]);
     let getSelectedUser = (selectedOption) => {
         setOrders({
             ...orders,
@@ -107,13 +129,13 @@ export default function AddOrder() {
             ...orders,
             customer_code: selectedOption?.value,
         });
+        setCustomerData(selectedOption);
     };
 
     let getInputValue = (event) => {
         let myOrders = { ...orders }; //deep copy
-        myOrders[event?.target?.name] = event?.target?.value;
+        myOrders[event.target.name] = event.target.value;
         setOrders(myOrders);
-
     };
 
     let sendOrderDataToApi = async () => {
@@ -126,31 +148,36 @@ export default function AddOrder() {
                 position: 'top-center'
             });
             setIsLoading(false);
+            formRef.current.reset();
+            userSelectRef.current.clearValue();
+            clientSelectRef.current.clearValue();
             setOrders({
                 user_code: '',
                 customer_code: '',
                 total_ammount: '',
+                customer_area:'',
                 cost: '',
                 notes: '',
                 sale_point_id: ''
-
             })
-            formRef.current.reset();
-            userSelectRef.current.clearValue();
-            clientSelectRef.current.clearValue();
         }).catch((errors) => {
             setIsLoading(false);
-            const errorList = errors?.response?.data?.message;
-            if (errorList !== undefined) {
-                Object.keys(errorList)?.map((err) => {
-                    errorList[err]?.map((err) => {
-                        toast.error(err);
-                    })
-                });
-
-            } else {
-                toast.error("حدث خطأ ما");
+            try {
+                const errorList = errors?.response?.data?.message;
+                if (errorList !== undefined) {
+                    Object.keys(errorList)?.map((err) => {
+                        errorList[err]?.map((err) => {
+                            toast.error(err);
+                        })
+                    });
+    
+                } else {
+                    toast.error("حدث خطأ ما");
+                }
+            } catch (error) {
+                toast.error('حدث خطأ ما')
             }
+         
         });
     };
     let validateOrderForm = () => {
@@ -177,6 +204,7 @@ export default function AddOrder() {
                 'string.empty': 'نقطة البيع مطلوبة',
                 'any.required': 'نقطة البيع مطلوبة',
             }),
+            customer_area:Joi.string().empty(''),
             notes: Joi.string().empty(''),
         });
         return schema.validate(orders, { abortEarly: false });
@@ -188,7 +216,7 @@ export default function AddOrder() {
         let validation = validateOrderForm();
         if (!validation.error) {
             sendOrderDataToApi();
-       
+
         } else {
             setIsLoading(false);
             try {
@@ -230,7 +258,7 @@ export default function AddOrder() {
                         <div className="col-md-4">
                             <label htmlFor="user_code" className='form-label' >كود الموظف   </label>
                             <Select
-                              ref={userSelectRef}
+                                ref={userSelectRef}
                                 name="user_code"
                                 isClearable
                                 options={userOptions}
@@ -243,7 +271,7 @@ export default function AddOrder() {
                         <div className="col-md-4">
                             <label htmlFor="customer_code" className='form-label'>كود العميل  </label>
                             <CreatableSelect
-                              ref={clientSelectRef}
+                                ref={clientSelectRef}
                                 name="customer_code"
                                 isClearable
                                 options={clientOptions}
@@ -254,6 +282,31 @@ export default function AddOrder() {
 
                             />
                         </div>
+                        {customerCodeChanged && <div className="col-md-4 bg-danger-subtle  p-2 rounded">
+                            {customerData?.onHim ? (
+                                <>
+                                    <div>عليه: {customerData?.onHim !== 'null' ? customerData?.onHim : 'لا يوجد'}</div>
+                                    <div>له: {customerData?.forHim !== 'null' ? customerData?.forHim : 'لا يوجد'}</div>
+                                </>
+                            ) : (
+                                <div className="">
+                                    <div className="bg-danger-subtle  p-2 rounded ">لا يوجد  </div>
+                                </div>
+                            )}
+                        </div>}
+                   
+
+
+                        {/* {contacts.addresses &&
+                            <div className="col-md-4">
+                                { contacts.addresses.map((address) => <div className='bg-danger text-white p-2 rounded mt-4' key={address.id}>
+                                    {address.value}
+                                </div> )}
+                            </div>} */}
+                        {/* <div className="col-md-4">
+                            <label htmlFor="customer_area" className='form-label'>منطقة العميل</label>
+                            <input type="text" className='form-control' name="customer_area" id="customer_area" onChange={getInputValue} />
+                        </div> */}
                         {/* <div className="col-md-4">
                             <label htmlFor="customer_phone" className='form-label'>أرقام الهواتف للعميل</label>
                             <select name="customer_phone" defaultValue={0} className='form-control ' id="customer_phone"
@@ -261,16 +314,8 @@ export default function AddOrder() {
                                 <option value={0} hidden disabled>اختار</option>
                                 {contacts?.phones ? contacts?.phones.map((phone) => <option key={phone.id} value={phone.value} > {phone.value}</option>) : null}
                             </select>
-                        </div>
-                        <div className="col-md-4">
-                            <label htmlFor="customer_address" className='form-label'>عناوين العميل</label>
-                            <select name="customer_address" defaultValue={0} className='form-control ' id="customer_address"
-                                onChange={getInputValue}>
-                                <option value={0} hidden disabled>اختار</option>
-                                {contacts?.addresses ? contacts?.addresses.map((address) => <option key={address.id} value={address.value} > {address.value}</option>) : null}
-
-                            </select>
                         </div> */}
+
                         <div className="col-md-4">
                             <label htmlFor="sale_point_id" className='form-label'>نقطة البيع </label>
                             <select name="sale_point_id" defaultValue={0} className='form-control' id="sale_point_id"

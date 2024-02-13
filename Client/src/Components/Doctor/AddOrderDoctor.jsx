@@ -25,7 +25,7 @@ export default function AddOrderDoctor() {
     let [clientOptions, setClientOptions] = useState([]);
     let getClientData = async () => {
         try {
-            let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers`, {
+            let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers?noPaginate=1`, {
                 headers: {
                     "Authorization": `Bearer ${accessToken}`
                 }
@@ -44,7 +44,9 @@ export default function AddOrderDoctor() {
         try {
             let mapClient = clients?.map((client) => ({
                 value: `${client.code}`,
-                label: `${client.code}`
+                label: `${client.code}`,
+                onHim: `${client.onHim}`,
+                forHim: `${client.forHim}`,
             }));
             setClientOptions(mapClient);
         } catch (error) {
@@ -52,14 +54,23 @@ export default function AddOrderDoctor() {
         }
     }, [clients]);
 
-
+    let [customerData, setCustomerData] = useState([]);
     let getSelectedClient = (selectedOption) => {
         setOrders({
             ...orders,
             customer_code: selectedOption?.value,
         });
+        setCustomerData(selectedOption)
     };
-
+   //for dispaly  onhim , forhim
+   let [customerCodeChanged, setCustomerCodeChanged] = useState(false);
+   useEffect(() => {
+       if (orders.customer_code !== '') {
+           setCustomerCodeChanged(true);
+       } else {
+           setCustomerCodeChanged(false);
+       }
+   }, [orders.customer_code]);
     let [contacts, setContacts] = useState([]);
     useEffect(() => {
         if (orders.customer_code === '') {
@@ -96,6 +107,13 @@ export default function AddOrderDoctor() {
             setIsLoading(false);
             formRef.current.reset();
             clientSelectRef.current.clearValue();
+            setOrders({
+                customer_code: '',
+                total_ammount: '',
+                // cost: '',
+                notes: '',
+                sale_point_id: ''
+            })
         }).catch((errors) => {
             setIsLoading(false);
             const errorList = errors?.response?.data?.message;
@@ -191,7 +209,18 @@ export default function AddOrderDoctor() {
                                 placeholder="بحث عن عميل..."
                             />
                         </div>
-
+                        {customerCodeChanged && <div className="col-md-4 bg-danger-subtle  p-2 rounded">
+                            {customerData?.onHim ? (
+                                <>
+                                    <div>عليه: {customerData?.onHim !== 'null' ? customerData?.onHim : 'لا يوجد'}</div>
+                                    <div>له: {customerData?.forHim !== 'null' ? customerData?.forHim : 'لا يوجد'}</div>
+                                </>
+                            ) : (
+                                <div className="">
+                                    <div className="bg-danger-subtle  p-2 rounded ">لا يوجد  </div>
+                                </div>
+                            )}
+                        </div>}
                         <div className="col-md-4">
                             <label htmlFor="sale_point_id" className='form-label'>نقطة البيع </label>
                             <select name="sale_point_id" defaultValue={0} className='form-control' id="sale_point_id"

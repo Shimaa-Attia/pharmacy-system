@@ -23,18 +23,17 @@ export default function DoctorNavbar() {
 
             {userData ? <nav className="navbar navbar-expand-lg bg-primary">
                 <div className="container">
-                    <div className='dropdown'>
-                        <a className="nav-link" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i className="bi bi-person-circle text-white fs-3"></i>
-                        </a>
-                        <ul className="dropdown-menu">
 
-                            <NavLink to='/' onClick={logout} className="dropdown-item " > تسجيل خروج</NavLink>
-                        </ul>
-
-                    </div>
-                    <div className='ms-2 '>
-                        <p className=' text-white fw-bold fs-6'>{userName}</p>
+                    <div className="d-flex" >
+                        <div className='dropdown'>
+                            <a className="nav-link fs-3 " data-bs-toggle="dropdown" aria-expanded="false" style={{ lineHeight: 'px' }}>
+                                <i className="bi bi-person-circle text-white "></i>
+                            </a>
+                            <ul className="dropdown-menu">
+                                <li onClick={logout}><a className="dropdown-item " > تسجيل خروج</a></li>
+                            </ul>
+                        </div>
+                        <span className='text-white mt-1 ms-2 fs-5 d-inline-block' >{userName}</span>
                     </div>
                     <button className="navbar-toggler text-white mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span className="navbar-toggler-icon  " />

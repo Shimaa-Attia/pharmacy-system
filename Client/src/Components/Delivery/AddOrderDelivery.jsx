@@ -11,9 +11,8 @@ import CreatableSelect from 'react-select/creatable';
 export default function AddOrderDelivery() {
     let { accessToken } = useContext(AuthContext);
     //selcting form inputs and selects to reset the form after submtion
-    let formInputs = document.querySelectorAll('form input');
-    let formSelects = document.querySelectorAll('form select');
-    let textarea = document.querySelector('form textarea');
+    const formRef = useRef(null);
+    const clientSelectRef = useRef(null);
     let [isLoading, setIsLoading] = useState(false);
     let [clients, setClients] = useState([]);
     let [users, setUsers] = useState([]);
@@ -30,7 +29,7 @@ export default function AddOrderDelivery() {
     //get client data to put it in slecte options
     let getClientData = async () => {
         try {
-            let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers`, {
+            let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers?noPaginate=1`, {
                 headers: {
                     "Authorization": `Bearer ${accessToken}`
                 }
@@ -47,17 +46,32 @@ export default function AddOrderDelivery() {
     useEffect(() => {
         let mapClient = clients?.map((client) => ({
             value: `${client.code}`,
-            label: `${client.code}`
+            label: `${client.code}`,
+            onHim: `${client.onHim}`,
+            forHim: `${client.forHim}`,
         }));
         setClientOptions(mapClient);
     }, [clients]);
+    //get the data of the selected clients to display on and for him
+    let [customerData, setCustomerData] = useState([]);
     // get the value of selcted option in  the react select and put it in the orders
+
     let getSelectedClient = (selectedOption) => {
         setOrders({
             ...orders,
             customer_code: selectedOption?.value
         });
+        setCustomerData(selectedOption)
     };
+    //for dispaly  onhim , forhim
+    let [customerCodeChanged, setCustomerCodeChanged] = useState(false);
+    useEffect(() => {
+        if (orders.customer_code !== '') {
+            setCustomerCodeChanged(true);
+        } else {
+            setCustomerCodeChanged(false);
+        }
+    }, [orders.customer_code]);
     //get users data to find the id of user to use it in the path to go back
     let getUserData = async () => {
         try {
@@ -111,13 +125,8 @@ export default function AddOrderDelivery() {
                     position: 'top-center'
                 });
                 setIsLoading(false);
-                formInputs.forEach((el) => {
-                    el.value = '';
-                });
-                formSelects.forEach((el) => {
-                    el.selectedIndex = '0';
-                });
-                textarea.value = '';
+                formRef.current.reset();
+                clientSelectRef.current.clearValue();
                 setOrders({
                     customer_code: '',
                     total_ammount: '',
@@ -208,12 +217,13 @@ export default function AddOrderDelivery() {
             </Helmet>
             <h3 className='alert alert-primary text-center mx-5 my-2  fw-bold'>إضافة أوردر </h3>
             <div className="mx-5 p-3 rounded rounded-3 bg-white">
-                <form onSubmit={submitOrderForm} >
+                <form ref={formRef} onSubmit={submitOrderForm} >
                     <div className="row gy-3">
 
                         <div className="col-md-4">
                             <label htmlFor="customer_code" className='form-label'>كود العميل  </label>
                             <CreatableSelect
+                                ref={clientSelectRef}
                                 name="customer_code"
                                 isClearable
                                 options={clientOptions}
@@ -223,6 +233,18 @@ export default function AddOrderDelivery() {
                                 placeholder="بحث عن عميل..."
                             />
                         </div>
+                        {customerCodeChanged && <div className="col-md-4 bg-danger-subtle  p-2 rounded">
+                            {customerData?.onHim ? (
+                                <>
+                                    <div>عليه: {customerData?.onHim !== 'null' ? customerData?.onHim : 'لا يوجد'}</div>
+                                    <div>له: {customerData?.forHim !== 'null' ? customerData?.forHim : 'لا يوجد'}</div>
+                                </>
+                            ) : (
+                                <div className="">
+                                    <div className="bg-danger-subtle  p-2 rounded ">لا يوجد  </div>
+                                </div>
+                            )}
+                        </div>}
 
                         <div className="col-md-4">
                             <label htmlFor="sale_point_id" className='form-label'>نقطة البيع </label>

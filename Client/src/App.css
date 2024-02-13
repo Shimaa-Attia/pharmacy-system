@@ -56,7 +56,8 @@
   table.table-responsive-list td {
     display: block;
     text-align: left;
-    border-bottom: 1px solid rgb(255 255 255 / 33%)
+    border-bottom: 1px solid rgb(255 255 255 / 33%);
+    min-height: 42px;
   }
 
   table.table-responsive-list td:last-child {
