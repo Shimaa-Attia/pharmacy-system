@@ -57,10 +57,10 @@ export default function Companies() {
             <tbody>
               {companies.map((company, index) => <tr key={index}>
                 <td data-label="اسم الشركة">{company?.name}</td>
-                <td data-label="هاتف الشركة">{company?.phoneNumber ? company.phoneNumber : '...'}</td>
-                <td data-label="البطاقة الضريبية">{company?.TaxCard ? company.TaxCard : '...'}</td>
-                <td data-label="تعليمات الإدخال">{company?.entryInstructions ? company.entryInstructions : '...'}</td>
-                <td data-label="ملاحظات">{company?.notes ? company.notes : '...'}</td>
+                <td data-label="هاتف الشركة">{company?.phoneNumber}</td>
+                <td data-label="البطاقة الضريبية">{company?.TaxCard }</td>
+                <td data-label="تعليمات الإدخال">{company?.entryInstructions }</td>
+                <td data-label="ملاحظات">{company?.notes }</td>
                 <td data-label="خيارات" >
             
                   <NavLink to={`/companies/edite/${company.id}`} >

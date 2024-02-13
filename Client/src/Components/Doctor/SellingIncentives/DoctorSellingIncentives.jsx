@@ -62,11 +62,11 @@ export default function DoctorSellingIncentives() {
                         <tbody>
                             {sellingIncentives.map((incentive) => <tr key={incentive.id}>
                                 <td data-label="اسم المنتج">{incentive?.productName}</td>
-                                <td data-label="استخدامه">{incentive?.usage ? incentive?.usage : '...'}</td>
-                                <td data-label="التركيب">{incentive?.composition ? incentive?.composition : '...'}</td>
-                                <td data-label="السبب">{incentive?.incentiveReason ? incentive?.incentiveReason.name : '...'}</td>
-                                <td data-label="نسبة الحافز">{incentive?.incentivesPercentatge ? incentive?.incentivesPercentatge : '...'}</td>
-                                <td data-label="ملاحظات">{incentive?.notes ? incentive.notes : '...'}</td>
+                                <td data-label="استخدامه">{incentive?.usage }</td>
+                                <td data-label="التركيب">{incentive?.composition }</td>
+                                <td data-label="السبب">{incentive?.incentiveReason?.name }</td>
+                                <td data-label="نسبة الحافز">{incentive?.incentivesPercentatge}</td>
+                                <td data-label="ملاحظات">{incentive?.notes}</td>
                                 {/* <td data-label="خيارات" style={{ minWidth: '90px' }}>
                                     <NavLink to={`/sellingincentives/delete/${incentive.id}`}>
                                         <i className='bi bi-trash text-bg-danger p-1 mx-1  rounded'></i>

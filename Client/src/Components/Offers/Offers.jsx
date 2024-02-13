@@ -58,9 +58,9 @@ export default function Offers() {
                         <tbody>
                             {offers.map((off) => <tr key={off.id}>
                                 <td data-label="اسم المنتج">{off?.productName}</td>
-                                <td data-label="العرض">{off?.offer ? off?.offer : '...'}</td>
-                                <td data-label="تاريخ انتهاء العرض">{off?.offer_endDate ? off?.offer_endDate : '...'}</td>
-                                <td data-label="ملاحظات">{off?.notes ? off.notes : '...'}</td>
+                                <td data-label="العرض">{off?.offer}</td>
+                                <td data-label="تاريخ انتهاء العرض">{off?.offer_endDate }</td>
+                                <td data-label="ملاحظات">{off?.notes }</td>
                                 <td data-label="خيارات" style={{ minWidth: '90px' }}>
                                     <NavLink to={`/offers/delete/${off.id}`}>
                                         <i className='bi bi-trash text-bg-danger p-1 mx-1  rounded'></i>
