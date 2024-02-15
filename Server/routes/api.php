@@ -246,8 +246,11 @@ Route::middleware(['auth:api'])->group(function(){
         // Route::get('/archive',[CompanyController::class,'archive']);
         // Route::post('/restore/{id}',[CompanyController::class,'restore']);
         // Route::delete('/deleteArchive/{id}',[CompanyController::class,'deleteArchive']);
-        //  //search
+         //search
          Route::get('/search/{key}',[CompanyController::class,'search']);
+         //updateCheckBox
+         Route::put('/updateCheckBox/{id}',[CompanyController::class,'updateCheckBox']);
+
 
     });
 

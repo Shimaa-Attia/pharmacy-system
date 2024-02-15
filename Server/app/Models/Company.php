@@ -14,6 +14,7 @@ class Company extends Model
        'phoneNumber',
        'entryInstructions',
        'TaxCard',
-       'notes'
+       'notes',
+       'checkBox'
     ];
 }

@@ -143,4 +143,36 @@ class CompanyController extends Controller
         ->orderBy('created_at', 'DESC')->get();
         return $companies;
     }
+
+    public function updateCheckBox($id)
+    {
+         if($id == "all"){
+            Company::where('checkBox', true)->update(['checkBox' => false]);
+            return response()->json([
+                "message" => "تم التحديث"
+            ]);
+        }else{
+            $company = Company::find($id);
+            if ($company == null) {
+                return response()->json([
+                    "message" => "شركة غير موجودة"
+                ], 404);
+            }
+
+            $update = $company->update([
+                "checkBox" => !$company->checkBox
+
+            ]);
+            if ($update) {
+                return response()->json([
+                    "message" => "تم التحديث"
+                ]);
+            } else {
+                return response()->json([
+                    "message" => "حدث خطأ ما"
+                ], 409);
+            }
+        }
+
+    }
 }
