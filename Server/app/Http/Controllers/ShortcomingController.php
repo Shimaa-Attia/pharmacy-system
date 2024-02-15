@@ -32,7 +32,11 @@ class ShortcomingController extends Controller
                             })->orWhereHas('status', function ($query)  {
                                 $query->where('name','غير متوفر');
                             });
-                    })->orderBy("created_at","DESC")->paginate(20);
+                    })
+                    ->whereHas('creatorUser', function ($query)  {
+                        $query->where('branch_id',Auth::user()->branch_id);
+                    })
+                    ->orderBy("created_at","DESC")->paginate(20);
         return ShortcomingResource::collection($shortcomings);
     }
 

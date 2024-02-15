@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AreaController;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -173,7 +174,7 @@ Route::middleware(['auth:api'])->group(function(){
 
 
     });
-    Route::group(['prefix'=>'rules','as'=>'rules.'],function(){
+    Route::group(['prefix'=>'rules','as'=>'rules'],function(){
         //select all
         Route::get('/{type}',[RuleController::class,'all']);
         //select one
@@ -193,7 +194,7 @@ Route::middleware(['auth:api'])->group(function(){
 
     });
 
-    Route::group(['prefix'=>'incentives','as'=>'incentives.'],function(){
+    Route::group(['prefix'=>'incentives','as'=>'incentives'],function(){
         //select all
         Route::get('/',[SellingIncentivesController::class,'all']);
         //select one
@@ -212,7 +213,7 @@ Route::middleware(['auth:api'])->group(function(){
 
     });
 
-    Route::group(['prefix'=>'offers','as'=>'offers.'],function(){
+    Route::group(['prefix'=>'offers','as'=>'offers'],function(){
         //select all
         Route::get('/',[OfferController::class,'all']);
         //select one
@@ -231,7 +232,7 @@ Route::middleware(['auth:api'])->group(function(){
 
     });
 
-    Route::group(['prefix'=>'companies','as'=>'companies.'],function(){
+    Route::group(['prefix'=>'companies','as'=>'companies'],function(){
         //select all
         Route::get('/',[CompanyController::class,'all']);
         //select one
@@ -250,7 +251,7 @@ Route::middleware(['auth:api'])->group(function(){
 
     });
 
-    Route::group(['prefix'=>'notifications','as'=>'notifications.'],function(){
+    Route::group(['prefix'=>'notifications','as'=>'notifications'],function(){
         //select all
         Route::get('/{status}',[NotificationController::class,'customAll']);
         //select one
@@ -273,6 +274,24 @@ Route::middleware(['auth:api'])->group(function(){
 
     });
 
+    Route::group(['prefix'=>'areas','as'=>'areas'],function(){
+        //select all
+        Route::get('/',[AreaController::class,'all']);
+        //select one
+        Route::get('/show/{id}',[AreaController::class,'show']);
+        //create
+        Route::post('/',[AreaController::class,'create']);
+        //update
+        Route::put('/{id}',[AreaController::class,'update']);
+        // soft delete
+        Route::delete('/delete/{id}',[AreaController::class,'destroy']);
+        Route::get('/archive',[AreaController::class,'archive']);
+        Route::post('/restore/{id}',[OfferController::class,'restore']);
+        Route::delete('/deleteArchive/{id}',[AreaController::class,'deleteArchive']);
+         //search
+         Route::get('/search/{key}',[AreaController::class,'search']);
+
+    });
 
 
 });

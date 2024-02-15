@@ -26,4 +26,7 @@ class Customer extends Model
         public function customFields(){
             return $this->hasMany(CustomField::class,'customer_id');
     }
+    public function areas(){
+        return $this->belongsToMany(Area::class);
+    }
 }

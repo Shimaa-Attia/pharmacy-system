@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\CustomProperties;
 use App\Models\InventoryProduct;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class InventoryProductController extends Controller
@@ -20,7 +21,8 @@ class InventoryProductController extends Controller
             "message"=>"incorrect route"
             ],404);
         }
-        $inventoryProducts = InventoryProduct::with(['status'])
+        $inventoryProducts = InventoryProduct::with(['status','branch'])
+        ->where('branch_id',Auth::user()->branch_id)
         ->WhereHas('status', function ($query) use ($status) {
             $query->where('name', $status);
 
@@ -52,6 +54,9 @@ class InventoryProductController extends Controller
         }
         $status= CustomProperties::where('name','لم يتم جرده')->first('id');
         $request->request->add(['status_id' =>$status->id]);
+        $branch_id = Auth::user()->branch_id;
+        $request->request->add(['branch_id' =>$branch_id]);
+
         InventoryProduct::create($request->all());
 
         return response()->json([
@@ -95,5 +100,7 @@ class InventoryProductController extends Controller
             "message"=>"تم التعديل"
         ]);
     }
+
+
 
 }

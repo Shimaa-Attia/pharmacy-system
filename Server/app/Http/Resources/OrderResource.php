@@ -28,6 +28,7 @@ class OrderResource extends JsonResource
             'payed_at'=> optional($this->payed_at)->format('Y/m/d h:i A') ,
             'isPaid_theOtherSystem'=>boolval($this->isPaid_theOtherSystem),
             'customer'=>$this->customer,
+            'area'=>$this->area,
             'customer_phone'=>$this->customer_phone,
             'customer_address'=>$this->customer_address,
             'delivery_man'=>$this->user,

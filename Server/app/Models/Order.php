@@ -25,7 +25,8 @@ class Order extends Model
         'user_id',
         'sale_point_id',
         'isPaid_theOtherSystem',
-        'payed_at'
+        'payed_at',
+        'area_id'
     ];
 
     public function customer(){
@@ -36,5 +37,8 @@ class Order extends Model
     }
     public function sale_point(){
         return $this->belongsTo(Sale_point::class,'sale_point_id');
+    }
+    public function area(){
+        return $this->belongsTo(Area::class,'area_id');
     }
 }

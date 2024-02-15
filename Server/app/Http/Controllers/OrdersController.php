@@ -50,22 +50,24 @@ class OrdersController extends Controller
                 'customer_code' => 'required',
                 'user_code' => 'required|exists:users,code',
                 'sale_point_id' => 'required|exists:sale_points,id',
-                'customer_area'=>'nullable|string|min:5'
+                'notes'=>'nullable|string',
+                "area_id"=>'nullable|exists:areas,id'
 
             ]);
         }else{
-        $validator = Validator::make($request->all(), [
-            'cost' => 'numeric|nullable|gt:0',
-            'total_ammount' => 'numeric|required|gte:cost',
-            'customer_code' => 'required',
-            //    'customer_phone'=>'required|regex:/^01[0125][0-9]{8}$/|exists:custom_fields,value',
-            //    'customer_address'=>'required|exists:custom_fields,value',
-            'customer_area'=>'nullable|string|min:5',
-            'user_code' => 'required|exists:users,code',
-            'sale_point_id' => 'required|exists:sale_points,id',
-            'notes'=>'nullable|string'
-        ]);
-    }
+            $validator = Validator::make($request->all(), [
+                'cost' => 'numeric|nullable|gt:0',
+                'total_ammount' => 'numeric|required|gte:cost',
+                'customer_code' => 'required',
+                //    'customer_phone'=>'required|regex:/^01[0125][0-9]{8}$/|exists:custom_fields,value',
+                //    'customer_address'=>'required|exists:custom_fields,value',
+                'user_code' => 'required|exists:users,code',
+                'sale_point_id' => 'required|exists:sale_points,id',
+                'notes'=>'nullable|string',
+                "area_id"=>'nullable|exists:areas,id'
+
+            ]);
+        }
         if ($validator->fails()) {
             return response()->json([
                 "message" => $validator->errors()], 409);
@@ -74,28 +76,16 @@ class OrdersController extends Controller
 
         $user = User::where('code', $request->user_code)->first('id');
         $customer = Customer::where('code', $request->customer_code)->first('id');
-
         // create customer if not exist
         if (!$customer) {
             $customer = Customer::create([
                 "code" => $request->customer_code,
                 "name" => 'غير محدد',
-                "customer_area"=>$request->customer_area
             ]);
-        }else{
-           if($request->customer_area)
-                $customer->update([
-                    "customer_area"=>$request->customer_area
-                ]);
         }
-        // if ($request->has("customer_area")) {
-        //     foreach($request->customer_area as $address){
-        //         CustomField::updateOrCreate(
-        //             ['id' =>  $address['id']??null],
-        //             ['value' => $address['value'], 'name' =>'address', "customer_id" => $customer->id]
-        //         );
-        //     }
-        // }
+        if($request->area_id){
+          $customer->areas()->syncWithoutDetaching($request->area_id);
+        }
 
 
         //create
@@ -106,7 +96,8 @@ class OrdersController extends Controller
             "notes" => $request->notes,
             "customer_id" => $customer->id,
             "user_id" => $user->id,
-            "sale_point_id" => $request->sale_point_id
+            "sale_point_id" => $request->sale_point_id,
+            "area_id"=>$request->area_id
         ]);
 
 
@@ -134,7 +125,8 @@ class OrdersController extends Controller
                 'customer_code' => 'nullable',
                 'user_code' => 'nullable|exists:users,code',
                 'customer_area'=>'nullable|string|min:5',
-                'sale_point_id' => 'nullable|exists:sale_points,id'
+                'sale_point_id' => 'nullable|exists:sale_points,id',
+                "area_id"=>'nullable|exists:areas,id'
             ]);
         }else{
             $validator = Validator::make($request->all(), [
@@ -144,7 +136,8 @@ class OrdersController extends Controller
                 'customer_code' => 'nullable',
                 'user_code' => 'nullable|exists:users,code',
                 'customer_area'=>'nullable|string|min:5',
-                'sale_point_id' => 'nullable|exists:sale_points,id'
+                'sale_point_id' => 'nullable|exists:sale_points,id',
+                "area_id"=>'nullable|exists:areas,id'
             ]);
         }
         if ($validator->fails()) {
@@ -156,7 +149,7 @@ class OrdersController extends Controller
             $user = User::where('code', $request->user_code)->first('id');
             $request->request->add(['user_id'=>$user->id]);
         }
-
+        $customer = $order->customer;
         if($request->customer_code){
             $customer = Customer::where('code', $request->customer_code)->first('id');
             // create customer if not exist
@@ -164,24 +157,12 @@ class OrdersController extends Controller
                 $customer = Customer::create([
                     "code" => $request->customer_code,
                     "name" => 'غير محدد',
-                    "customer_area"=>$request->customer_area
-                ]);
-            }else{
-                if($request->customer_area)
-                $customer->update([
-                    "customer_area"=>$request->customer_area
                 ]);
             }
             $request->request->add(['customer_id'=>$customer->id]);
-
-            // if ($request->has("customer_area")) {
-            //     foreach($request->customer_area as $address){
-            //         CustomField::updateOrCreate(
-            //             ['id' =>  $address['id']??null],
-            //             ['value' => $address['value'], 'name' =>'address', "customer_id" => $customer->id]
-            //         );
-            //     }
-            // }
+        }
+        if($request->area_id){
+            $customer->areas()->syncWithoutDetaching($request->area_id);
         }
         //update
 

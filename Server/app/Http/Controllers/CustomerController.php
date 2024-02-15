@@ -2,14 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use App\Models\Customer;
+use App\Models\CustomField;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Http\Resources\CustomerReource;
-use App\Models\CustomField;
-use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Exists;
+
+use function PHPUnit\Framework\isEmpty;
 
 class CustomerController extends Controller
 {
@@ -70,6 +74,8 @@ class CustomerController extends Controller
             'onHim'=>'numeric|nullable|gte:0',
             'forHim'=>'numeric|nullable|gte:0',
             'customer_area'=>'nullable|string|min:5',
+            'areas'=>'nullable|array',
+            'areas.*'=>'nullable|exists:areas,id'
 
         ]);
         if ($validator->fails()) {
@@ -108,7 +114,9 @@ class CustomerController extends Controller
                     ]);
                 }
             }
-
+            if($request->has('areas')){
+                $customer->areas()->attach( $request->areas);
+            }
 
         });
         return response()->json([
@@ -132,7 +140,9 @@ class CustomerController extends Controller
             "notes"=>'nullable|string',
             'onHim'=>'numeric|nullable|gte:0',
             'forHim'=>'numeric|nullable|gte:0',
-            'customer_area'=>'nullable|string|min:5',
+            // 'customer_area'=>'nullable|string|min:5',
+            'areas'=>'nullable|array',
+            'areas.*'=>'nullable|exists:areas,id'
 
         ]);
         if ($validator->fails()) {
@@ -146,19 +156,42 @@ class CustomerController extends Controller
             $customer->update($request->all());
             if($request->phones){
                 foreach ($request->phones as $phone) {
-                    CustomField::where("id", $phone["id"])->update([
-                        "value" => $phone['value']
-                    ]);
+                    if(isset($phone["id"])){
+
+                        CustomField::where("id", $phone["id"])->update([
+                            "value" => $phone['value']
+                        ]);
+                    }else{
+                        CustomField::create([
+                            "name"=>"phone",
+                            "value"=> $phone['value'],
+                            "customer_id"=>$customer->id
+                        ]);
+                    }
+
                 }
             }
             if($request->addresses){
                 foreach ($request->addresses as $address) {
-                    CustomField::where("id", $address["id"])->update([
-                        "value" => $address['value']
-                    ]);
+                    if(isset($address["id"])){
+
+                       CustomField::where("id", $address["id"])->update([
+                          "value" => $address['value']
+                      ]);
+                    }else{
+                        CustomField::create([
+                           "name"=>"address",
+                           "value"=> $address['value'],
+                           "customer_id"=>$customer->id
+                        ]);
+                    }
                 }
             }
+            if($request->areas){
 
+            $customer->areas()->sync($request->areas);
+            // $customer->areas()->syncWithoutDetaching( $request->areas,false);
+            }
         });
 
         return response()->json([
@@ -225,7 +258,7 @@ class CustomerController extends Controller
     public function search($key)
     {
         $customers = Customer::where('name', 'like', "%$key%")
-            ->OrWhere('code', 'like', "%$key%")
+            ->OrWhere('code', 'like', "$key")
             ->orWhereHas('customFields', function ($query) use ($key) {
                 $query->where('value', 'like', "%$key%");
             })
