@@ -97,6 +97,11 @@ class ShortcomingController extends Controller
                 "message" => "غير موجود"
             ], 404);
         }
+        if (empty($request->all())){
+            return response()->json([
+                "message" => "لا مدخلات",
+            ]);
+        }
         //validation
         $validator = Validator::make($request->all(), [
             'productName' => 'nullable|max:255',
@@ -112,6 +117,7 @@ class ShortcomingController extends Controller
                 "message" => $validator->errors()
                 ],409);
         }
+
         // $imageName=$shortcoming->productImage;
         if($request->image != null){ //check if there is image
             //delete old image
@@ -125,24 +131,15 @@ class ShortcomingController extends Controller
             // return($request->productImage);
         }
 
-
-
-        //update
-
-        // $shortcoming->update([
-        //     "productName" => $request->productName,
-        //     "productImage" => $imageName,
-        //     "clientInfo" =>$request->clientInfo,
-        //     "notes"=>$request->notes,
-        //     "isAvailable_inOtherBranch"=>$request->boolean('isAvailable_inOtherBranch'),
-        //     "productType"=>$request->productType,
-        // ]);
-        $shortcoming->update($request->all());
+      $update=  $shortcoming->update($request->all());
         //response
-        return response()->json([
-            "message" => "تم التعديل",
-            'shortcoming' => new  ShortcomingResource($shortcoming)
-        ]);
+        if($update){
+
+            return response()->json([
+                "message" => "تم التعديل",
+                'shortcoming' => new  ShortcomingResource($shortcoming)
+            ]);
+        }
     }
 
     public function updateStatus(Request $request, $id){
