@@ -218,7 +218,7 @@ export default function Purchases() {
                   </div>
                 </td>
 
-                <td data-label="متوفر منين" style={{ minWidth: '150px' }} >
+                <td data-label="متوفر منين" style={{ minWidth: '220px' }} >
                   <div>
                     <form onSubmit={(e) => submitComeFrom(e, purch.id)} >
                       <div className=" d-flex align-items-center">
