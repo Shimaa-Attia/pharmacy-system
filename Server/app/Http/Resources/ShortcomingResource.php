@@ -34,6 +34,7 @@ class ShortcomingResource extends JsonResource
             'creatorUser'=>$this->creatorUser,
             'updaterUser'=>$this->updaterUser,
             'status'=>$this->status,
+            'avillable_fromWhere'=>$this->avillable_fromWhere,
             'notes'=>$this->notes
         ];
     }
