@@ -88,6 +88,8 @@ import AddShortComingsPurchases from '../PurchasesUser.jsx/Purchases/AddShortCom
 import EditePurchasesUser from '../PurchasesUser.jsx/Purchases/EditePurchasesUser';
 import DeletePurchasesUser from '../PurchasesUser.jsx/Purchases/DeletePurchasesUser';
 import PurchasesUserDetails from '../PurchasesUser.jsx/Purchases/PurchasesUserDetails';
+import DoctorCustomerService from '../Doctor/CustomerService/DoctorCustomerService';
+import Areas from '../Areas/Areas';
 
 
 
@@ -149,6 +151,7 @@ function App() {
             <Route path='sellingincentives/delete/:id' element={<ProtectedRoute ><DeleteSellingIncentives /></ProtectedRoute>} ></Route>
             <Route path='sellingincentives/edite/:id' element={<ProtectedRoute ><EditeSellingIncentives /></ProtectedRoute>} ></Route>
             <Route path='reasonsofincentives' element={<ProtectedRoute ><ReasonsOfIncentives /></ProtectedRoute>} ></Route>
+            <Route path='/areas' element={<ProtectedRoute ><Areas /></ProtectedRoute>} ></Route>
 
   
           </Route>
@@ -191,6 +194,7 @@ function App() {
             <Route path='/doctorinventoryproducts/add' element={<ProtectedRoute><AddDoctorInventoryProducts /></ProtectedRoute>}></Route>
             <Route path='/doctorrules' element={<ProtectedRoute><DoctorRules /></ProtectedRoute>}></Route>
             <Route path='/doctorsellingincentives' element={<ProtectedRoute><DoctorSellingIncentives /></ProtectedRoute>}></Route>
+            <Route path='/doctorcustomerservice' element={<ProtectedRoute><DoctorCustomerService /></ProtectedRoute>}></Route>
 
           </Route>
           <Route path='*' element={<ProtectedRoute ><NotFound /></ProtectedRoute>}></Route>

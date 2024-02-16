@@ -20,7 +20,7 @@ export default function DeliveryOrders() {
     let searchResult;
     if (searchText !== undefined && searchText.trim().length > 0) {
       try {
-        searchResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/user/${id}?key=${searchText.trim()}`, {
+        searchResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/orders/user/${id}?key=${searchText.trim()}&page=${page}`, {
           headers: {
             "Authorization": `Bearer ${accessToken}`
           }

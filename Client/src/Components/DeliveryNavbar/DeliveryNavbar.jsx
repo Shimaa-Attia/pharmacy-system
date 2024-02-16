@@ -44,7 +44,7 @@ export default function DeliveryNavbar() {
                     <div className="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
                             <li className="nav-item">
-                                <NavLink className="nav-link  text-white fs-6 fw-bold " aria-current="page" to={`/deliveryrules`} >التعليمات</NavLink>
+                                <NavLink className="nav-link  text-white fs-6 fw-bold " aria-current="page" to={`/deliveryrules`} >قواعد العمل</NavLink>
                             </li>
                             <li className="nav-item">
                                 <NavLink className="nav-link  text-white fs-6 fw-bold " aria-current="page" to={`/deliveryOrders/${users.id}`} >الأوردرات</NavLink>

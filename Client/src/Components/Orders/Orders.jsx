@@ -162,7 +162,7 @@ export default function Orders() {
                   openModal()
                   setOrderId(order.id)
                 }} style={{ backgroundColor: '#2a55a3' }}></i></td>
-                <td data-label="خيارات" style={{ minWidth: '150px' }}>
+                <td data-label="خيارات" style={{ minWidth: '120px' }}>
                   <NavLink to={`/orders/delete/${order.id}`} >
                     <i className='bi bi-trash text-danger fs-5   '></i>
                   </NavLink>

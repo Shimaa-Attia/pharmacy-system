@@ -1,230 +1,138 @@
-
 import axios from 'axios';
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../../Context/AuthStore';
-import Joi from 'joi';
+
 
 export default function ReasonsOfIncentives() {
-    //Adding status
-    let { accessToken } = useContext(AuthContext);
-    let formInput = useRef()
-    let [reasons, setReasons] = useState({
-        name: ''
-    })
-    let getInputValue = (event) => {
-        let myReasons = { ...reasons };
-        myReasons[event?.target?.name] = event?.target?.value;
-        setReasons(myReasons);
-    }
-    let sendReasonsDataToApi = async () => {
-        await axios.post(`${process.env.REACT_APP_API_URL}/api/properties/incentiveReason`, reasons, {
-            headers: {
-                "Authorization": `Bearer ${accessToken}`
-            }
-        }).then((res) => {
-            toast.success(res.data.message);
-            formInput.current.reset()
+    const { accessToken } = useContext(AuthContext);
+    const formInput = useRef(null);
+    const [reasons, setReasons] = useState({ name: '' });
+    const [reasonsData, setReasonsData] = useState([]);
+    const [reasonId, setReasonId] = useState('');
+    const [editing, setEditing] = useState(false);
 
-        }).catch((errors) => {
-            const errorList = errors?.response?.data?.message;
-            if (errorList !== undefined) {
-                Object.keys(errorList)?.map((err) => {
-                    errorList[err]?.map((err) => {
-                        toast.error(err);
-                    })
-                });
-            } else {
-                toast.error("حدث خطأ ما");
-            }
-        })
-    };
-
-    let validateReasonsForm = () => {
-        const schema = Joi.object({
-            name: Joi.string().required(),
-        });
-        return schema.validate(reasons, { abortEarly: false });
-    };
-    let submitReasonsForm = () => {
-        let validation = validateReasonsForm();
-        if (!validation.error) {
-            sendReasonsDataToApi()
-            setReasons({
-                name: ''
-            })
-        } else {
-            try {
-                validation.error.details.map((err) => {
-                    toast.error(err.message);
-                })
-            } catch (e) {
-                toast.error("حدث خطأ ما");
-            }
-        }
-    };
-
-    //Show Reasons
-    let [reasonsData, setReasonsData] = useState([]);
-    let getReasonsData = async () => {
-        let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/properties/getCustomList/incentiveReason`, {
-            headers: {
-                "Authorization": `Bearer ${accessToken}`
-            }
-        });
-        setReasonsData(data)
-    }
     useEffect(() => {
-        getReasonsData()
+        getReasonsData();
     }, []);
 
-    let [reasonId, setReasonId] = useState('');
-    let showReasons = () => {
-        if (reasonsData.length > 0) {
-            return (
-                <div className='w-100 ' >
-                    {reasonsData.map((reason, index) => <div key={reason.id}>
-
-                        <div className={`row `}>
-                            <div className="col-md-8 d-flex ">
-                                <p className='bg-secondary-subtle p-1 ms-2 rounded' >السبب  </p>
-                                <p className='bg-body-secondary p-1 rounded'>{reason?.name}</p>
-                            </div>
-                            <div className="col-md-4 d-flex">
-                                <p>
-                                    <button className='btn btn-outline-danger btn-sm ms-3' onClick={() => { deleteReason(reason.id) }} ><i className='bi bi-trash'></i> حذف </button>
-                                </p>
-                                <p> <button className='btn btn-outline-primary btn-sm' onClick={() => {
-                                    getInputInfo(index)
-                                    setReasonId(reason.id)
-                                }}><i className='bi bi-pencil-square'></i> تعديل  </button></p>
-                            </div>
-
-                        </div>
-                    </div>)}
-
-                </div>
-            )
-        } else {
-            return (
-                <div className='h-75' >
-                    <div className=' d-flex justify-content-center h-100  align-items-center' >
-                        <i className='fa fa-spinner fa-spin fa-2x '></i>
-                    </div>
-                </div>
-            )
-        }
-    }
-
-    //delete reason
-    let deleteReason = async (reasId) => {
+    const getReasonsData = async () => {
         try {
-            let { data } = await axios.delete(`${process.env.REACT_APP_API_URL}/api/properties/delete/${reasId}`, {
+            const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/properties/getCustomList/incentiveReason`, {
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`
+                }
+            });
+            setReasonsData(data);
+        } catch (error) {
+            toast.error('حدث خطأ أثناء جلب البيانات');
+        }
+    };
+
+    const getInputValue = (event) => {
+        const { name, value } = event.target;
+        setReasons(prevState => ({ ...prevState, [name]: value }));
+    };
+
+    const submitReasonOrEditedReason = async (event) => {
+        event.preventDefault();
+        if (!reasons.name.trim()) {
+            toast.error("السبب مطلوب");
+            return;
+        }
+        try {
+            if (editing) {
+            let {data} =     await axios.put(`${process.env.REACT_APP_API_URL}/api/properties/${reasonId}`, reasons, {
+                    headers: {
+                        "Authorization": `Bearer ${accessToken}`
+                    }
+                });
+                toast.success(data.message);
+            } else {
+                let {data} =     await axios.post(`${process.env.REACT_APP_API_URL}/api/properties/incentiveReason`, reasons, {
+                    headers: {
+                        "Authorization": `Bearer ${accessToken}`
+                    }
+                });
+                toast.success(data.message);
+            }
+            setEditing(false);
+            setReasons({ name: '' });
+            formInput.current.reset();
+            getReasonsData();
+        } catch (error) {
+            toast.error('حدث خطأ أثناء العملية');
+        }
+    };
+
+    const handleEdit = (index) => {
+        const reason = reasonsData[index];
+        setReasons({ name: reason.name });
+        setReasonId(reason.id);
+        setEditing(true);
+    };
+
+    const deleteReason = async (reasonId) => {
+        try {
+         let {data} =    await axios.delete(`${process.env.REACT_APP_API_URL}/api/properties/delete/${reasonId}`, {
                 headers: {
                     "Authorization": `Bearer ${accessToken}`
                 }
             });
             toast.success(data.message);
-            getReasonsData()
+            getReasonsData();
         } catch (error) {
-            toast.error('حدث خطأ ما، حاول مرة أخرى')
+            toast.error('حدث خطأ أثناء العملية');
         }
     };
-
-    //Edite reason
-    let sendEditedReasonDataToApi = async (reasId) => {
-        await axios.put(`${process.env.REACT_APP_API_URL}/api/properties/${reasId}`, reasons, {
-            headers: {
-                "Authorization": `Bearer ${accessToken}`
-            }
-        }).then((res) => {
-            toast.success(res.data.message);
-            formInput.current.reset()
-        }).catch((errors) => {
-            const errorList = errors?.response?.data?.message;
-            if (errorList !== undefined) {
-                Object.keys(errorList)?.map((err) => {
-                    errorList[err]?.map((err) => {
-                        toast.error(err);
-                    })
-                });
-            } else {
-                toast.error("حدث خطأ ما");
-            }
-        })
-    };
-
-    let validateEditedReasonForm = () => {
-        const schema = Joi.object({
-            name: Joi.string().empty(''),
-        });
-        return schema.validate(reasons, { abortEarly: false });
-    };
-    let submitEditedReasonForm = () => {
-        let validation = validateEditedReasonForm();
-        if (!validation.error) {
-            sendEditedReasonDataToApi(reasonId);
-            setReasons({
-                name: ''
-            })
-        } else {
-            try {
-                validation.error.details.map((err) => {
-                    toast.error(err.message);
-                })
-            } catch (e) {
-                toast.error("حدث خطأ ما");
-            }
-        }
-    };
-    let mainBtn = document.getElementById('mainBtn');
-    let submitReasonOrEditedReason = (e) => {
-        e.preventDefault();
-        if (mainBtn.innerHTML === 'إضافة') {
-            submitReasonsForm()
-            getReasonsData()
-        } else {
-            submitEditedReasonForm()
-            getReasonsData()
-            mainBtn.innerHTML = 'إضافة'
-            mainBtn.classList.remove('btn-outline-danger');
-        }
-    }
-    let statusNameInput = document.getElementById('statusName')
-    let getInputInfo = (index) => {
-        statusNameInput.value = reasonsData[index]?.name;
-        statusNameInput.focus();
-        setReasons({
-            name: statusNameInput.value,
-        })
-        mainBtn.innerHTML = 'تعديل';
-        mainBtn.classList.add('btn-outline-danger');
-    }
 
     return (
         <>
-            <div className="container-fluid my-2 ">
-                <div className='row gx-1 '>
+            <div className="container-fluid my-2">
+                <div className='row gx-1'>
                     <div className="col-md-5">
                         <h4 className='alert alert-primary text-center'>إضافة سبب</h4>
                         <form ref={formInput} onSubmit={submitReasonOrEditedReason}>
                             <div className='w-75 m-auto'>
                                 <label htmlFor="statusName" className='form-label'>السبب </label>
-                                <input type="text" name="name" id="statusName" className='form-control' onChange={getInputValue} />
-                                <button type='submit' className='btn btn-outline-primary mt-3' id='mainBtn' >إضافة</button>
+                                <input type="text" name="name" id="statusName" className='form-control' value={reasons.name} onChange={getInputValue} />
+                                <button type='submit' className={`btn ${editing ? 'btn-outline-danger' : 'btn-outline-primary'} mt-3`}>
+                                    {editing ? 'تعديل' : 'إضافة'}
+                                </button>
                             </div>
                         </form>
-
                     </div>
-                    <div className="col-md-7 card  p-2 mt-5">
-                        <h4 className='text-center text-bg-secondary py-2 rounded' >الأسباب</h4>
-                        {showReasons()}
+                    <div className="col-md-7 card p-2 mt-5">
+                        <h4 className='text-center text-bg-secondary py-2 rounded'>الأسباب</h4>
+                        {reasonsData.length > 0 ? (
+                            <div className='w-100'>
+                                {reasonsData.map((reason, index) => (
+                                    <div key={reason.id} className="row">
+                                        <div className="col-md-8 d-flex">
+                                            <p className='bg-secondary-subtle p-1 ms-2 rounded'>السبب </p>
+                                            <p className='bg-body-secondary p-1 rounded'>{reason.name}</p>
+                                        </div>
+                                        <div className="col-md-4 d-flex">
+                                            <p>
+                                            <button className='btn btn-outline-danger btn-sm ms-3' onClick={() => deleteReason(reason.id)}><i className='bi bi-trash'></i> حذف </button>
+                                            </p>
+                                            <p>
+                                            <button className='btn btn-outline-primary btn-sm' onClick={() => handleEdit(index)}><i className='bi bi-pencil-square'></i> تعديل</button>
+                                            </p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className='h-75'>
+                                <div className=' d-flex justify-content-center h-100 align-items-center'>
+                                    <i className='fa fa-spinner fa-spin fa-2x'></i>
+                                </div>
+                            </div>
+                        )}
                     </div>
-
                 </div>
             </div>
-
-
         </>
-    )
+    );
 }

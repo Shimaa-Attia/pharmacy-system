@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import { Field, Form, Formik } from "formik";
 import { Helmet } from 'react-helmet';
 import { AuthContext } from '../../Context/AuthStore';
+import Select from 'react-select';
 
 export default function EditeClient() {
   let { accessToken } = useContext(AuthContext);
@@ -15,8 +16,9 @@ export default function EditeClient() {
   let [clients, setClients] = useState({
     code: '',
     name: '',
-    // phones: [],
-    // addresses: [],
+    areas: [],
+    phones: [],
+    addresses: [],
     onHim: '',
     forHim: '',
     notes: ''
@@ -35,8 +37,8 @@ export default function EditeClient() {
       setClients({
         code: data?.data?.code,
         name: data?.data?.name,
-        // phones: phones,
-        // addresses: addresses,
+        phones: phones,
+        addresses: addresses,
         onHim: data?.data?.onHim || '',
         forHim: data?.data?.forHim || '',
         notes: data?.data?.notes || ''
@@ -52,6 +54,39 @@ export default function EditeClient() {
     getOneClient()
 
   }, []);
+  //getting areas data to display in select 
+  let [areasData, setAreasData] = useState([]);
+  let getAreasData = async () => {
+    try {
+      const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/areas`, {
+        headers: {
+          "Authorization": `Bearer ${accessToken}`
+        }
+      });
+      setAreasData(data);
+    } catch (error) {
+      toast.error('حدث خطأ أثناء جلب البيانات');
+    }
+  }
+  useEffect(() => {
+    getAreasData();
+  }, []);
+  //making map on the areas data to display the name in the option
+  let [areasOptions, setAreasOptions] = useState([])
+  useEffect(() => {
+    let mapAreas = areasData?.map((area) => ({
+      value: `${area.id}`,
+      label: `${area.name}`
+    }));
+    setAreasOptions(mapAreas);
+  }, [areasData]);
+  let handleAreaChange = (selectedOption) => {
+    let selectedValues = selectedOption.map((opt) => opt.value)
+    setClients((prevProject) => ({
+      ...prevProject,
+      areas: selectedValues,
+    }));
+  };
 
 
   let sendEditedDataToApi = async (values) => {
@@ -90,6 +125,7 @@ export default function EditeClient() {
       code: Joi.string().required(),
       phones: Joi.any().empty(null),
       addresses: Joi.any().empty(null),
+      areas: Joi.any().empty(''),
       onHim: Joi.any().empty(null),
       forHim: Joi.any().empty(null),
       notes: Joi.any().empty(''),
@@ -130,10 +166,10 @@ export default function EditeClient() {
       <div className="mx-5 p-3 rounded rounded-3 bg-white">
 
 
-        <Formik initialValues={{ ...clients}} 
-         enableReinitialize={true} onSubmit={(values) => {
-          submitEditedClient(values);
-        }}>
+        <Formik initialValues={{ ...clients }}
+          enableReinitialize={true} onSubmit={(values) => {
+            submitEditedClient(values);
+          }}>
           {
             formik => {
               return (
@@ -146,17 +182,29 @@ export default function EditeClient() {
                     <label htmlFor="name" className='form-label'>الاسم</label>
                     <Field type="text" className='form-control' name="name" id="name" />
                   </div>
-                  {/* <div className="col-md-6">
+                  <div className="col-md-6">
+                    <label htmlFor="areas" className='form-label'>المنطقة</label>
+                    <Select
+                      name="areas"
+                      options={areasOptions}
+                      isMulti
+                      onChange={handleAreaChange}
+                      isSearchable={true}
+                      placeholder="بحث عن منطقة..."
+
+                    />
+                  </div>
+                  <div className="col-md-6">
                     <label htmlFor="phone1" className='form-label'> رقم هاتف</label>
                     <Field type="text" id="phone1" className='form-control' name="phones[0].value" />
-                  </div> */}
+                  </div>
 
-                  {/* <div className="col-md-6">
+                  <div className="col-md-6">
                     <label htmlFor="addresses1" className='form-label'> عنوان</label>
 
                     <Field type="text" id="addresses1" className='form-control' name="addresses[0].value" />
-                  </div> */}
-                  {/* {showInput && <div className="col-md-6">
+                  </div>
+                  {showInput && <div className="col-md-6">
                     <label htmlFor="phone2" className='form-label'> رقم هاتف آخر </label>
                     <Field type="text" id="phone2" className='form-control' name="phones[1].value" />
                   </div>}
@@ -169,7 +217,7 @@ export default function EditeClient() {
                     <button type='button' className='btn btn-success' onClick={toggleInput} >
                       {showInput === false ? 'إضافة المزيد' : 'إخفاء'}
                     </button>
-                  </div> */}
+                  </div>
                   <div className="col-md-6">
                     <label htmlFor="onHim" className='form-label'>عليه</label>
                     <Field type="text" className='form-control' name="onHim" id="name" />

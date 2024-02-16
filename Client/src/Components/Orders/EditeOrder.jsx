@@ -25,6 +25,7 @@ export default function EditeOrder() {
     notes: '',
     sale_point_id: '',
     paid: '',
+    area_id: ''
 
   });
   let getInputValue = (event) => {
@@ -49,6 +50,7 @@ export default function EditeOrder() {
       notes: data.data?.notes,
       sale_point_id: data.data?.sale_point?.id,
       paid: data.data?.paid,
+      area_id: data.data?.area?.id,
     });
 
   };
@@ -70,7 +72,7 @@ export default function EditeOrder() {
     getUserData()
   }, []);
   let getClientData = async () => {
-    let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers`, {
+    let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers?noPaginate=1`, {
       headers: {
         "Authorization": `Bearer ${accessToken}`
       }
@@ -80,7 +82,23 @@ export default function EditeOrder() {
   useEffect(() => {
     getClientData()
   }, []);
-
+  //getting areas data to display in select 
+  let [areasData, setAreasData] = useState([]);
+  let getAreasData = async () => {
+    try {
+      const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/areas`, {
+        headers: {
+          "Authorization": `Bearer ${accessToken}`
+        }
+      });
+      setAreasData(data);
+    } catch (error) {
+      toast.error('حدث خطأ أثناء جلب البيانات');
+    }
+  }
+  useEffect(() => {
+    getAreasData();
+  }, []);
 
   let sendEditedDataToApi = async () => {
     await axios.put(`${process.env.REACT_APP_API_URL}/api/orders/${id}`, orders, {
@@ -116,6 +134,7 @@ export default function EditeOrder() {
       cost: Joi.any().empty(''),
       sale_point_id: Joi.number().required(),
       paid: Joi.any().empty(''),
+      area_id: Joi.any().empty(''),
       notes: Joi.any().empty(""),
 
     });
@@ -180,11 +199,19 @@ export default function EditeOrder() {
 
               />
             </div>
+            <div className='col-md-4'>
+              <label htmlFor="customer_code" className='form-label'>المنطقة   </label>
+              <select name="area_id" defaultValue={0} className='form-control' id="branch_id"
+                onChange={getInputValue}>
+                <option value={0} hidden disabled>اختر...</option>
+                {areasData.map((area) => <option key={area.id} value={area?.id}>{area?.name}</option>)}
+              </select>
+            </div>
             <div className="col-md-4">
               <label htmlFor="sale_point_id" className='form-label'>نقطة البيع </label>
               <select name="sale_point_id" defaultValue={0} className='form-control ' id="sale_point_id"
                 onChange={getInputValue}>
-                <option value={0} hidden disabled>اختار</option>
+                <option value={0} hidden disabled>اختر...</option>
                 {salePoints.map((point) => <option key={point.id} value={point?.id}  >{point.name}</option>)}
               </select>
             </div>

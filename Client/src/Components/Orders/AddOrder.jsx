@@ -22,7 +22,8 @@ export default function AddOrder() {
         total_ammount: '',
         cost: '',
         notes: '',
-        sale_point_id: ''
+        sale_point_id: '',
+        area_id:''
     });
     let [userOptions, setUserOptions] = useState([]);
     let getUserData = async () => {
@@ -66,6 +67,23 @@ export default function AddOrder() {
     useEffect(() => {
         getClientData()
     }, []);
+    //getting areas data to display in select 
+    let [areasData, setAreasData] = useState([]);
+    let getAreasData = async () => {
+        try {
+            const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/areas`, {
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`
+                }
+            });
+            setAreasData(data);
+        } catch (error) {
+            toast.error('حدث خطأ أثناء جلب البيانات');
+        }
+    }
+    useEffect(() => {
+        getAreasData();
+    }, []);
     //for dispaly area, onhim , forhim
     let [customerCodeChanged, setCustomerCodeChanged] = useState(false);
     useEffect(() => {
@@ -77,15 +95,14 @@ export default function AddOrder() {
     }, [orders.customer_code]);
     useEffect(() => {
         let mapClient = clients?.map((client) => ({
-            value: `${client?.code}`,
-            label: `${client?.code}`,
-            id:`${client.id}`,
-            onHim:`${client.onHim}`,
-            forHim:`${client.forHim}`,
-            customer_area:`${client.customer_area}`
+            value: `${client.code}`,
+            label: `${client.code}`,
+            onHim: `${client.onHim}`,
+            forHim: `${client.forHim}`,
+            customer_area: `${client.areas.map(area => area.name)}`
         }));
         setClientOptions(mapClient);
-        
+
     }, [clients]);
 
     // useEffect(() => {
@@ -117,7 +134,7 @@ export default function AddOrder() {
     // }, [orders.customer_code]);
 
 
-let [customerData , setCustomerData] = useState([]);
+    let [customerData, setCustomerData] = useState([]);
     let getSelectedUser = (selectedOption) => {
         setOrders({
             ...orders,
@@ -148,18 +165,19 @@ let [customerData , setCustomerData] = useState([]);
                 position: 'top-center'
             });
             setIsLoading(false);
-            formRef.current.reset();
-            userSelectRef.current.clearValue();
-            clientSelectRef.current.clearValue();
             setOrders({
                 user_code: '',
                 customer_code: '',
                 total_ammount: '',
-                customer_area:'',
+                customer_area: '',
                 cost: '',
                 notes: '',
-                sale_point_id: ''
+                sale_point_id: '',
+                area_id:''
             })
+            formRef.current.reset();
+            userSelectRef.current.clearValue();
+            clientSelectRef.current.clearValue();
         }).catch((errors) => {
             setIsLoading(false);
             try {
@@ -170,14 +188,14 @@ let [customerData , setCustomerData] = useState([]);
                             toast.error(err);
                         })
                     });
-    
+
                 } else {
                     toast.error("حدث خطأ ما");
                 }
             } catch (error) {
                 toast.error('حدث خطأ ما')
             }
-         
+
         });
     };
     let validateOrderForm = () => {
@@ -204,7 +222,7 @@ let [customerData , setCustomerData] = useState([]);
                 'string.empty': 'نقطة البيع مطلوبة',
                 'any.required': 'نقطة البيع مطلوبة',
             }),
-            customer_area:Joi.string().empty(''),
+            area_id: Joi.number().empty(''),
             notes: Joi.string().empty(''),
         });
         return schema.validate(orders, { abortEarly: false });
@@ -282,20 +300,27 @@ let [customerData , setCustomerData] = useState([]);
 
                             />
                         </div>
-                        {customerCodeChanged && <div className="col-md-4 bg-danger-subtle  p-2 rounded">
+                        {customerCodeChanged && <div className="col-md-4  ">
                             {customerData?.onHim ? (
                                 <>
-                                    <div>عليه: {customerData?.onHim !== 'null' ? customerData?.onHim : 'لا يوجد'}</div>
-                                    <div>له: {customerData?.forHim !== 'null' ? customerData?.forHim : 'لا يوجد'}</div>
+                                    <div className='bg-danger-subtle p-2 rounded'>
+                                        <div>المنطقة: {customerData?.customer_area  ? customerData?.customer_area : 'لا يوجد'}</div>
+                                        <div>عليه: {customerData?.onHim !== 'null' ? customerData?.onHim : 'لا يوجد'}</div>
+                                        <div>له: {customerData?.forHim !== 'null' ? customerData?.forHim : 'لا يوجد'}</div>
+                                    </div>
                                 </>
                             ) : (
-                                <div className="">
-                                    <div className="bg-danger-subtle  p-2 rounded ">لا يوجد  </div>
-                                </div>
+                                ''
                             )}
                         </div>}
-                   
-
+                        <div className='col-md-4'>
+                            <label htmlFor="customer_code" className='form-label'>المنطقة   </label>
+                            <select name="area_id" defaultValue={0} className='form-control' id="branch_id"
+                                onChange={getInputValue}>
+                                <option value={0} hidden disabled>اختر...</option>
+                                {areasData.map((area) => <option key={area.id} value={area?.id}>{area?.name}</option>)}
+                            </select>
+                        </div>
 
                         {/* {contacts.addresses &&
                             <div className="col-md-4">

@@ -1,34 +1,75 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import axios from 'axios';
 import Joi from 'joi';
-import { useEffect, useState } from 'react'
-import { NavLink, useNavigate } from 'react-router-dom';
+import { useState } from 'react'
+import { NavLink } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import {Field, Form, Formik} from "formik";
+import { Field, Form, Formik } from "formik";
 import { Helmet } from 'react-helmet';
 import { AuthContext } from '../../Context/AuthStore';
+import Select from 'react-select';
+import CreatableSelect from 'react-select/creatable';
 
 
 export default function AddClient() {
     let { accessToken } = useContext(AuthContext);
- 
+
 
     let [isLoading, setIsLoading] = useState(false);
 
     let initialValues = {
         code: '',
         name: '',
+        areas: [],
         phones: [],
         addresses: [],
-        onHim:'',
-        forHim:'',
+        onHim: '',
+        forHim: '',
         notes: ''
     }
     let [clientData, setClientData] = useState({ ...initialValues });
+    //getting areas data to display in select 
+    let [areasData, setAreasData] = useState([]);
+    let getAreasData = async () => {
+        try {
+            const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/areas`, {
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`
+                }
+            });
+            setAreasData(data);
+        } catch (error) {
+            toast.error('حدث خطأ أثناء جلب البيانات');
+        }
+    }
+    useEffect(() => {
+        getAreasData();
+    }, []);
+    //making map on the areas data to display the name in the option
+    let [areasOptions, setAreasOptions] = useState([])
+    useEffect(() => {
+        let mapAreas = areasData?.map((area) => ({
+            value: `${area.id}`,
+            label: `${area.name}`
+        }));
+        setAreasOptions(mapAreas);
+    }, [areasData]);
+    let handleSelectChange = (selectedOption ,fieldName) => {
+   
+        let selectedValues = selectedOption.map((opt) => opt.value)
+        setClientData(prevData => ({
+            ...prevData,
+            [fieldName.name]: selectedValues
+        }));
+      };
+      let getInputValue = (event) => {
+        let { name, value } = event.target;
+        setClientData(prevState => ({ ...prevState, [name]: value }));
+      };
 
-    let sendClientDataToApi = async (values) => {
+    let sendClientDataToApi = async () => {
 
-        await axios.post(`${process.env.REACT_APP_API_URL}/api/customers`, values, {
+        await axios.post(`${process.env.REACT_APP_API_URL}/api/customers`, clientData, {
             headers: {
                 "Authorization": `Bearer ${accessToken}`
             }
@@ -37,9 +78,9 @@ export default function AddClient() {
                 position: 'top-center'
             });
             setIsLoading(false);
-          setClientData({ ...initialValues });
+            setClientData({ ...initialValues });
         }).catch((errors) => {
-            console.log(errors);
+    
             setIsLoading(false);
             try {
                 const errorList = errors?.response?.data?.message;
@@ -53,32 +94,34 @@ export default function AddClient() {
             } catch (error) {
                 toast.error('حدث خطأ ما')
             }
-          
+
         });
     };
-    let validateClientForm = (values) => {
+    let validateClientForm = () => {
         const schema = Joi.object({
             name: Joi.string().empty(''),
             code: Joi.string().required(),
             phones: Joi.any().empty(''),
             addresses: Joi.any().empty(''),
-            onHim:Joi.number().empty(''),
-            forHim:Joi.number().empty(''),
+            areas:Joi.any().empty(''),
+            onHim: Joi.number().empty(''),
+            forHim: Joi.number().empty(''),
             notes: Joi.string().empty(''),
 
         });
 
-        return schema.validate(values, { abortEarly: false });
+        return schema.validate(clientData, { abortEarly: false });
 
     };
-  
-    let submitClientForm = (values) => {
+
+    let submitClientForm = (e) => {
+        e.preventDefault();
         setIsLoading(true);
-        let validation = validateClientForm(values);
+        let validation = validateClientForm();
         if (!validation.error) {
-            sendClientDataToApi(values);
-        
-         
+            sendClientDataToApi();
+
+
         } else {
             setIsLoading(false);
             try {
@@ -90,12 +133,9 @@ export default function AddClient() {
 
             }
         }
-        
+
     };
-    let [showInput, setShowInput] = useState(false);
-    let toggleInput = () => {
-        setShowInput(!showInput);
-    }
+  
 
     return (
         <>
@@ -106,62 +146,64 @@ export default function AddClient() {
             <h3 className='alert alert-primary text-center mx-5 my-2  fw-bold'>إضافة عميل جديد</h3>
             <div className="mx-5 p-3 rounded rounded-3 bg-white">
 
-                <Formik  initialValues={
-                    clientData
-                } onSubmit={(values, { resetForm  }) => {
-                    submitClientForm(values );
-                    
-                   
-                  
-                }}>
-                    {
-                        formik => {
-                            return (
-                                <Form className="row g-3">
+          
+                                <form className="row g-3" onSubmit={submitClientForm}>
                                     <div className="col-md-6">
                                         <label htmlFor="code" className='form-label'>كود العميل</label>
-                                        <Field  type="text" className='form-control' name="code" id="code" />
+                                        <input type="text" className='form-control' name="code" id="code" onChange={getInputValue} />
                                     </div>
                                     <div className="col-md-6">
                                         <label htmlFor="name" className='form-label'>الاسم</label>
-                                        <Field type="text" className='form-control' name="name" id="name" />
+                                        <input type="text" className='form-control' name="name" id="name" onChange={getInputValue} />
                                     </div>
                                     <div className="col-md-6">
-                                        <label htmlFor="phone1" className='form-label'> رقم هاتف</label>
-                                        <Field type="text" id="phone1" className='form-control' name="phones[0]"   />
-                                    </div>
+                                        <label htmlFor="areas" className='form-label'>المنطقة</label>
+                                        <Select
+                                            // ref={clientSelectRef}
+                                            name="areas"
+                                            options={areasOptions}
+                                            isMulti
+                                            onChange={handleSelectChange}
+                                            isSearchable={true}
+                                            placeholder="بحث عن منطقة..."
 
+                                        />
+                                    </div>
                                     <div className="col-md-6">
-                                        <label htmlFor="addresses1" className='form-label'> عنوان</label>
+                                        <label htmlFor="addresses" className='form-label'>العناوين</label>
+                                        <CreatableSelect
+                                            name="addresses"
+                                            isMulti
+                                            onChange={handleSelectChange}
+                                            isSearchable={true}
+                                            placeholder="إضافة عنوان..."
 
-                                        <Field type="text" id="addresses1" className='form-control' name="addresses[0]"  />
+                                        />
                                     </div>
-                                    {showInput && <div className="col-md-6">
-                                        <label htmlFor="phone2" className='form-label'> رقم هاتف آخر </label>
-                                        <Field type="text" id="phone2" className='form-control' name="phones[1]" />
-                                    </div>}
-                                    {showInput && <div className="col-md-6">
-                                        <label htmlFor="addresses2" className='form-label'> عنوان آخر</label>
+                                    <div className="col-md-6">
+                                        <label htmlFor="phones" className='form-label'>أرقام الهواتف</label>
+                                        <CreatableSelect 
+                                            name="phones"
+                                            isMulti
+                                            onChange={handleSelectChange}
+                                            isSearchable={true}
+                                            placeholder="إضافة هاتف..."
 
-                                        <Field type="text" id="addresses2" className='form-control' name="addresses[1]"  />
-                                    </div>}
-                                    <div className="col-md-12 ">
-                                        <button type='button' className='btn btn-success' onClick={toggleInput} >
-                                            {showInput === false ? 'إضافة المزيد' : 'إخفاء'}
-                                        </button>
+                                        />
                                     </div>
+                                   
                                     <div className="col-md-6">
                                         <label htmlFor="onHim" className='form-label'>عليه</label>
-                                        <Field type="text" className='form-control' name="onHim" id="name" />
+                                        <input type="text" className='form-control' name="onHim" id="onHim" onChange={getInputValue} />
                                     </div>
                                     <div className="col-md-6">
                                         <label htmlFor="forHim" className='form-label'>له</label>
-                                        <Field type="text" className='form-control' name="forHim" id="name" />
+                                        <input type="text" className='form-control' name="forHim" id="forHim" onChange={getInputValue} />
                                     </div>
 
                                     <div className="col-md-12">
                                         <label htmlFor="notes" className='form-label'>ملاحظات</label>
-                                        <Field type="text" as="textarea" id="notes" className='form-control' name="notes" />
+                                        <textarea type="text"  id="notes" className='form-control' name="notes" onChange={getInputValue} />
                                     </div>
                                     <div className="col-md-3">
                                         <button type='submit' className='btn btn-primary form-control fs-5'>
@@ -173,11 +215,8 @@ export default function AddClient() {
                                         <NavLink to='../clients'
                                             className='btn  btn-secondary form-control fs-5'>رجوع</NavLink>
                                     </div>
-                                </Form>
-                            )
-                        }
-                    }
-                </Formik>
+                                </form>
+                         
 
             </div>
         </>

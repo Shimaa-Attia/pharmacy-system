@@ -43,7 +43,7 @@ export default function DoctorInventoryProducts() {
     if (notDoneInventoryProducts.length > 0) {
       return (
         <div className="shadow rounded rounded-4 bg-white m-2 p-3 table-responsive">
-          <p className='text-center bg-warning p-1 rounded fs-5 fw-bold'>قائمة الجرد</p>
+   
           <table dir="rtl" responsive='md' className='table  table-hover  align-middle table-responsive-list  '>
 
             <tbody>
@@ -66,7 +66,7 @@ export default function DoctorInventoryProducts() {
     } else {
       return (
         <div className=' d-flex justify-content-center  height-calc-70 align-items-center' >
-          <i className='fa fa-spinner fa-spin  fa-3x'></i>
+        <div className='alert alert-danger w-50 text-center'>لا يوجد </div>
         </div>
       )
     }
@@ -90,7 +90,6 @@ export default function DoctorInventoryProducts() {
     if (doneInventoryProducts.length > 0) {
       return (
         <div className="shadow rounded rounded-4 bg-white m-2 p-3 table-responsive">
-          <p className='text-center bg-success p-1 rounded fs-5 fw-bold'>تم جرده</p>
           <table dir="rtl" responsive='md' className='table  table-hover  align-middle table-responsive-list  '>
 
             <tbody>
@@ -113,8 +112,8 @@ export default function DoctorInventoryProducts() {
       )
     } else {
       return (
-        <div className=' d-flex justify-content-center  height-calc-70 align-items-center' >
-          <i className='fa fa-spinner fa-spin  fa-3x'></i>
+        <div className=' d-flex justify-content-center  height-calc-70 align-items-center'>
+        <div className='alert alert-danger w-50 text-center'>لا يوجد </div>
         </div>
       )
     }
@@ -136,11 +135,13 @@ export default function DoctorInventoryProducts() {
 
       <div className="row" dir='rtl'>
         <div className="col-md-6">
+        <p className='text-center bg-warning p-1 rounded fs-5 fw-bold'>قائمة الجرد</p>
           {showNotDoneInventoryProducts()}
         </div>
 
         <div className="col-md-6 ">
-          {showDoneInventoryProducts()}
+        <p className='text-center bg-success p-1 rounded fs-5 fw-bold'>تم جرده</p>
+          { showDoneInventoryProducts() }
         </div>
       </div>
       </div>

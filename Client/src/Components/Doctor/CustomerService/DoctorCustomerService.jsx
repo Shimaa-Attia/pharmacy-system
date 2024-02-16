@@ -6,7 +6,7 @@ import { NavLink } from 'react-router-dom';
 import Pagination from '../../Pagination/Pagination';
 import { toast } from 'react-toastify';
 
-export default function PurchasesCustomerService() {
+export default function DoctorCustomerService() {
   let { accessToken } = useContext(AuthContext);
   let [pagination, setPagination] = useState(null);
   let [currentPage, setCurrentPage] = useState(1); // Current page state
@@ -28,7 +28,7 @@ export default function PurchasesCustomerService() {
       let handlePageChange = (page) => {
         getCustomersServiceProducts(page);
       };
-              //get status data
+        //get status data
   let [statusData, setStatusData] = useState([]);
   let getStatusData = async () => {
     let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/properties/getCustomList/status`, {
@@ -81,7 +81,6 @@ export default function PurchasesCustomerService() {
     
         }
       }, [status.status_id]);
-
 
   let showCustomersServiceProducts = () => {
     if (customersServiceProducts.length > 0) {
@@ -139,10 +138,13 @@ export default function PurchasesCustomerService() {
   };
   return (
     <>
-        <div className=''>
-          <NavLink to='/shortcomingspurchases/add' className='btn btn-danger m-2 '>إضافة النواقص</NavLink>
+
+      <div >
+          <NavLink to='/doctorpurchases/add' className='btn btn-danger m-2 '>إضافة النواقص</NavLink>
         </div>
-      <div className="text-center my-3">
+    
+
+      <div className="text-center mb-2">
         <Pagination pagination={pagination} currentPage={currentPage} handlePageChange={handlePageChange}/>
       </div>
  {showCustomersServiceProducts()}

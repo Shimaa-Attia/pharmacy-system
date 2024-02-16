@@ -1,234 +1,137 @@
+
 import axios from 'axios';
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../../Context/AuthStore';
-import Joi from 'joi';
+
 
 export default function AddStatus() {
-    //Adding status
-    let { accessToken } = useContext(AuthContext);
-    let formInput = document.getElementById('statusName');
-    let [status, setStatus] = useState({
-        name: ''
-    })
-    let getInputValue = (event) => {
-        let myStatus = { ...status };
-        myStatus[event?.target?.name] = event?.target?.value;
-        setStatus(myStatus);
-    }
-    let sendStatusDataToApi = async () => {
-        await axios.post(`${process.env.REACT_APP_API_URL}/api/properties/status`, status, {
-            headers: {
-                "Authorization": `Bearer ${accessToken}`
-            }
-        }).then((res) => {
-            toast.success(res.data.message);
-            formInput.value = '';
+    const { accessToken } = useContext(AuthContext);
+    const [status, setStatus] = useState({ name: '' });
+    const [statusData, setStatusData] = useState([]);
+    const [statusId, setStatusId] = useState('');
+    const [editing, setEditing] = useState(false);
 
-        }).catch((errors) => {
-            const errorList = errors?.response?.data?.message;
-            if (errorList !== undefined) {
-                Object.keys(errorList)?.map((err) => {
-                    errorList[err]?.map((err) => {
-                        toast.error(err);
-                    })
-                });
-            } else {
-                toast.error("حدث خطأ ما");
-            }
-        })
-    };
-
-    let validateStatusForm = () => {
-        const schema = Joi.object({
-            name: Joi.string().required(),
-        });
-        return schema.validate(status, { abortEarly: false });
-    };
-    let submitStatusForm = () => {
-        let validation = validateStatusForm();
-        if (!validation.error) {
-            sendStatusDataToApi()
-            setStatus({
-                name: ''
-            })
-        } else {
-            try {
-                validation.error.details.map((err) => {
-                    toast.error(err.message);
-                })
-            } catch (e) {
-                toast.error("حدث خطأ ما");
-            }
-        }
-    };
-
-    //Show Status
-    let [statusData, setStatusData] = useState([]);
-
-    let getStatusData = async () => {
-        let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/properties/getCustomList/status`, {
-            headers: {
-                "Authorization": `Bearer ${accessToken}`
-            }
-        });
-    
-        setStatusData(data)
-        
-    }
     useEffect(() => {
-        getStatusData()
+        getStatusData();
     }, []);
 
-    let [statusId, setStatusId] = useState('');
-    let showStatus = () => {
-        if (statusData.length > 0) {
-            return (
-                <div className='w-100 ' >
-                    {statusData.map((stat, index) => <div key={stat.id}>
-
-                        <div className={`row `}>
-                            <div className="col-md-8 d-flex ">
-                                <p className='bg-secondary-subtle p-1 ms-2 rounded' >الحالة  </p>
-                                <p className='bg-body-secondary p-1 rounded'>{stat?.name}</p>
-                            </div>
-                            <div className="col-md-4 d-flex">
-                                <p>
-                                    <button className='btn btn-outline-danger btn-sm ms-3' onClick={() => { deleteStatus(stat.id) }} ><i className='bi bi-trash'></i> حذف </button> </p>
-                                <p> <button className='btn btn-outline-primary btn-sm' onClick={() => {
-                                    getInputInfo(index)
-                                    setStatusId(stat.id)
-                                }}><i className='bi bi-pencil-square'></i> تعديل  </button></p>
-                            </div>
-
-                        </div>
-                    </div>)}
-
-                </div>
-            )
-        } else {
-            return (
-                <div className='h-75' >
-                    <div className=' d-flex justify-content-center h-100  align-items-center' >
-                        <i className='fa fa-spinner fa-spin fa-2x '></i>
-                    </div>
-                </div>
-            )
-        }
-    }
-
-    //delete branch
-    let deleteStatus = async (statId) => {
+    const getStatusData = async () => {
         try {
-
-            let { data } = await axios.delete(`${process.env.REACT_APP_API_URL}/api/properties/delete/${statId}`, {
+            const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/properties/getCustomList/status`, {
                 headers: {
                     "Authorization": `Bearer ${accessToken}`
                 }
             });
-            toast.success(data.message);
-            getStatusData()
+            setStatusData(data);
         } catch (error) {
-
-            toast.error('حدث خطأ ما، حاول مرة أخرى')
+            toast.error('حدث خطأ أثناء جلب البيانات');
         }
     };
 
-    //Edite status
- 
-    let sendEditedStatusDataToApi = async (statId) => {
-        await axios.put(`${process.env.REACT_APP_API_URL}/api/properties/${statId}`, status, {
-            headers: {
-                "Authorization": `Bearer ${accessToken}`
-            }
-        }).then((res) => {
-            toast.success(res.data.message);
-            formInput.value = '';
-        }).catch((errors) => {
-            const errorList = errors?.response?.data?.message;
-            if (errorList !== undefined) {
-                Object.keys(errorList)?.map((err) => {
-                    errorList[err]?.map((err) => {
-                        toast.error(err);
-                    })
+    const getInputValue = (event) => {
+        const { name, value } = event.target;
+        setStatus(prevState => ({ ...prevState, [name]: value }));
+    };
+
+    const submitStatusOrEditedStauts = async (event) => {
+        event.preventDefault();
+        if (!status.name.trim()) {
+            toast.error("الحالة مطلوبة");
+            return;
+        }
+        try {
+            if (editing) {
+           let {data} =     await axios.put(`${process.env.REACT_APP_API_URL}/api/properties/${statusId}`, status, {
+                    headers: {
+                        "Authorization": `Bearer ${accessToken}`
+                    }
                 });
+                toast.success(data.message);
             } else {
-                toast.error("حدث خطأ ما");
+                let {data} =   await axios.post(`${process.env.REACT_APP_API_URL}/api/properties/status`, status, {
+                    headers: {
+                        "Authorization": `Bearer ${accessToken}`
+                    }
+                });
+                toast.success(data.message);
             }
-        })
+            setEditing(false);
+            setStatus({ name: '' });
+            getStatusData();
+        } catch (error) {
+            toast.error('حدث خطأ أثناء العملية');
+        }
     };
 
-    let validateEditedStautsForm = () => {
-        const schema = Joi.object({
-            name: Joi.string().empty(''),
-        });
-        return schema.validate(status, { abortEarly: false });
+    const handleEdit = (index) => {
+        const stat = statusData[index];
+        setStatus({ name: stat.name });
+        setStatusId(stat.id);
+        setEditing(true);
     };
-    let submitEditedStautsForm = () => {
-        let validation = validateEditedStautsForm();
-        if (!validation.error) {
-            sendEditedStatusDataToApi(statusId);
-            setStatus({
-                name: ''
-            })
-        } else {
-            try {
-                validation.error.details.map((err) => {
-                    toast.error(err.message);
-                })
-            } catch (e) {
-                toast.error("حدث خطأ ما");
-            }
+
+    const deleteStatus = async (statusId) => {
+        try {
+            let {data} =    await axios.delete(`${process.env.REACT_APP_API_URL}/api/properties/delete/${statusId}`, {
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`
+                }
+            });
+            toast.success(data.message)
+            getStatusData();
+        } catch (error) {
+            toast.error('حدث خطأ أثناء العملية');
         }
     };
-    let mainBtn = document.getElementById('mainBtn');
-    let submitStatusOrEditedStauts= (e) => {
-        e.preventDefault();
-        if (mainBtn.innerHTML === 'إضافة') {
-            submitStatusForm()
-            getStatusData()
-        } else {
-            submitEditedStautsForm()
-            getStatusData()
-            mainBtn.innerHTML = 'إضافة'
-            mainBtn.classList.remove('btn-outline-danger');
-        }
-    }
-    let statusNameInput = document.getElementById('statusName')
-    let getInputInfo = (index) => {
-        statusNameInput.value = statusData[index]?.name;
-        statusNameInput.focus();
-        setStatus({
-            name: statusNameInput.value,
-        })
-        mainBtn.innerHTML = 'تعديل';
-        mainBtn.classList.add('btn-outline-danger');
-    }
 
     return (
         <>
-            <div className="container-fluid my-2 ">
-                <div className='row gx-1 '>
+            <div className="container-fluid my-2">
+                <div className='row gx-1'>
                     <div className="col-md-5">
                         <h4 className='alert alert-primary text-center'>إضافة حالة</h4>
                         <form onSubmit={submitStatusOrEditedStauts}>
                             <div className='w-75 m-auto'>
-                                <label htmlFor="statusName" className='form-label'>الحالة </label>
-                                <input type="text" name="name" id="statusName" className='form-control' onChange={getInputValue} />
-                                <button type='submit' className='btn btn-outline-primary mt-3' id='mainBtn' >إضافة</button>
+                                <label htmlFor="statusName" className='form-label'>الحالة</label>
+                                <input type="text" name="name" id="statusName" className='form-control' value={status.name} onChange={getInputValue} />
+                                <button type='submit' className={`btn ${editing ? 'btn-outline-danger' : 'btn-outline-primary'} mt-3`}>
+                                    {editing ? 'تعديل' : 'إضافة'}
+                                </button>
                             </div>
                         </form>
-
                     </div>
-                    <div className="col-md-7 card  p-2 mt-5">
-                        <h4 className='text-center text-bg-secondary py-2 rounded' >الحالات</h4>
-                        {showStatus()}
+                    <div className="col-md-7 card p-2 mt-5">
+                        <h4 className='text-center text-bg-secondary py-2 rounded'>الحالات</h4>
+                        {statusData.length > 0 ? (
+                            <div className='w-100'>
+                                {statusData.map((stat, index) => (
+                                    <div key={stat.id} className="row">
+                                        <div className="col-md-8 d-flex">
+                                            <p className='bg-secondary-subtle p-1 ms-2 rounded'>الحالة</p>
+                                            <p className='bg-body-secondary p-1 rounded'>{stat.name}</p>
+                                        </div>
+                                        <div className="col-md-4 d-flex">
+                                            <p>
+                                            <button className='btn btn-outline-danger btn-sm ms-3' onClick={() => deleteStatus(stat.id)}><i className='bi bi-trash'></i> حذف</button>
+                                            </p>
+                                            <p>
+                                            <button className='btn btn-outline-primary btn-sm' onClick={() => handleEdit(index)}><i className='bi bi-pencil-square'></i> تعديل</button>
+                                            </p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className='h-75'>
+                                <div className=' d-flex justify-content-center h-100 align-items-center'>
+                                    <i className='fa fa-spinner fa-spin fa-2x'></i>
+                                </div>
+                            </div>
+                        )}
                     </div>
-
                 </div>
             </div>
-
-
         </>
-    )
+    );
 }

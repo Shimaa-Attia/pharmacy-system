@@ -38,7 +38,7 @@ export default function Purchases() {
     setFilterClientInfo('notNull')
   }
   let [purchasesData, setPurchasesData] = useState([]);
-  let getPurchasesData = async (page =1) => {
+  let getPurchasesData = async (page = 1) => {
     let urlApi = `${process.env.REACT_APP_API_URL}/api/shortcomings/filter?`;
     let purchResult;
     if (filterProductType !== undefined && filterProductType.trim().length > 0) {
@@ -76,11 +76,11 @@ export default function Purchases() {
   }
   useEffect(() => {
     getPurchasesData()
-  }, [filterClientInfo,filterProductType, filterBranchId, filterStatusId, filterIsAvailableInOtherBranch, filterDate , searchText]);
-    //for handle page change
-    let handlePageChange = (page) => {
-      getPurchasesData(page);
-    };
+  }, [filterClientInfo, filterProductType, filterBranchId, filterStatusId, filterIsAvailableInOtherBranch, filterDate, searchText]);
+  //for handle page change
+  let handlePageChange = (page) => {
+    getPurchasesData(page);
+  };
   //get status data
   let [statusData, setStatusData] = useState([]);
   let getStatusData = async () => {
@@ -105,7 +105,7 @@ export default function Purchases() {
     }).then((res) => {
       toast.success(res.data.message)
       getPurchasesData()
-   
+
     }).catch((errors) => {
       if (errors.response.data.message == "غير موجود") {
         toast.error(errors.response.data.message)
@@ -132,6 +132,47 @@ export default function Purchases() {
       });
     }
   }, [status.status_id]);
+  //for making come from
+  let [comeFrom, setComeFrom] = useState({
+    avillable_fromWhere: ''
+  })
+
+  let getInputValue = (event) => {
+    let { name, value } = event.target;
+    setComeFrom(prevState => ({ ...prevState, [name]: value }));
+  };
+  let sendComeFromToApi = async (purchId) => {
+    await axios.put(`${process.env.REACT_APP_API_URL}/api/shortcomings/${purchId}`, comeFrom, {
+      headers: {
+        "Authorization": `Bearer ${accessToken}`
+      }
+    }).then((res) => {
+      toast.success(res.data.message, {
+        position: 'top-center'
+      });
+      getPurchasesData()
+    }).catch((errors) => {
+      try {
+        const errorList = errors?.response?.data?.error;
+        if (errorList !== undefined) {
+          Object.keys(errorList)?.map((err) => {
+            errorList[err]?.map((err) => {
+              toast.error(err);
+            })
+          });
+        } else {
+          toast.error("حدث خطأ ما");
+        }
+      } catch (error) {
+        toast.error("حدث خطأ ما");
+      }
+
+    });
+  };
+  let submitComeFrom = (e, purchId) => {
+    e.preventDefault();
+    sendComeFromToApi(purchId)
+  }
 
   let showPurchases = () => {
     if (purchasesData.length > 0) {
@@ -144,6 +185,7 @@ export default function Purchases() {
                 <th>العميل</th>
                 <th>الحالة</th>
                 <th> تغيير الحالة</th>
+                <th>  متوفر منين</th>
                 <th > ملاحظات</th>
                 <th>الفرع</th>
                 <th>الموظف</th>
@@ -175,13 +217,26 @@ export default function Purchases() {
 
                   </div>
                 </td>
+
+                <td data-label="متوفر منين" style={{ minWidth: '150px' }} >
+                  <div>
+                    <form onSubmit={(e) => submitComeFrom(e, purch.id)} >
+                      <div className=" d-flex align-items-center">
+                        <input type="text" name='avillable_fromWhere' defaultValue={purch?.avillable_fromWhere || ''} className='form-control mx-1' onChange={getInputValue} />
+                        <button type='submit' className='btn btn-sm btn-primary'>تم</button>
+                      </div>
+
+                    </form>
+                
+                  </div>
+                </td>
                 <td data-label="ملاحظات">{purch?.notes}</td>
                 <td data-label="الفرع">{purch?.branch?.name}</td>
                 <td data-label="الموظف">{purch?.creatorUser?.name}</td>
                 <td data-label="متوفر بالفرع الأخر">{purch?.isAvailable_inOtherBranch == 1 ? "متوفر" : "غير متوفر"}</td>
                 <td data-label="نوع المنتج"  >{purch?.productType}</td>
                 <td data-label="تاريخ الإنشاء"  >{purch?.created_at}</td>
-                <td data-label="خيارات" style={{ minWidth: '150px' }} >
+                <td data-label="خيارات" style={{ minWidth: '120px' }} >
                   <NavLink to={`/purchases/delete/${purch.id}`} >
                     <i className='bi bi-trash text-bg-danger p-1 mx-1 rounded'></i>
                   </NavLink>
@@ -231,10 +286,10 @@ export default function Purchases() {
           <NavLink to='/shortcomings/add' className='btn btn-danger mb-2 '>إضافة النواقص</NavLink>
         </div>
         <div className="col-md-4 mb-1">
-        
-          <button  className='btn btn-secondary' onClick={handleClientInfoClick} >فلتر العميل</button>
-        
-        
+
+          <button className='btn btn-secondary' onClick={handleClientInfoClick} >فلتر العميل</button>
+
+
         </div>
         <div className="col-md-4" >
           <input type="text" className='form-control text-end mb-1' placeholder='بحث  ...' onChange={handleSearchChange} />
@@ -279,7 +334,7 @@ export default function Purchases() {
 
       </div>
       <div className="text-center mb-2">
-        <Pagination pagination={pagination} currentPage={currentPage} handlePageChange={handlePageChange}/>
+        <Pagination pagination={pagination} currentPage={currentPage} handlePageChange={handlePageChange} />
       </div>
       {showPurchases()}
     </>

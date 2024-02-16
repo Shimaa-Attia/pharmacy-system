@@ -71,6 +71,10 @@ export default function Sidebar() {
                                                         <span className='me-3 d-none d-sm-inline '>خدمة العملاء </span>
                                                         <i className="bi bi-telephone-outbound-fill "></i>
                                                     </NavLink>
+                                                    <NavLink to='/areas' className="nav-link me-4 fw-bolder" >
+                                                        <span className='me-3 d-none d-sm-inline '>المناطق</span>
+                                                        <i className="bi bi-geo-fill"></i>
+                                                    </NavLink>
                                                 </div>
                                             }
 
@@ -148,7 +152,7 @@ export default function Sidebar() {
                                                     <i className="bi bi-bell-fill"></i>
                                                 </NavLink>
                                                 <NavLink to='/rules' className="nav-link me-4 fw-bolder" >
-                                                    <span className='me-3 d-none d-sm-inline '>التعليمات</span>
+                                                    <span className='me-3 d-none d-sm-inline '>قواعد العمل</span>
                                                     <i className="bi bi-book-fill "></i>
                                                 </NavLink>
                                                 <NavLink to='users' className="nav-link me-4 fw-bolder">

@@ -53,4 +53,6 @@ ul li span ,  ul li i {
 .nav-item .active  i , .nav-item .active span{
   color: white !important;
 }
-
+/* table tbody td {
+  min-width: 150px;
+} */

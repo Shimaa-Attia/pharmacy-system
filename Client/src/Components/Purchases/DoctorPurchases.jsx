@@ -121,7 +121,47 @@ export default function DoctorPurchases() {
       });
     }
   }, [status.status_id]);
-
+    //for making come from
+    let [comeFrom, setComeFrom] = useState({
+      avillable_fromWhere: ''
+    })
+  
+    let getInputValue = (event) => {
+      let { name, value } = event.target;
+      setComeFrom(prevState => ({ ...prevState, [name]: value }));
+    };
+    let sendComeFromToApi = async (purchId) => {
+      await axios.put(`${process.env.REACT_APP_API_URL}/api/shortcomings/${purchId}`, comeFrom, {
+        headers: {
+          "Authorization": `Bearer ${accessToken}`
+        }
+      }).then((res) => {
+        toast.success(res.data.message, {
+          position: 'top-center'
+        });
+        getPurchasesData()
+      }).catch((errors) => {
+        try {
+          const errorList = errors?.response?.data?.error;
+          if (errorList !== undefined) {
+            Object.keys(errorList)?.map((err) => {
+              errorList[err]?.map((err) => {
+                toast.error(err);
+              })
+            });
+          } else {
+            toast.error("حدث خطأ ما");
+          }
+        } catch (error) {
+          toast.error("حدث خطأ ما");
+        }
+  
+      });
+    };
+    let submitComeFrom = (e, purchId) => {
+      e.preventDefault();
+      sendComeFromToApi(purchId)
+    }
   let showPurchases = () => {
     if (purchasesData?.length > 0) {
       return (
@@ -134,6 +174,7 @@ export default function DoctorPurchases() {
                 <th>العميل</th>
                 <th>الحالة</th>
                 <th> تغيير الحالة</th>
+                <th>  متوفر منين</th>
                 <th > ملاحظات</th>
                 <th>الفرع</th>
                 <th>الموظف</th>
@@ -163,6 +204,18 @@ export default function DoctorPurchases() {
                       {statusData?.map((stat) => <option key={stat.id} value={stat.id}>{stat?.name}</option>)}
                     </select>
 
+                  </div>
+                </td>
+                <td data-label="متوفر منين" style={{ minWidth: '150px' }} >
+                  <div>
+                    <form onSubmit={(e) => submitComeFrom(e, purch.id)} >
+                      <div className=" d-flex align-items-center">
+                        <input type="text" name='avillable_fromWhere' defaultValue={purch?.avillable_fromWhere || ''} className='form-control mx-1' onChange={getInputValue} />
+                        <button type='submit' className='btn btn-sm btn-primary'>تم</button>
+                      </div>
+
+                    </form>
+                
                   </div>
                 </td>
                 <td data-label="ملاحظات">{purch?.notes}</td>

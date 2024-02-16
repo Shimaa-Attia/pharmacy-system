@@ -41,7 +41,7 @@ export default function DoctorNavbar() {
                     <div className="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
                             <li className="nav-item">
-                                <NavLink className="nav-link  text-white fs-6 fw-bold " aria-current="page" to={`/doctorrules`} >التعليمات</NavLink>
+                                <NavLink className="nav-link  text-white fs-6 fw-bold " aria-current="page" to={`/doctorrules`} >قواعد العمل</NavLink>
                             </li>
                             <li className="nav-item">
                                 <NavLink className="nav-link  text-white fs-6 fw-bold " aria-current="page" to={`/doctorsellingincentives`} >حوافز البيع</NavLink>
@@ -54,6 +54,9 @@ export default function DoctorNavbar() {
                             </li>
                             <li className="nav-item">
                                 <NavLink className="nav-link  text-white fs-6 fw-bold " aria-current="page" to={`/doctoroffers`} >العروض</NavLink>
+                            </li>
+                            <li className="nav-item">
+                                <NavLink className="nav-link  text-white fs-6 fw-bold " aria-current="page" to={`/doctorcustomerservice`} >خدمة العملاء</NavLink>
                             </li>
                             <li className="nav-item">
                                 <NavLink className="nav-link  text-white fs-6 fw-bold " aria-current="page" to={`/doctorpurchases`} >المشتريات</NavLink>

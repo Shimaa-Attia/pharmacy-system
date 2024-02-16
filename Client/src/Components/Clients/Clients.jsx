@@ -34,6 +34,7 @@ export default function Clients() {
                     "Authorization": `Bearer ${accessToken}`
                 }
             });
+            
             setClients(searchResult.data.data);
             setPagination(searchResult.data.meta); // Set pagination data
             setCurrentPage(page); // Set current page
@@ -59,8 +60,9 @@ export default function Clients() {
                                 <th>رقم</th>
                                 <th>كود العميل</th>
                                 <th>الاسم</th>
-                                <th>أرقام الهواتف</th>
                                 <th>المنطقة</th>
+                                <th>أرقام الهواتف</th>
+                                <th>العناوين</th>
                                 <th>له</th>
                                 <th>عليه</th>
                                 <th>خيارات</th>
@@ -71,6 +73,14 @@ export default function Clients() {
                                 <td data-label="#">{++index}</td>
                                 <td data-label="كود العميل">{client.code}</td>
                                 <td data-label="اسم العميل">{client.name}</td>
+                                <td data-label="المنطقة">
+                                    {client?.areas?.map((area) => ( <div key={area.id}>
+
+                                        <p >{area.name}</p>
+                                    </div>
+                                    )  
+                                    )}
+                                </td>
                                   <td data-label="أرقام الهواتف">
                                     {client?.contactInfo?.map((contactInfo) => {
                                         if (contactInfo.name === "phone") {

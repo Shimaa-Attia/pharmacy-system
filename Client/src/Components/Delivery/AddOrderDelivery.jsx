@@ -24,7 +24,8 @@ export default function AddOrderDelivery() {
         total_ammount: '',
         // cost: '',
         notes: '',
-        sale_point_id: ''
+        sale_point_id: '',
+        area_id: ''
     });
     //get client data to put it in slecte options
     let getClientData = async () => {
@@ -49,6 +50,7 @@ export default function AddOrderDelivery() {
             label: `${client.code}`,
             onHim: `${client.onHim}`,
             forHim: `${client.forHim}`,
+            customer_area: `${client.areas.map(area => area.name)}`
         }));
         setClientOptions(mapClient);
     }, [clients]);
@@ -88,25 +90,42 @@ export default function AddOrderDelivery() {
     useEffect(() => {
         getUserData()
     }, []);
-
-    let [contacts, setContacts] = useState([]);
-    let getContactValue = async (id) => {
-        let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers/contact/${id}`, {
-            headers: {
-                "Authorization": `Bearer ${accessToken}`
-            }
-        });
-
-        setContacts(data);
-    };
-    useEffect(() => {
-        if (orders.customer_code === '') {
-            return;
-        } else {
-            getContactValue(orders.customer_code)
+    //getting areas data to display in select 
+    let [areasData, setAreasData] = useState([]);
+    let getAreasData = async () => {
+        try {
+            const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/areas`, {
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`
+                }
+            });
+            setAreasData(data);
+        } catch (error) {
+            toast.error('حدث خطأ أثناء جلب البيانات');
         }
+    }
+    useEffect(() => {
+        getAreasData();
+    }, []);
 
-    }, [orders?.customer_code]);
+    // let [contacts, setContacts] = useState([]);
+    // let getContactValue = async (id) => {
+    //     let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers/contact/${id}`, {
+    //         headers: {
+    //             "Authorization": `Bearer ${accessToken}`
+    //         }
+    //     });
+
+    //     setContacts(data);
+    // };
+    // useEffect(() => {
+    //     if (orders.customer_code === '') {
+    //         return;
+    //     } else {
+    //         getContactValue(orders.customer_code)
+    //     }
+
+    // }, [orders?.customer_code]);
 
     //get the values of input and put them in the orders state
     let getInputValue = (event) => {
@@ -125,15 +144,16 @@ export default function AddOrderDelivery() {
                     position: 'top-center'
                 });
                 setIsLoading(false);
-                formRef.current.reset();
-                clientSelectRef.current.clearValue();
                 setOrders({
                     customer_code: '',
                     total_ammount: '',
                     // cost: '',
                     notes: '',
-                    sale_point_id: ''
+                    sale_point_id: '',
+                    area_id: '',
                 })
+                formRef.current.reset();
+                clientSelectRef.current.clearValue();
             }).catch((errors) => {
 
                 setIsLoading(false);
@@ -171,6 +191,7 @@ export default function AddOrderDelivery() {
                 'string.empty': 'نقطة البيع مطلوبة',
                 'any.required': 'نقطة البيع مطلوبة',
             }),
+            area_id: Joi.number().empty(''),
             notes: Joi.string().empty(''),
         });
         return schema.validate(orders, { abortEarly: false });
@@ -233,19 +254,29 @@ export default function AddOrderDelivery() {
                                 placeholder="بحث عن عميل..."
                             />
                         </div>
-                        {customerCodeChanged && <div className="col-md-4 bg-danger-subtle  p-2 rounded">
+
+                        {customerCodeChanged && <div className="col-md-4  ">
                             {customerData?.onHim ? (
                                 <>
-                                    <div>عليه: {customerData?.onHim !== 'null' ? customerData?.onHim : 'لا يوجد'}</div>
-                                    <div>له: {customerData?.forHim !== 'null' ? customerData?.forHim : 'لا يوجد'}</div>
+                                    <div className='bg-danger-subtle p-2 rounded'>
+
+                                        <div>المنطقة: {customerData?.customer_area  ? customerData?.customer_area : 'لا يوجد'}</div>
+                                        <div>عليه: {customerData?.onHim !== 'null' ? customerData?.onHim : 'لا يوجد'}</div>
+                                        <div>له: {customerData?.forHim !== 'null' ? customerData?.forHim : 'لا يوجد'}</div>
+                                    </div>
                                 </>
                             ) : (
-                                <div className="">
-                                    <div className="bg-danger-subtle  p-2 rounded ">لا يوجد  </div>
-                                </div>
+                                ''
                             )}
                         </div>}
-
+                        <div className='col-md-4'>
+                            <label htmlFor="customer_code" className='form-label'>المنطقة   </label>
+                            <select name="area_id" defaultValue={0} className='form-control' id="branch_id"
+                                onChange={getInputValue}>
+                                <option value={0} hidden disabled>اختر...</option>
+                                {areasData.map((area) => <option key={area.id} value={area?.id}>{area?.name}</option>)}
+                            </select>
+                        </div>
                         <div className="col-md-4">
                             <label htmlFor="sale_point_id" className='form-label'>نقطة البيع </label>
                             <select name="sale_point_id" defaultValue={0} className='form-control' id="sale_point_id"
