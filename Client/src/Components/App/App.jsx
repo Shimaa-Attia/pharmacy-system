@@ -90,6 +90,8 @@ import DeletePurchasesUser from '../PurchasesUser.jsx/Purchases/DeletePurchasesU
 import PurchasesUserDetails from '../PurchasesUser.jsx/Purchases/PurchasesUserDetails';
 import DoctorCustomerService from '../Doctor/CustomerService/DoctorCustomerService';
 import Areas from '../Areas/Areas';
+import PurchasesNotifications from '../PurchasesUser.jsx/Notifications/PurchasesNotifications';
+import AddPurchasesNotifications from '../PurchasesUser.jsx/Notifications/AddPurchasesNotifications';
 
 
 
@@ -174,6 +176,8 @@ function App() {
             <Route path='/purchasescompanies/add' element={<ProtectedRoute><AddPurchasesCompanies /></ProtectedRoute>}></Route>
             <Route path='/purchasescompanies/edite/:id' element={<ProtectedRoute><EditePurchasesCompanies /></ProtectedRoute>}></Route>
             <Route path='/purchasescustomerservice' element={<ProtectedRoute><PurchasesCustomerService /></ProtectedRoute>}></Route>
+            <Route path='/purchasesnotifications' element={<ProtectedRoute><PurchasesNotifications /></ProtectedRoute>}></Route>
+            <Route path='/purchasesnotifications/add' element={<ProtectedRoute><AddPurchasesNotifications /></ProtectedRoute>}></Route>
    
           </Route>
           <Route path='/' element={<ProtectedRoute><DoctorLayout /></ProtectedRoute>}>

@@ -4,6 +4,7 @@ import { AuthContext } from '../../Context/AuthStore';
 import { NavLink } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Pagination from '../Pagination/Pagination';
+import { useRef } from 'react';
 
 export default function Purchases() {
   let { accessToken } = useContext(AuthContext);
@@ -104,7 +105,7 @@ export default function Purchases() {
       }
     }).then((res) => {
       toast.success(res.data.message)
-      getPurchasesData()
+      // getPurchasesData()
 
     }).catch((errors) => {
       if (errors.response.data.message == "غير موجود") {
@@ -133,6 +134,7 @@ export default function Purchases() {
     }
   }, [status.status_id]);
   //for making come from
+  let inputRef = useRef(null);
   let [comeFrom, setComeFrom] = useState({
     avillable_fromWhere: ''
   })
@@ -150,7 +152,11 @@ export default function Purchases() {
       toast.success(res.data.message, {
         position: 'top-center'
       });
-      getPurchasesData()
+      setComeFrom({
+        avillable_fromWhere: ''
+      })
+      inputRef.current.value = ''
+      // getPurchasesData()
     }).catch((errors) => {
       try {
         const errorList = errors?.response?.data?.error;
@@ -218,16 +224,24 @@ export default function Purchases() {
                   </div>
                 </td>
 
-                <td data-label="متوفر منين" style={{ minWidth: '220px' }} >
+                <td data-label="متوفر منين" style={{ minWidth: '200px' }} >
                   <div>
                     <form onSubmit={(e) => submitComeFrom(e, purch.id)} >
                       <div className=" d-flex align-items-center">
-                        <input type="text" name='avillable_fromWhere' defaultValue={purch?.avillable_fromWhere || ''} className='form-control mx-1' onChange={getInputValue} />
+                        <input
+                          ref={inputRef}
+                          type="text"
+                          name='avillable_fromWhere'
+                          className='form-control mx-1'
+                          onChange={getInputValue}
+                        />
                         <button type='submit' className='btn btn-sm btn-primary'>تم</button>
                       </div>
 
                     </form>
-                
+                    <p>
+                      {purch?.avillable_fromWhere}
+                    </p>
                   </div>
                 </td>
                 <td data-label="ملاحظات">{purch?.notes}</td>

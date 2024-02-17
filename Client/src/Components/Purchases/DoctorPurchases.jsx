@@ -1,6 +1,6 @@
 
 import axios from 'axios';
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { AuthContext } from '../../Context/AuthStore';
 import { NavLink } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -10,6 +10,11 @@ export default function DoctorPurchases() {
   let { accessToken } = useContext(AuthContext);
   let [pagination, setPagination] = useState(null);
   let [currentPage, setCurrentPage] = useState(1); // Current page state
+
+  let [searchText, setSearchText] = useState('');
+  function handleSearchChange(event) {
+    setSearchText(event?.target?.value)
+  };
   let [filterBranchId, setFilterBranchId] = useState('');
   function handleBranchChange(event) {
     setFilterBranchId(event?.target?.value)
@@ -30,9 +35,13 @@ export default function DoctorPurchases() {
   function handleDateChange(event) {
     setFilterDate(event.target.value)
   }
+  let [filterClientInfo, setFilterClientInfo] = useState('');
+  function handleClientInfoClick() {
+    setFilterClientInfo('notNull')
+  }
 
   let [purchasesData, setPurchasesData] = useState([]);
-  let getPurchasesData = async (page =1) => {
+  let getPurchasesData = async (page = 1) => {
     let urlApi = `${process.env.REACT_APP_API_URL}/api/shortcomings/filter?`;
     let purchResult;
     if (filterProductType !== undefined && filterProductType.trim().length > 0) {
@@ -51,6 +60,12 @@ export default function DoctorPurchases() {
     if (filterDate !== undefined && filterDate.length > 0) {
       urlApi += `fromDate=${filterDate}&`
     }
+    if (filterClientInfo !== undefined && filterClientInfo.length > 0) {
+      urlApi += `clientInfo=${filterClientInfo}&`
+    }
+    if (searchText !== undefined && searchText.trim().length > 0) {
+      urlApi += `key=${searchText}&`
+    }
     urlApi += `page=${page}`
     purchResult = await axios.get(urlApi, {
       headers: {
@@ -64,11 +79,11 @@ export default function DoctorPurchases() {
   }
   useEffect(() => {
     getPurchasesData()
-  }, [filterProductType, filterBranchId, filterStatusId, filterIsAvailableInOtherBranch, filterDate]);
-      //for handle page change
-      let handlePageChange = (page) => {
-        getPurchasesData(page);
-      };
+  }, [filterClientInfo,filterProductType, filterBranchId, filterStatusId, filterIsAvailableInOtherBranch, filterDate , searchText]);
+  //for handle page change
+  let handlePageChange = (page) => {
+    getPurchasesData(page);
+  };
   //get status data
   let [statusData, setStatusData] = useState([]);
   let getStatusData = async () => {
@@ -92,7 +107,8 @@ export default function DoctorPurchases() {
       }
     }).then((res) => {
       toast.success(res.data.message)
-      getPurchasesData()
+
+      // getPurchasesData()
 
 
     }).catch((errors) => {
@@ -121,47 +137,49 @@ export default function DoctorPurchases() {
       });
     }
   }, [status.status_id]);
-    //for making come from
-    let [comeFrom, setComeFrom] = useState({
-      avillable_fromWhere: ''
-    })
-  
-    let getInputValue = (event) => {
-      let { name, value } = event.target;
-      setComeFrom(prevState => ({ ...prevState, [name]: value }));
-    };
-    let sendComeFromToApi = async (purchId) => {
-      await axios.put(`${process.env.REACT_APP_API_URL}/api/shortcomings/${purchId}`, comeFrom, {
-        headers: {
-          "Authorization": `Bearer ${accessToken}`
-        }
-      }).then((res) => {
-        toast.success(res.data.message, {
-          position: 'top-center'
-        });
-        getPurchasesData()
-      }).catch((errors) => {
-        try {
-          const errorList = errors?.response?.data?.error;
-          if (errorList !== undefined) {
-            Object.keys(errorList)?.map((err) => {
-              errorList[err]?.map((err) => {
-                toast.error(err);
-              })
-            });
-          } else {
-            toast.error("حدث خطأ ما");
-          }
-        } catch (error) {
+  //for making come from
+ 
+  let [comeFrom, setComeFrom] = useState({
+    avillable_fromWhere: ''
+  })
+
+  let getInputValue = (event) => {
+    let { name, value } = event.target;
+    setComeFrom(prevState => ({ ...prevState, [name]: value }));
+  };
+  let sendComeFromToApi = async (purchId) => {
+    await axios.put(`${process.env.REACT_APP_API_URL}/api/shortcomings/${purchId}`, comeFrom, {
+      headers: {
+        "Authorization": `Bearer ${accessToken}`
+      }
+    }).then((res) => {
+      toast.success(res.data.message, {
+        position: 'top-center'
+      });
+
+      // getPurchasesData()
+    }).catch((errors) => {
+      try {
+        const errorList = errors?.response?.data?.error;
+        if (errorList !== undefined) {
+          Object.keys(errorList)?.map((err) => {
+            errorList[err]?.map((err) => {
+              toast.error(err);
+            })
+          });
+        } else {
           toast.error("حدث خطأ ما");
         }
-  
-      });
-    };
-    let submitComeFrom = (e, purchId) => {
-      e.preventDefault();
-      sendComeFromToApi(purchId)
-    }
+      } catch (error) {
+        toast.error("حدث خطأ ما");
+      }
+
+    });
+  };
+  let submitComeFrom = (e, purchId) => {
+    e.preventDefault();
+    sendComeFromToApi(purchId)
+  }
   let showPurchases = () => {
     if (purchasesData?.length > 0) {
       return (
@@ -170,7 +188,7 @@ export default function DoctorPurchases() {
           <table dir="rtl" responsive='sm' className='table  table-hover text-center align-middle table-responsive-list '>
             <thead className='table-primary  no-wrap-heading'>
               <tr>
-              <th>اسم الصنف</th>
+                <th>اسم الصنف</th>
                 <th>العميل</th>
                 <th>الحالة</th>
                 <th> تغيير الحالة</th>
@@ -186,7 +204,7 @@ export default function DoctorPurchases() {
             </thead>
             <tbody>
               {purchasesData.map((purch, index) => <tr key={index}>
-              <td data-label="اسم الصنف">{purch?.productName}</td>
+                <td data-label="اسم الصنف">{purch?.productName}</td>
                 <td data-label="العميل"  >{purch?.clientInfo}</td>
                 <td data-label="الحالة" >{purch?.status?.name}</td>
                 <td data-label="تغيير الحالة"  >
@@ -206,16 +224,22 @@ export default function DoctorPurchases() {
 
                   </div>
                 </td>
-                <td data-label="متوفر منين" style={{ minWidth: '220px' }} >
+                <td data-label="متوفر منين" style={{ minWidth: '200px' }} >
                   <div>
                     <form onSubmit={(e) => submitComeFrom(e, purch.id)} >
                       <div className=" d-flex align-items-center">
-                        <input type="text" name='avillable_fromWhere' defaultValue={purch?.avillable_fromWhere || ''} className='form-control mx-1' onChange={getInputValue} />
+                        <input
+                      
+                          type="text"
+                          name='avillable_fromWhere'
+                          className='form-control mx-1'
+                          onChange={getInputValue} />
                         <button type='submit' className='btn btn-sm btn-primary'>تم</button>
                       </div>
-
                     </form>
-                
+                    <p>
+                      {purch?.avillable_fromWhere}
+                    </p>
                   </div>
                 </td>
                 <td data-label="ملاحظات">{purch?.notes}</td>
@@ -243,7 +267,7 @@ export default function DoctorPurchases() {
     } else {
       return (
         <div className=' d-flex justify-content-center  height-calc-70 align-items-center' >
-          {purchasesData.length <= 0 && filterBranchId.length <= 0 && filterProductType.length <= 0 && filterBranchId.length <= 0 && filterDate.length <= 0 && filterIsAvailableInOtherBranch.length <= 0 &&filterStatusId.length <=0 ?
+          {purchasesData.length <= 0 && filterBranchId.length <= 0 && filterProductType.length <= 0 && filterBranchId.length <= 0 && filterDate.length <= 0 && filterIsAvailableInOtherBranch.length <= 0 && filterStatusId.length <= 0 ?
             <i className='fa fa-spinner fa-spin  fa-5x'></i>
             : <div className='alert alert-danger w-50 text-center'>لا يوجد مشتريات</div>
           }
@@ -267,8 +291,14 @@ export default function DoctorPurchases() {
 
       <div className='text-center m-3 fs-4 fw-bold  bg-secondary text-white rounded p-1 ' >المشتريات</div>
       <div className='row mx-2' dir='rtl'>
-        <div className='col-md-12'>
+        <div className='col-md-4'>
           <NavLink to='/doctorpurchases/add' className='btn btn-danger mb-3 mx-3'>إضافة النواقص</NavLink>
+        </div>
+        <div className="col-md-4 mb-1">       
+          <button  className='btn btn-secondary' onClick={handleClientInfoClick} >فلتر العميل</button>
+        </div>
+        <div className="col-md-4" >
+          <input type="text" className='form-control text-end mb-1' placeholder='بحث  ...' onChange={handleSearchChange} />
         </div>
         <div className="col-md-2 mb-1">
           <select name="productType" defaultValue={0} className='form-control'
@@ -309,7 +339,7 @@ export default function DoctorPurchases() {
 
       </div>
       <div className="text-center mb-2">
-        <Pagination pagination={pagination} currentPage={currentPage} handlePageChange={handlePageChange}/>
+        <Pagination pagination={pagination} currentPage={currentPage} handlePageChange={handlePageChange} />
       </div>
       {showPurchases()}
     </>

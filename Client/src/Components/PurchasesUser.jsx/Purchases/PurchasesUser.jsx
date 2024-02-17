@@ -11,6 +11,7 @@ export default function PurchasesUser() {
   let [pagination, setPagination] = useState(null);
   let [currentPage, setCurrentPage] = useState(1); // Current page state
   let [filterBranchId, setFilterBranchId] = useState('');
+  
   let [searchText, setSearchText] = useState('');
   function handleSearchChange(event) {
     setSearchText(event?.target?.value)
@@ -105,7 +106,7 @@ export default function PurchasesUser() {
       }
     }).then((res) => {
       toast.success(res.data.message)
-      getPurchasesData()
+      // getPurchasesData()
    
     }).catch((errors) => {
       if (errors.response.data.message == "غير موجود") {
@@ -151,7 +152,7 @@ export default function PurchasesUser() {
         toast.success(res.data.message, {
           position: 'top-center'
         });
-        getPurchasesData()
+        // getPurchasesData()
       }).catch((errors) => {
         try {
           const errorList = errors?.response?.data?.error;
@@ -218,16 +219,18 @@ export default function PurchasesUser() {
 
                   </div>
                 </td>
-                <td data-label="متوفر منين" style={{ minWidth: '220px' }} >
+                <td data-label="متوفر منين" style={{ minWidth: '200px' }} >
                   <div>
                     <form onSubmit={(e) => submitComeFrom(e, purch.id)} >
                       <div className=" d-flex align-items-center">
-                        <input type="text" name='avillable_fromWhere' defaultValue={purch?.avillable_fromWhere || ''} className='form-control mx-1' onChange={getInputValue} />
+                        <input type="text" name='avillable_fromWhere' className='form-control mx-1' onChange={getInputValue} />
                         <button type='submit' className='btn btn-sm btn-primary'>تم</button>
                       </div>
 
                     </form>
-                
+                    <p>
+                      {purch?.avillable_fromWhere}
+                    </p>
                   </div>
                 </td>
                 <td data-label="ملاحظات">{purch?.notes}</td>
@@ -285,11 +288,8 @@ export default function PurchasesUser() {
         <div className='col-md-4'>
           <NavLink to='/shortcomingspurchases/add' className='btn btn-danger mb-2 '>إضافة النواقص</NavLink>
         </div>
-        <div className="col-md-4 mb-1">
-        
+        <div className="col-md-4 mb-1">       
           <button  className='btn btn-secondary' onClick={handleClientInfoClick} >فلتر العميل</button>
-        
-        
         </div>
         <div className="col-md-4" >
           <input type="text" className='form-control text-end mb-1' placeholder='بحث  ...' onChange={handleSearchChange} />

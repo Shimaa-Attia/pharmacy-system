@@ -98,7 +98,7 @@ export default function Companies() {
                     <i className='bi bi-pencil-square text-primary fs-5 mx-1   '></i>
                   </NavLink>
                 </td>
-                <td>
+                <td data-label='عدم تحديد الكل'>
                   {company.checkBox ? <i className='bi bi-check-circle-fill text-success fs-5'
                     onClick={() => sendUpdateCheckBoxToApi(company.id)} ></i>
                     : <i className='bi bi-x-circle-fill text-danger fs-5 '

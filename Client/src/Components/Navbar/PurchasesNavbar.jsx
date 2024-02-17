@@ -34,6 +34,9 @@ export default function PurchasesNavbar() {
                             </li> */}
 
                             <li className="nav-item">
+                                <NavLink className="nav-link  text-white fs-6 fw-bold " aria-current="page" to={`/purchasesnotifications`} >الإشعارات </NavLink>
+                            </li>
+                            <li className="nav-item">
                                 <NavLink className="nav-link  text-white fs-6 fw-bold " aria-current="page" to={`/purchasescustomerservice`} >خدمة العملاء</NavLink>
                             </li>
                             <li className="nav-item">

@@ -92,6 +92,7 @@ export default function DoctorCustomerService() {
                 <th>اسم الصنف</th>
                 <th>العميل</th>
                 <th> الحالة</th>
+                <th> متوفر منين</th>
                 <th> تغيير الحالة</th>
                 <th>متوفر بالفرع الآخر</th>
               </tr>
@@ -101,6 +102,7 @@ export default function DoctorCustomerService() {
                 <td data-label="اسم الصنف">{service?.productName}</td>
                 <td data-label="العميل">{service?.clientInfo}</td>
                 <td data-label="الحالة">{service?.status?.name}</td>
+                <td data-label="متوفر منين">{service?.avillable_fromWhere}</td>
                 <td data-label="تغيير الحالة"  >
                   <div >
                     <select name="status_id" className='form-control m-auto' id="status_id" defaultValue={0}

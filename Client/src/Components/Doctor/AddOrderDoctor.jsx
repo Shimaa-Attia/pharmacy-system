@@ -2,11 +2,10 @@ import axios from 'axios';
 import Joi from 'joi';
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Helmet } from 'react-helmet';
-import { NavLink, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../../Context/AuthStore';
 import CreatableSelect from 'react-select/creatable';
-
+import Select from 'react-select';
 
 export default function AddOrderDoctor() {
     let { accessToken } = useContext(AuthContext);
@@ -71,6 +70,15 @@ export default function AddOrderDoctor() {
     useEffect(() => {
         getAreasData();
     }, []);
+       //making map on the areas data to display the name in the option
+       let [areasOptions, setAreasOptions] = useState([])
+       useEffect(() => {
+           let mapAreas = areasData?.map((area) => ({
+               value: `${area.id}`,
+               label: `${area.name}`
+           }));
+           setAreasOptions(mapAreas);
+       }, [areasData]);
     let [customerData, setCustomerData] = useState([]);
     let getSelectedClient = (selectedOption) => {
         setOrders({
@@ -78,6 +86,12 @@ export default function AddOrderDoctor() {
             customer_code: selectedOption?.value,
         });
         setCustomerData(selectedOption)
+    };
+    let getSelectedArea = (selectedOption) => {
+        setOrders({
+            ...orders,
+            area_id: selectedOption?.value,
+        });
     };
    //for dispaly  onhim , forhim
    let [customerCodeChanged, setCustomerCodeChanged] = useState(false);
@@ -242,12 +256,15 @@ export default function AddOrderDoctor() {
                             )}
                         </div>}
                         <div className='col-md-4'>
-                            <label htmlFor="customer_code" className='form-label'>المنطقة   </label>
-                            <select name="area_id" defaultValue={0} className='form-control' id="branch_id"
-                                onChange={getInputValue}>
-                                <option value={0} hidden disabled>اختر...</option>
-                                {areasData.map((area) => <option key={area.id} value={area?.id}>{area?.name}</option>)}
-                            </select>
+                            <label htmlFor="areas" className='form-label'>المنطقة</label>
+                            <Select
+                                name="areas"
+                                options={areasOptions}                                
+                                onChange={getSelectedArea}
+                                isSearchable={true}
+                                placeholder="بحث عن منطقة..."
+
+                            />
                         </div>
                         <div className="col-md-4">
                             <label htmlFor="sale_point_id" className='form-label'>نقطة البيع </label>

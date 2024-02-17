@@ -101,6 +101,7 @@ export default function DoctorOrders() {
       urlApi += `key=${searchText}&`
     
     }
+ 
     urlApi += `page=${page}`
     orderResult = await axios.get(urlApi, {
       headers: {

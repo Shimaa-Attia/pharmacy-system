@@ -8,6 +8,7 @@ export default function Rules() {
   let [managmentRules, setManagmentRules] = useState([]);
   let [clientsRules, setClientsRules] = useState([]);
   let [colleaguesRules, setColleaguesRules] = useState([]);
+  let [deliveryRules, setDeliveryRules] = useState([]);
 
   let [searchText, setSearchText] = useState('');
   function handleSearchChange(event) {
@@ -64,6 +65,18 @@ export default function Rules() {
   useEffect(() => {
     getColleaguesRulesData()
   }, []);
+  let getDeliveryRulesData = async () => {
+
+    let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/rules/delivery`, {
+      headers: {
+        "Authorization": `Bearer ${accessToken}`
+      }
+    });;
+    setDeliveryRules(data.data);
+  };
+  useEffect(() => {
+    getDeliveryRulesData()
+  }, []);
   return (
     <>
       <div className="container-fluid p-3 ">
@@ -114,13 +127,26 @@ export default function Rules() {
                 </div>
               ))}
             </div>
-            <div className="card pb-3 ">
+            <div className="card pb-3  ">
               <p className='text-center fw-bold bg-primary-subtle m-auto rounded py-1 px-4 fs-5'>ما يخص الزملاء</p>
               {colleaguesRules.map((colleRule) => (
                 <div key={colleRule.id}>
                   <div className='p-2'>
                     {colleRule?.body}
                     <NavLink to={`/rules/edite/${colleRule.id}`}>
+                      <i className='bi bi-pencil-square mx-4 text-primary fs-5'></i>
+                    </NavLink>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="card pb-3 my-3 ">
+              <p className='text-center fw-bold bg-primary-subtle m-auto rounded py-1 px-4 fs-5'>ما يخص الطيارين</p>
+              {deliveryRules.map((delivRule) => (
+                <div key={delivRule.id}>
+                  <div className='p-2'>
+                    {delivRule?.body}
+                    <NavLink to={`/rules/edite/${delivRule.id}`}>
                       <i className='bi bi-pencil-square mx-4 text-primary fs-5'></i>
                     </NavLink>
                   </div>

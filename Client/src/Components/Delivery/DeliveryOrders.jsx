@@ -25,8 +25,6 @@ export default function DeliveryOrders() {
             "Authorization": `Bearer ${accessToken}`
           }
         });
-        console.log('sear');
-console.log(searchResult);
         setOrders(searchResult.data.data);
         setPagination(searchResult.data.meta); // Set pagination data
         setCurrentPage(page); // Set current page

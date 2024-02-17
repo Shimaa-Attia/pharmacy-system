@@ -65,8 +65,8 @@ export default function DoctorNotifications() {
         } else {
             return (
                 <div className=' d-flex justify-content-center  height-calc-70 align-items-center' >
-                    <i className='fa fa-spinner fa-spin  fa-3x'></i>
-                </div>
+                <div className='alert alert-danger w-50 text-center'>لا يوجد </div>
+           </div>
             )
         }
     };
@@ -110,8 +110,8 @@ export default function DoctorNotifications() {
         } else {
             return (
                 <div className=' d-flex justify-content-center  height-calc-70 align-items-center' >
-                    <i className='fa fa-spinner fa-spin  fa-3x'></i>
-                </div>
+                <div className='alert alert-danger w-50 text-center'>لا يوجد </div>
+           </div>
             )
         }
     };

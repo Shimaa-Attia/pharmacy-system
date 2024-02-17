@@ -55,7 +55,6 @@ export default function AddClient() {
         setAreasOptions(mapAreas);
     }, [areasData]);
     let handleSelectChange = (selectedOption ,fieldName) => {
-   
         let selectedValues = selectedOption.map((opt) => opt.value)
         setClientData(prevData => ({
             ...prevData,
@@ -68,7 +67,6 @@ export default function AddClient() {
       };
 
     let sendClientDataToApi = async () => {
-
         await axios.post(`${process.env.REACT_APP_API_URL}/api/customers`, clientData, {
             headers: {
                 "Authorization": `Bearer ${accessToken}`

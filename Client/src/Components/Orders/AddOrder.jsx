@@ -23,7 +23,7 @@ export default function AddOrder() {
         cost: '',
         notes: '',
         sale_point_id: '',
-        area_id:''
+        area_id: ''
     });
     let [userOptions, setUserOptions] = useState([]);
     let getUserData = async () => {
@@ -84,6 +84,15 @@ export default function AddOrder() {
     useEffect(() => {
         getAreasData();
     }, []);
+        //making map on the areas data to display the name in the option
+        let [areasOptions, setAreasOptions] = useState([])
+        useEffect(() => {
+            let mapAreas = areasData?.map((area) => ({
+                value: `${area.id}`,
+                label: `${area.name}`
+            }));
+            setAreasOptions(mapAreas);
+        }, [areasData]);
     //for dispaly area, onhim , forhim
     let [customerCodeChanged, setCustomerCodeChanged] = useState(false);
     useEffect(() => {
@@ -148,6 +157,12 @@ export default function AddOrder() {
         });
         setCustomerData(selectedOption);
     };
+    let getSelectedArea = (selectedOption) => {
+        setOrders({
+            ...orders,
+            area_id: selectedOption?.value,
+        });
+    };
 
     let getInputValue = (event) => {
         let myOrders = { ...orders }; //deep copy
@@ -173,7 +188,7 @@ export default function AddOrder() {
                 cost: '',
                 notes: '',
                 sale_point_id: '',
-                area_id:''
+                area_id: ''
             })
             formRef.current.reset();
             userSelectRef.current.clearValue();
@@ -304,7 +319,7 @@ export default function AddOrder() {
                             {customerData?.onHim ? (
                                 <>
                                     <div className='bg-danger-subtle p-2 rounded'>
-                                        <div>المنطقة: {customerData?.customer_area  ? customerData?.customer_area : 'لا يوجد'}</div>
+                                        <div>المنطقة: {customerData?.customer_area ? customerData?.customer_area : 'لا يوجد'}</div>
                                         <div>عليه: {customerData?.onHim !== 'null' ? customerData?.onHim : 'لا يوجد'}</div>
                                         <div>له: {customerData?.forHim !== 'null' ? customerData?.forHim : 'لا يوجد'}</div>
                                     </div>
@@ -314,12 +329,15 @@ export default function AddOrder() {
                             )}
                         </div>}
                         <div className='col-md-4'>
-                            <label htmlFor="customer_code" className='form-label'>المنطقة   </label>
-                            <select name="area_id" defaultValue={0} className='form-control' id="branch_id"
-                                onChange={getInputValue}>
-                                <option value={0} hidden disabled>اختر...</option>
-                                {areasData.map((area) => <option key={area.id} value={area?.id}>{area?.name}</option>)}
-                            </select>
+                            <label htmlFor="areas" className='form-label'>المنطقة</label>
+                            <Select
+                                name="areas"
+                                options={areasOptions}                                
+                                onChange={getSelectedArea}
+                                isSearchable={true}
+                                placeholder="بحث عن منطقة..."
+
+                            />
                         </div>
 
                         {/* {contacts.addresses &&
