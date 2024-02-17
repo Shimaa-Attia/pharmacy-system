@@ -31,6 +31,7 @@ class InventoryProductController extends Controller
 
         return $inventoryProducts;
     }
+
     public function show($id)
     {
         $inventoryProduct =InventoryProduct::find($id);
@@ -101,6 +102,6 @@ class InventoryProductController extends Controller
         ]);
     }
 
-
+    
 
 }

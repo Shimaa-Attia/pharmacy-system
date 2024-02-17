@@ -14,13 +14,14 @@ class newPropertiesSeeder extends Seeder
     public function run(): void
     {
         $array =[
-            ['type'=>'ruleType', 'name'=>'الإدارة'],
-            ['type'=>'ruleType', 'name'=>'العملاء'],
-            ['type'=>'ruleType', 'name'=>'الزملاء'],
-            ['type'=>'notificationStatus', 'name'=>'تم تنفيذه'],
-            ['type'=>'notificationStatus', 'name'=>'لم ينفذ'],
-            ['type'=>'inventoryStatus', 'name'=>'تم جرده'],
-            ['type'=>'inventoryStatus', 'name'=>'لم يتم جرده'],
+            ['type'=>'ruleType', 'name'=>'الطيارين'],
+            // ['type'=>'ruleType', 'name'=>'الإدارة'],
+            // ['type'=>'ruleType', 'name'=>'العملاء'],
+            // ['type'=>'ruleType', 'name'=>'الزملاء'],
+            // ['type'=>'notificationStatus', 'name'=>'تم تنفيذه'],
+            // ['type'=>'notificationStatus', 'name'=>'لم ينفذ'],
+            // ['type'=>'inventoryStatus', 'name'=>'تم جرده'],
+            // ['type'=>'inventoryStatus', 'name'=>'لم يتم جرده'],
 
         ];
 

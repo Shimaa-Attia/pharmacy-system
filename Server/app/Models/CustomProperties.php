@@ -37,5 +37,8 @@ class CustomProperties extends Model
     public function inventoryProductsBranch(){
         return $this->hasMany(InventoryProduct::class,'branch_id','id');
     }
+    public function notificationsBranch(){
+        return $this->hasMany(Notification::class,'branch_id','id');
+    }
 
 }

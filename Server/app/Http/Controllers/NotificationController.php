@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\CustomProperties;
 use App\Models\Notification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class NotificationController extends Controller
@@ -20,15 +21,26 @@ class NotificationController extends Controller
                "message"=>"incorrect route"
             ],404);
         }
-        $notifications = Notification::with(['status'])
-        ->WhereHas('status', function ($query) use ($status) {
-            $query->where('name', $status);
+        if(Auth::user()->role == 'admin'){
+            $notifications = Notification::with(['status','branch'])
+            ->WhereHas('status', function ($query) use ($status) {
+                $query->where('name', $status);
 
-        })->orderBy('created_at', 'DESC')->get();
+            })->orderBy('created_at', 'DESC')->get();
+        }else{
+
+            $notifications = Notification::with(['status','branch'])
+            ->where('branch_id',Auth::user()->branch_id)
+            ->WhereHas('status', function ($query) use ($status) {
+                $query->where('name', $status);
+
+            })->orderBy('created_at', 'DESC')->get();
+        }
 
 
         return $notifications;
     }
+
     public function show($id)
     {
         $notification =Notification::find($id);
@@ -52,6 +64,8 @@ class NotificationController extends Controller
         }
         $status= CustomProperties::where('name','لم ينفذ')->first('id');
         $request->request->add(['status_id' =>$status->id]);
+        $branch_id = Auth::user()->branch_id;
+        $request->request->add(['branch_id' =>$branch_id]);
         Notification::create($request->all());
 
         return response()->json([
@@ -96,4 +110,29 @@ class NotificationController extends Controller
         ]);
     }
 
+    public function filter(Request $request,$status){
+        if($status =='notDone'){
+            $status='لم ينفذ';
+        }
+        elseif($status =='done'){
+            $status='تم تنفيذه';
+        }else{
+            return response()->json([
+               "message"=>"incorrect route"
+            ],404);
+        }
+        $notificationQuery = Notification::with(['status','branch'])
+        ->WhereHas('status', function ($query) use ($status) {
+            $query->where('name', $status);
+
+        });
+        if($request->branch_id){
+            $notificationQuery->where('branch_id',$request->branch_id);
+        }
+        if($request->key){
+            $notificationQuery->where('body','like' ,"%$request->key%");
+        }
+        $notifications =$notificationQuery->orderBy('created_at', 'DESC')->get();
+        return $notifications;
+    }
 }

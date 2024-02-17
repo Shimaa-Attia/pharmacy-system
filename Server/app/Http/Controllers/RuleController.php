@@ -19,6 +19,8 @@ class RuleController extends Controller
             $name = "العملاء";
         }elseif($type == "colleagues"){
             $name = "الزملاء";
+        }elseif($type == "delivery"){
+            $name = "الطيارين";
         }
         if($name !=null){
             $type = CustomProperties::where('name',$name)->first();

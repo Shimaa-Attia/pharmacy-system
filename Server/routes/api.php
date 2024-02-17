@@ -263,6 +263,9 @@ Route::middleware(['auth:api'])->group(function(){
         Route::post('/',[NotificationController::class,'create']);
         //update
         Route::put('/{id}',[NotificationController::class,'update']);
+        //filter
+        Route::get('/{status}/filter',[NotificationController::class,'filter']);
+
 
     });
     Route::group(['prefix'=>'inventoryProducts','as'=>'inventoryProducts'],function(){
