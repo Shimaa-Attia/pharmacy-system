@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { AuthContext } from '../../Context/AuthStore';
+import { toast } from 'react-toastify';
 
 export default function Users() {
 
@@ -15,22 +16,27 @@ export default function Users() {
 
   let getUserData = async () => {
     let searchResult;
-    if (searchText !== undefined && searchText.trim().length > 0) {
-      searchResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/search/${searchText.trim()}`, {
-        headers: {
-          "Authorization": `Bearer ${accessToken}`
-        }
-      });
-      setUsers(searchResult.data);
-
-    } else {
-      searchResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/users`,{
-        headers: {
-          "Authorization": `Bearer ${accessToken}`
-        }
-      });
-      setUsers(searchResult.data.data);
+    try {
+      if (searchText !== undefined && searchText.trim().length > 0) {
+        searchResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/search/${searchText.trim()}`, {
+          headers: {
+            "Authorization": `Bearer ${accessToken}`
+          }
+        });
+        setUsers(searchResult.data);
+  
+      } else {
+        searchResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/users`,{
+          headers: {
+            "Authorization": `Bearer ${accessToken}`
+          }
+        });
+        setUsers(searchResult.data.data);
+      }
+    } catch (error) {
+      toast.error('حدث خطأ ما')
     }
+   
   }
   useEffect(() => { getUserData() }, [searchText]);
 
