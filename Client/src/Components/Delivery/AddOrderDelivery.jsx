@@ -47,6 +47,7 @@ export default function AddOrderDelivery() {
             label: `${client.code}`,
             onHim: `${client.onHim}`,
             forHim: `${client.forHim}`,
+            notes: `${client.notes}`,
             customer_area: `${client.areas.map(area => area.name)}`
         }));
         setClientOptions(mapClient);
@@ -62,7 +63,7 @@ export default function AddOrderDelivery() {
         });
         setCustomerData(selectedOption)
     };
-    //for dispaly  onhim , forhim
+    //for dispaly  onhim , forhim , area , notes >> client data
     let [customerCodeChanged, setCustomerCodeChanged] = useState(false);
     useEffect(() => {
         if (orders.customer_code !== '') {
@@ -119,26 +120,6 @@ export default function AddOrderDelivery() {
           }));
           setAreasOptions(mapAreas);
       }, [areasData]);
-
-
-    // let [contacts, setContacts] = useState([]);
-    // let getContactValue = async (id) => {
-    //     let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers/contact/${id}`, {
-    //         headers: {
-    //             "Authorization": `Bearer ${accessToken}`
-    //         }
-    //     });
-
-    //     setContacts(data);
-    // };
-    // useEffect(() => {
-    //     if (orders.customer_code === '') {
-    //         return;
-    //     } else {
-    //         getContactValue(orders.customer_code)
-    //     }
-
-    // }, [orders?.customer_code]);
 
     //get the values of input and put them in the orders state
     let getInputValue = (event) => {
@@ -276,6 +257,7 @@ export default function AddOrderDelivery() {
                                         <div>المنطقة: {customerData?.customer_area  ? customerData?.customer_area : 'لا يوجد'}</div>
                                         <div>عليه: {customerData?.onHim !== 'null' ? customerData?.onHim : 'لا يوجد'}</div>
                                         <div>له: {customerData?.forHim !== 'null' ? customerData?.forHim : 'لا يوجد'}</div>
+                                        <div>ملاحظة: {customerData?.notes !== 'null' ? customerData?.notes : 'لا يوجد'}</div>
                                     </div>
                                 </>
                             ) : (

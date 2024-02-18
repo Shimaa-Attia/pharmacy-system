@@ -238,10 +238,7 @@ export default function EditeClient() {
                         <i className='fa fa-spinner fa-spin'></i> : 'تعديل'}
                     </button>
                   </div>
-                  <div className="col-md-3">
-                    <NavLink to='../clients'
-                      className='btn  btn-secondary form-control fs-5'>رجوع</NavLink>
-                  </div>
+                 
                 </Form>
               )
             }

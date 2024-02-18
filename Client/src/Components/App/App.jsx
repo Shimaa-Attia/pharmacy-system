@@ -92,6 +92,8 @@ import DoctorCustomerService from '../Doctor/CustomerService/DoctorCustomerServi
 import Areas from '../Areas/Areas';
 import PurchasesNotifications from '../PurchasesUser.jsx/Notifications/PurchasesNotifications';
 import AddPurchasesNotifications from '../PurchasesUser.jsx/Notifications/AddPurchasesNotifications';
+import DoctorClients from '../Doctor/Clients/DoctorClients';
+import EditeDoctorClients from '../Doctor/Clients/EditeDoctorClients';
 
 
 
@@ -199,6 +201,8 @@ function App() {
             <Route path='/doctorrules' element={<ProtectedRoute><DoctorRules /></ProtectedRoute>}></Route>
             <Route path='/doctorsellingincentives' element={<ProtectedRoute><DoctorSellingIncentives /></ProtectedRoute>}></Route>
             <Route path='/doctorcustomerservice' element={<ProtectedRoute><DoctorCustomerService /></ProtectedRoute>}></Route>
+            <Route path='/doctorclients' element={<ProtectedRoute><DoctorClients /></ProtectedRoute>}></Route>
+            <Route path='/doctorclients/edite/:id' element={<ProtectedRoute><EditeDoctorClients /></ProtectedRoute>}></Route>
 
           </Route>
           <Route path='*' element={<ProtectedRoute ><NotFound /></ProtectedRoute>}></Route>

@@ -108,6 +108,7 @@ export default function AddOrder() {
             label: `${client.code}`,
             onHim: `${client.onHim}`,
             forHim: `${client.forHim}`,
+            notes: `${client.notes}`,
             customer_area: `${client.areas.map(area => area.name)}`
         }));
         setClientOptions(mapClient);
@@ -322,6 +323,8 @@ export default function AddOrder() {
                                         <div>المنطقة: {customerData?.customer_area ? customerData?.customer_area : 'لا يوجد'}</div>
                                         <div>عليه: {customerData?.onHim !== 'null' ? customerData?.onHim : 'لا يوجد'}</div>
                                         <div>له: {customerData?.forHim !== 'null' ? customerData?.forHim : 'لا يوجد'}</div>
+                                        <div>ملاحظة: {customerData?.notes !== 'null' ? customerData?.notes : 'لا يوجد'}</div>
+
                                     </div>
                                 </>
                             ) : (

@@ -62,6 +62,9 @@ export default function DoctorNavbar() {
                                 <NavLink className="nav-link  text-white fs-6 fw-bold " aria-current="page" to={`/doctorpurchases`} >المشتريات</NavLink>
                             </li>
                             <li className="nav-item">
+                                <NavLink className="nav-link  text-white fs-6 fw-bold " aria-current="page" to={`/doctorclients`} >العملاء</NavLink>
+                            </li>
+                            <li className="nav-item">
                                 <NavLink className="nav-link  text-white fs-6 fw-bold " aria-current="page" to={`/doctorOrders/${users.id}`} >الأوردرات</NavLink>
                             </li>
                         </ul>
