@@ -157,7 +157,7 @@ export default function DeliveryOrders() {
           <div className="col-md-4">
             <input type="text" className='form-control text-end mt-1 ' placeholder=' ...بحث عن أوردر ' onChange={handleSearchChange} />
           </div>
-          <div className="col-3 m-auto bg-secondary-subtle mt-1 rounded">
+          <div className="col-3 m-auto bg-secondary-subtle mt-1 rounded w-auto">
             <p className=' text-bg-danger rounded p-1 fw-bolder ' >إجمالي المبلغ المطلوب سداده</p>
             <p className='fw-bolder '>{unpaidAmount?.unpaidAmount}</p>
           </div>

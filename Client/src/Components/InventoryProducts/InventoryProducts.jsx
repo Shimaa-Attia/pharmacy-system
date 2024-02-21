@@ -42,7 +42,7 @@ export default function InventoryProducts() {
     if (notDoneInventoryProducts.length > 0) {
       return (
         <div className="shadow rounded rounded-4 bg-white m-2 p-3 table-responsive">
-      
+
           <table dir="rtl" responsive='md' className='table  table-hover  align-middle table-responsive-list  '>
 
             <tbody>
@@ -65,7 +65,7 @@ export default function InventoryProducts() {
     } else {
       return (
         <div className=' d-flex justify-content-center  height-calc-70 align-items-center' >
-      <div className='alert alert-danger w-50 text-center'>لا يوجد </div>
+          <div className='alert alert-danger w-50 text-center'>لا يوجد </div>
         </div>
       )
     }
@@ -84,12 +84,27 @@ export default function InventoryProducts() {
   useEffect(() => {
     getDoneInventoryProductsData()
   }, []);
+  //delete InventoryProducts
+  let deleteInventoryProducts = async (prodId) => {
+    try {
+      let { data } = await axios.delete(`${process.env.REACT_APP_API_URL}/api/inventoryProducts/forceDelete/${prodId}`, {
+        headers: {
+          "Authorization": `Bearer ${accessToken}`
+        }
+      });
+      toast.success(data.message);
+      getDoneInventoryProductsData()
+    } catch (error) {
+
+      toast.error('حدث خطأ ما، حاول مرة أخرى')
+    }
+  };
 
   let showDoneInventoryProducts = () => {
     if (doneInventoryProducts.length > 0) {
       return (
         <div className="shadow rounded rounded-4 bg-white m-2 p-3 table-responsive">
-     
+
           <table dir="rtl" responsive='md' className='table  table-hover  align-middle table-responsive-list  '>
 
             <tbody>
@@ -102,6 +117,9 @@ export default function InventoryProducts() {
                   </div>
                 </td>
                 <td>{prod?.productName}</td>
+                <td >
+                  <i className='bi bi-trash text-danger fs-5' onClick={() => deleteInventoryProducts(prod.id)}></i>
+                </td>
 
               </tr>
               )}
@@ -113,7 +131,7 @@ export default function InventoryProducts() {
     } else {
       return (
         <div className=' d-flex justify-content-center  height-calc-70 align-items-center' >
-          
+
           <div className='alert alert-danger w-50 text-center'>لا يوجد </div>
         </div>
       )
@@ -134,12 +152,12 @@ export default function InventoryProducts() {
       </div>
       <div className="row" dir='rtl'>
         <div className="col-md-6">
-        <p className='text-center bg-warning p-1 me-2 rounded fs-5 fw-bold'>قائمة الجرد</p>
+          <p className='text-center bg-warning p-1 me-2 rounded fs-5 fw-bold'>قائمة الجرد</p>
           {showNotDoneInventoryProducts()}
         </div>
 
         <div className="col-md-6">
-        <p className='text-center bg-success p-1 ms-2 rounded fs-5 fw-bold'>تم جرده</p>
+          <p className='text-center bg-success p-1 ms-2 rounded fs-5 fw-bold'>تم جرده</p>
           {showDoneInventoryProducts()}
         </div>
       </div>

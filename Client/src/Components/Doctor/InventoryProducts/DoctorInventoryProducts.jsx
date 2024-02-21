@@ -85,6 +85,21 @@ export default function DoctorInventoryProducts() {
   useEffect(() => {
     getDoneInventoryProductsData()
   }, []);
+    //delete InventoryProducts
+    let deleteInventoryProducts = async (prodId) => {
+      try {
+        let { data } = await axios.delete(`${process.env.REACT_APP_API_URL}/api/inventoryProducts/forceDelete/${prodId}`, {
+          headers: {
+            "Authorization": `Bearer ${accessToken}`
+          }
+        });
+        toast.success(data.message);
+        getDoneInventoryProductsData()
+      } catch (error) {
+  
+        toast.error('حدث خطأ ما، حاول مرة أخرى')
+      }
+    };
 
   let showDoneInventoryProducts = () => {
     if (doneInventoryProducts.length > 0) {
@@ -102,6 +117,9 @@ export default function DoctorInventoryProducts() {
                   </div>
                 </td>
                 <td>{prod?.productName}</td>
+                <td >
+                  <i className='bi bi-trash text-danger fs-5' onClick={() => deleteInventoryProducts(prod.id)}></i>
+                </td>
 
               </tr>
               )}

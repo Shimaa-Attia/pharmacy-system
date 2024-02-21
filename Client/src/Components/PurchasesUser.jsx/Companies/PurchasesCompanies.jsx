@@ -39,8 +39,8 @@ export default function PurchasesCompanies() {
   useEffect(() => {
     getCompaniesData()
   }, [searchText]);
-   //for making checkBox for every one
-   let sendUpdateCheckBoxToApi = async (compId) => {
+  //for making checkBox for every one
+  let sendUpdateCheckBoxToApi = async (compId) => {
     await axios.put(`${process.env.REACT_APP_API_URL}/api/companies/updateCheckBox/${compId}`, {}, {
       headers: {
         "Authorization": `Bearer ${accessToken}`
@@ -72,6 +72,7 @@ export default function PurchasesCompanies() {
     if (companies.length > 0) {
       return (
         <div className="shadow rounded rounded-4 bg-white mx-3 p-3 table-responsive">
+          <div style={{ cursor: 'pointer' }} onClick={sendResetCheckBoxToApi} className='bg-danger text-white w-75 text-center m-auto d-block d-sm-none p-1 rounded'>عدم تحديد الكل</div>
           <table dir="rtl" responsive='sm' className='table  table-hover text-center align-middle table-responsive-list '>
             <thead className='table-primary  no-wrap-heading'>
               <tr>
@@ -90,10 +91,10 @@ export default function PurchasesCompanies() {
             <tbody>
               {companies.map((company, index) => <tr key={index}>
                 <td data-label="اسم الشركة">{company?.name}</td>
-                <td data-label="هاتف الشركة">{company?.phoneNumber }</td>
-                <td data-label="البطاقة الضريبية">{company?.TaxCard }</td>
-                <td data-label="تعليمات الإدخال">{company?.entryInstructions }</td>
-                <td data-label="ملاحظات">{company?.notes }</td>
+                <td data-label="هاتف الشركة">{company?.phoneNumber}</td>
+                <td data-label="البطاقة الضريبية">{company?.TaxCard}</td>
+                <td data-label="تعليمات الإدخال">{company?.entryInstructions}</td>
+                <td data-label="ملاحظات">{company?.notes}</td>
                 <td data-label="خيارات" >
                   <NavLink to={`/purchasescompanies/edite/${company.id}`} >
                     <i className='bi bi-pencil-square text-primary fs-5 mx-1   '></i>

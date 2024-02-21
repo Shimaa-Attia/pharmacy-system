@@ -53,7 +53,7 @@ export default function Companies() {
       toast.error(errors?.response?.data?.message);
     })
   }
-  //for making checkBox for every one
+  //for making reset all checkBox
   let sendResetCheckBoxToApi = async () => {
     await axios.put(`${process.env.REACT_APP_API_URL}/api/companies/updateCheckBox/all`, {}, {
       headers: {
@@ -71,7 +71,8 @@ export default function Companies() {
     if (companies.length > 0) {
       return (
         <div className="shadow rounded rounded-4 bg-white mx-3 p-3 table-responsive">
-          <table dir="rtl" responsive='sm' className='table  table-hover text-center align-middle table-responsive-list '>
+           <div  style={{ cursor: 'pointer' }} onClick={sendResetCheckBoxToApi} className='bg-danger text-white w-75 text-center m-auto d-block d-sm-none p-1 rounded'>عدم تحديد الكل</div>
+          <table dir="rtl" className='table  table-hover text-center align-middle table-responsive-list '>
             <thead className='table-primary  no-wrap-heading  align-middle'>
               <tr>
                 <th>اسم الشركة</th>
@@ -98,7 +99,7 @@ export default function Companies() {
                     <i className='bi bi-pencil-square text-primary fs-5 mx-1   '></i>
                   </NavLink>
                 </td>
-                <td data-label='عدم تحديد الكل'>
+                <td >
                   {company.checkBox ? <i className='bi bi-check-circle-fill text-success fs-5'
                     onClick={() => sendUpdateCheckBoxToApi(company.id)} ></i>
                     : <i className='bi bi-x-circle-fill text-danger fs-5 '

@@ -5,6 +5,7 @@ import { Helmet } from 'react-helmet';
 import { NavLink } from 'react-router-dom';
 import { AuthContext } from '../../Context/AuthStore';
 import Pagination from '../Pagination/Pagination';
+import { toast } from 'react-toastify';
 
 export default function Clients() {
     let { accessToken } = useContext(AuthContext);
@@ -17,7 +18,7 @@ export default function Clients() {
 
     };
 
-    let getClientData = async (page =1) => {
+    let getClientData = async (page = 1) => {
         let searchResult;
         if (searchText !== undefined && searchText.trim().length > 0) {
             searchResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers/search/${searchText.trim()}?page=${page}`, {
@@ -34,7 +35,7 @@ export default function Clients() {
                     "Authorization": `Bearer ${accessToken}`
                 }
             });
-            
+
             setClients(searchResult.data.data);
             setPagination(searchResult.data.meta); // Set pagination data
             setCurrentPage(page); // Set current page
@@ -45,17 +46,48 @@ export default function Clients() {
     useEffect(() => {
         getClientData()
     }, [searchText])
-      //for handle page change
-      let handlePageChange = (page) => {
+    //for handle page change
+    let handlePageChange = (page) => {
         getClientData(page);
-      };
+    };
+
+    //for making checkBox for every one
+    let sendUpdateCheckBoxToApi = async (custId) => {
+        await axios.put(`${process.env.REACT_APP_API_URL}/api/customers/updateCheckBox/${custId}`, {}, {
+            headers: {
+                "Authorization": `Bearer ${accessToken}`
+            }
+        }).then((res) => {
+            toast.success(res.data.message);
+            getClientData()
+        }).catch((errors) => {
+            toast.error('حدث خطأ ما');
+            toast.error(errors?.response?.data?.message);
+        })
+    }
+    //for making reset all checkBox
+    let sendResetCheckBoxToApi = async () => {
+        await axios.put(`${process.env.REACT_APP_API_URL}/api/customers/updateCheckBox/all`, {}, {
+            headers: {
+                "Authorization": `Bearer ${accessToken}`
+            }
+        }).then((res) => {
+            toast.success(res.data.message);
+            getClientData()
+        }).catch((errors) => {
+            toast.error('حدث خطأ ما');
+            toast.error(errors?.response?.data?.message);
+        })
+    }
 
     let showClients = () => {
         if (clients.length > 0) {
             return (
-                <div className="shadow rounded rounded-4 bg-white mx-3 p-3 ">
-                    <table dir="rtl" responsive='md' className='table table-bordered table-hover align-middle text-center table-responsive-list  '>
-                        <thead className='table-primary'>
+                <div className="shadow rounded rounded-4 bg-white mx-3 p-3 table-responsive ">
+                    <div  style={{ cursor: 'pointer' }} onClick={sendResetCheckBoxToApi} className='bg-danger text-white w-75 text-center m-auto d-block d-sm-none p-1 rounded'>عدم تحديد الكل</div>
+
+                    <table dir="rtl" className='table  table-hover align-middle text-center table-responsive-list  '>
+                        <thead className='table-primary   no-wrap-heading'>
                             <tr>
                                 <th>رقم</th>
                                 <th>كود العميل</th>
@@ -66,6 +98,10 @@ export default function Clients() {
                                 <th>له</th>
                                 <th>عليه</th>
                                 <th>خيارات</th>
+                                <th>
+                                    <div style={{ cursor: 'pointer' }} onClick={sendResetCheckBoxToApi} className='bg-danger text-white p-1 rounded'>عدم تحديد الكل</div>
+
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -74,21 +110,21 @@ export default function Clients() {
                                 <td data-label="كود العميل">{client.code}</td>
                                 <td data-label="اسم العميل">{client.name}</td>
                                 <td data-label="المنطقة">
-                                    {client?.areas?.map((area) => ( <div key={area.id}>
+                                    {client?.areas?.map((area) => (<div key={area.id}>
 
                                         <p >{area.name}</p>
                                     </div>
-                                    )  
+                                    )
                                     )}
                                 </td>
-                                  <td data-label="أرقام الهواتف">
+                                <td data-label="أرقام الهواتف">
                                     {client?.contactInfo?.map((contactInfo) => {
                                         if (contactInfo.name === "phone") {
                                             return <p key={contactInfo.id}>{contactInfo.value}</p>
                                         }
                                     })}
                                 </td>
-                                   <td data-label="العناوين">
+                                <td data-label="العناوين">
                                     {client?.contactInfo?.map((contactInfo) => {
                                         if (contactInfo.name === "address") {
                                             return <p key={contactInfo.id}>{contactInfo.value}</p>
@@ -97,21 +133,23 @@ export default function Clients() {
                                 </td>
                                 <td data-label="له">{client?.forHim}</td>
                                 <td data-label="عليه">{client?.onHim}</td>
-                                <td data-label="خيارات">
+                                <td data-label="خيارات" >
                                     <NavLink to={`/clients/delete/${client.id}`}>
-                                        <i className='bi bi-trash text-bg-danger p-1 mx-1  rounded'></i>
+                                        <i className='bi bi-trash text-danger fs-5 p-1'></i>
                                     </NavLink>
                                     <NavLink to={`/clients/edite/${client.id}`}>
-                                        <i className='bi bi-pencil-square text-bg-primary mx-1 p-1 rounded'></i>
+                                        <i className='bi bi-pencil-square text-primary p-1 fs-5'></i>
                                     </NavLink>
                                     <NavLink to={`/clients/details/${client.id}`}>
-                                        <i className='bi bi-list-ul text-bg-success mx-1 p-1 rounded'></i>
+                                        <i className='bi bi-list-ul text-success fs-5 p-1'></i>
                                     </NavLink>
-                                </td>  
-                             
-                              
-
-
+                                </td>
+                                <td >
+                                    {client.checkBox ? <i className='bi bi-check-circle-fill text-success fs-5'
+                                        onClick={() => sendUpdateCheckBoxToApi(client.id)} ></i>
+                                        : <i className='bi bi-x-circle-fill text-danger fs-5 '
+                                            onClick={() => sendUpdateCheckBoxToApi(client.id)} ></i>}
+                                </td>
                             </tr>
                             )}
                         </tbody>
@@ -143,8 +181,8 @@ export default function Clients() {
             </div>
 
             <div className="text-center mb-2">
-        <Pagination pagination={pagination} currentPage={currentPage} handlePageChange={handlePageChange}/>
-      </div>
+                <Pagination pagination={pagination} currentPage={currentPage} handlePageChange={handlePageChange} />
+            </div>
             {showClients()}
         </>)
 }

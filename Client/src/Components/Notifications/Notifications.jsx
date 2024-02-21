@@ -27,9 +27,9 @@ export default function Notifications() {
         }
         notDoneResult = await axios.get(urlApi, {
             headers: {
-              "Authorization": `Bearer ${accessToken}`
+                "Authorization": `Bearer ${accessToken}`
             }
-          })
+        })
         setNotDoneNotifications(notDoneResult.data);
     };
     useEffect(() => {
@@ -106,14 +106,30 @@ export default function Notifications() {
         }
         doneResult = await axios.get(urlApi, {
             headers: {
-              "Authorization": `Bearer ${accessToken}`
+                "Authorization": `Bearer ${accessToken}`
             }
-          })
-          setDoneNotifications(doneResult.data)
+        })
+        setDoneNotifications(doneResult.data)
     };
     useEffect(() => {
         getDoneNotificationsData()
     }, [filterDoneBranchId]);
+
+    //delete notifaction
+    let deleteNotifaction = async (notifyId) => {
+        try {
+            let { data } = await axios.delete(`${process.env.REACT_APP_API_URL}/api/notifications/forceDelete/${notifyId}`, {
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`
+                }
+            });
+            toast.success(data.message);
+            getDoneNotificationsData()
+        } catch (error) {
+
+            toast.error('حدث خطأ ما، حاول مرة أخرى')
+        }
+    };
 
     let showDoneNotifications = () => {
         if (doneNotifications.length > 0) {
@@ -132,6 +148,9 @@ export default function Notifications() {
                                 </td>
                                 <td>{noti?.body}</td>
                                 <td >{noti?.branch?.name}</td>
+                                <td >
+                                    <i className='bi bi-trash text-danger fs-5' onClick={() => deleteNotifaction(noti.id)}></i>
+                                </td>
 
                             </tr>
                             )}
@@ -162,8 +181,8 @@ export default function Notifications() {
                 <NavLink to='/notifications/add' className='btn btn-primary mb-1' >إضافة إشعار</NavLink>
             </div>
             <div className='row  ' dir='rtl'>
-           
-                    {/*filter not done noti */}
+
+                {/*filter not done noti */}
                 <div className="col-md-4 m-auto   mb-2">
                     <select name="branch_id" defaultValue={0} className='form-control' id="branch_id"
                         onChange={handleNotDoneBranchChange}>
@@ -171,8 +190,8 @@ export default function Notifications() {
                         {branches.map((branch) => <option key={branch.id} value={branch?.id}>{branch?.name}</option>)}
                     </select>
                 </div>
-                 {/* filter done noti */}
-                 <div className="col-md-4 m-auto mb-2">
+                {/* filter done noti */}
+                <div className="col-md-4 m-auto mb-2">
                     <select name="branch_id" defaultValue={0} className='form-control' id="branch_id"
                         onChange={handleDoneBranchChange}>
                         <option value={0} hidden disabled>اختر الفرع...</option>

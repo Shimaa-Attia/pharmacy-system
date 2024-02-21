@@ -64,7 +64,7 @@ export default function PurchasesInventoryProducts() {
     } else {
       return (
         <div className=' d-flex justify-content-center  height-calc-70 align-items-center' >
-          <i className='fa fa-spinner fa-spin  fa-3x'></i>
+          <div className='alert alert-danger w-50 text-center'>لا يوجد </div>
         </div>
       )
     }
@@ -83,6 +83,21 @@ export default function PurchasesInventoryProducts() {
   useEffect(() => {
     getDoneInventoryProductsData()
   }, []);
+      //delete InventoryProducts
+      let deleteInventoryProducts = async (prodId) => {
+        try {
+          let { data } = await axios.delete(`${process.env.REACT_APP_API_URL}/api/inventoryProducts/forceDelete/${prodId}`, {
+            headers: {
+              "Authorization": `Bearer ${accessToken}`
+            }
+          });
+          toast.success(data.message);
+          getDoneInventoryProductsData()
+        } catch (error) {
+    
+          toast.error('حدث خطأ ما، حاول مرة أخرى')
+        }
+      };
 
   let showDoneInventoryProducts = () => {
     if (doneInventoryProducts.length > 0) {
@@ -101,6 +116,9 @@ export default function PurchasesInventoryProducts() {
                   </div>
                 </td>
                 <td>{prod?.productName}</td>
+                <td >
+                  <i className='bi bi-trash text-danger fs-5' onClick={() => deleteInventoryProducts(prod.id)}></i>
+                </td>
 
               </tr>
               )}
@@ -112,7 +130,7 @@ export default function PurchasesInventoryProducts() {
     } else {
       return (
         <div className=' d-flex justify-content-center  height-calc-70 align-items-center' >
-          <i className='fa fa-spinner fa-spin  fa-3x'></i>
+     <div className='alert alert-danger w-50 text-center'>لا يوجد </div>
         </div>
       )
     }

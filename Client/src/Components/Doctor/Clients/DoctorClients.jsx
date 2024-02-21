@@ -6,6 +6,7 @@ import { Helmet } from 'react-helmet';
 import { NavLink } from 'react-router-dom';
 import { AuthContext } from '../../../Context/AuthStore';
 import Pagination from '../../Pagination/Pagination';
+import { toast } from 'react-toastify';
 
 export default function DoctorClients() {
     let { accessToken } = useContext(AuthContext);
@@ -50,12 +51,40 @@ export default function DoctorClients() {
       let handlePageChange = (page) => {
         getClientData(page);
       };
-
+   //for making checkBox for every one
+   let sendUpdateCheckBoxToApi = async (custId) => {
+    await axios.put(`${process.env.REACT_APP_API_URL}/api/customers/updateCheckBox/${custId}`, {}, {
+        headers: {
+            "Authorization": `Bearer ${accessToken}`
+        }
+    }).then((res) => {
+        toast.success(res.data.message);
+        getClientData()
+    }).catch((errors) => {
+        toast.error('حدث خطأ ما');
+        toast.error(errors?.response?.data?.message);
+    })
+}
+//for making reset all checkBox
+let sendResetCheckBoxToApi = async () => {
+    await axios.put(`${process.env.REACT_APP_API_URL}/api/customers/updateCheckBox/all`, {}, {
+        headers: {
+            "Authorization": `Bearer ${accessToken}`
+        }
+    }).then((res) => {
+        toast.success(res.data.message);
+        getClientData()
+    }).catch((errors) => {
+        toast.error('حدث خطأ ما');
+        toast.error(errors?.response?.data?.message);
+    })
+}
     let showClients = () => {
         if (clients.length > 0) {
             return (
-                <div className="shadow rounded rounded-4 bg-white mx-3 p-3 ">
-                    <table dir="rtl" responsive='md' className='table table-bordered table-hover align-middle text-center table-responsive-list  '>
+                <div className="shadow rounded rounded-4 bg-white mx-3 p-3 table-responsive ">
+                        <div  style={{ cursor: 'pointer' }} onClick={sendResetCheckBoxToApi} className='bg-danger text-white w-75 text-center m-auto d-block d-sm-none p-1 rounded'>عدم تحديد الكل</div>
+                    <table dir="rtl" responsive='md' className='table table-hover align-middle text-center table-responsive-list  '>
                         <thead className='table-primary'>
                             <tr>
                                 <th>رقم</th>
@@ -67,6 +96,10 @@ export default function DoctorClients() {
                                 <th>له</th>
                                 <th>عليه</th>
                                 <th>خيارات</th>
+                                <th>
+                                    <div style={{ cursor: 'pointer' }} onClick={sendResetCheckBoxToApi} className='bg-danger text-white p-1 rounded'>عدم تحديد الكل</div>
+
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -108,7 +141,13 @@ export default function DoctorClients() {
                                     {/* <NavLink to={`/clients/details/${client.id}`}>
                                         <i className='bi bi-list-ul text-bg-success mx-1 p-1 rounded'></i>
                                     </NavLink> */}
-                                </td>  
+                                </td> 
+                                <td >
+                                    {client.checkBox ? <i className='bi bi-check-circle-fill text-success fs-5'
+                                        onClick={() => sendUpdateCheckBoxToApi(client.id)} ></i>
+                                        : <i className='bi bi-x-circle-fill text-danger fs-5 '
+                                            onClick={() => sendUpdateCheckBoxToApi(client.id)} ></i>}
+                                </td> 
                              
                               
 

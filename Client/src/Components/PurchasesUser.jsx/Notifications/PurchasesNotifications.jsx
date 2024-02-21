@@ -83,6 +83,21 @@ export default function PurchasesNotifications() {
     useEffect(() => {
         getDoneNotificationsData()
     }, []);
+        //delete notifaction
+        let deleteNotifaction = async (notifyId) => {
+            try {
+                let { data } = await axios.delete(`${process.env.REACT_APP_API_URL}/api/notifications/forceDelete/${notifyId}`, {
+                    headers: {
+                        "Authorization": `Bearer ${accessToken}`
+                    }
+                });
+                toast.success(data.message);
+                getDoneNotificationsData()
+            } catch (error) {
+    
+                toast.error('حدث خطأ ما، حاول مرة أخرى')
+            }
+        };
 
     let showDoneNotifications = () => {
         if (doneNotifications.length > 0) {
@@ -100,6 +115,9 @@ export default function PurchasesNotifications() {
                                     </div>
                                 </td>
                                 <td>{noti?.body}</td>
+                                <td >
+                                    <i className='bi bi-trash text-danger fs-5' onClick={() => deleteNotifaction(noti.id)}></i>
+                                </td>
 
                             </tr>
                             )}
