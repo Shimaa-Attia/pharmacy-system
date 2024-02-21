@@ -266,4 +266,36 @@ class CustomerController extends Controller
         return CustomerReource::collection($customers);
 
     }
+
+    public function updateCheckBox($id)
+    {
+         if($id == "all"){
+            Customer::where('checkBox', true)->update(['checkBox' => false]);
+            return response()->json([
+                "message" => "تم التحديث"
+            ]);
+        }else{
+            $customer = Customer::find($id);
+            if ($customer == null) {
+                return response()->json([
+                    "message" => "عميل غير موجود"
+                ], 404);
+            }
+
+            $update = $customer->update([
+                "checkBox" => !$customer->checkBox
+
+            ]);
+            if ($update) {
+                return response()->json([
+                    "message" => "تم التحديث"
+                ]);
+            } else {
+                return response()->json([
+                    "message" => "حدث خطأ ما"
+                ], 409);
+            }
+        }
+
+    }
 }

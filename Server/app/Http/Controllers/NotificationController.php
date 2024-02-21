@@ -135,4 +135,19 @@ class NotificationController extends Controller
         $notifications =$notificationQuery->orderBy('created_at', 'DESC')->get();
         return $notifications;
     }
+
+    public function forceDelete($id)
+    {   
+        $notification = Notification::find($id);
+        if ($notification == null) {
+            return response()->json([
+                "message" => "إشعار غير موجود"
+            ], 404);
+        }
+        $notification->forceDelete();
+        return response()->json([
+            "message" => "تم الحذف"
+        ], 200);
+
+    }
 }

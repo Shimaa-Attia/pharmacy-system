@@ -262,6 +262,7 @@ class OrdersController extends Controller
         if ($request->key) {
             $key = $request->key;
             $orders = Order::where('user_id', $id)
+            ->whereColumn('paid', "!=", 'totalAmmount')
                 ->where(function ($query) use ($key) {
                     $query->where('totalAmmount', 'like', "$key.%")
                         ->orWhereHas('customer', function ($query) use ($key) {
@@ -272,6 +273,7 @@ class OrdersController extends Controller
 
         } else {
             $orders = Order::where('user_id', $id)
+               ->whereColumn('paid', "!=", 'totalAmmount')
                 ->orderBy('created_at', 'DESC')->paginate(20);
             return OrderResource::collection($orders);
 

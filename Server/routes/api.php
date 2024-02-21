@@ -80,6 +80,8 @@ Route::middleware(['auth:api'])->group(function(){
         Route::delete('/deleteArchive/{id}',[CustomerController::class,'deleteArchive']);
         //search customer
          Route::get('/search/{key}',[CustomerController::class,'search']);
+         //updateCheckBox
+         Route::put('/updateCheckBox/{id}',[CustomerController::class,'updateCheckBox']);
 
     });
     Route::group(['prefix'=>'orders','as'=>'orders.'],function(){
@@ -246,10 +248,10 @@ Route::middleware(['auth:api'])->group(function(){
         // Route::get('/archive',[CompanyController::class,'archive']);
         // Route::post('/restore/{id}',[CompanyController::class,'restore']);
         // Route::delete('/deleteArchive/{id}',[CompanyController::class,'deleteArchive']);
-         //search
-         Route::get('/search/{key}',[CompanyController::class,'search']);
-         //updateCheckBox
-         Route::put('/updateCheckBox/{id}',[CompanyController::class,'updateCheckBox']);
+        //search
+        Route::get('/search/{key}',[CompanyController::class,'search']);
+        //updateCheckBox
+        Route::put('/updateCheckBox/{id}',[CompanyController::class,'updateCheckBox']);
 
 
     });
@@ -265,7 +267,8 @@ Route::middleware(['auth:api'])->group(function(){
         Route::put('/{id}',[NotificationController::class,'update']);
         //filter
         Route::get('/{status}/filter',[NotificationController::class,'filter']);
-
+        //forceDelete
+        Route::delete('/forceDelete/{id}',[NotificationController::class,'forceDelete']);
 
     });
     Route::group(['prefix'=>'inventoryProducts','as'=>'inventoryProducts'],function(){
@@ -277,6 +280,8 @@ Route::middleware(['auth:api'])->group(function(){
         Route::post('/',[InventoryProductController::class,'create']);
         //update
         Route::put('/{id}',[InventoryProductController::class,'update']);
+          //forceDelete
+          Route::delete('/forceDelete/{id}',[InventoryProductController::class,'forceDelete']);
 
     });
 

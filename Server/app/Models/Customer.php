@@ -17,7 +17,7 @@ class Customer extends Model
         'notes',
         'onHim',
         'forHim',
-        'customer_area'
+        'checkBox'
         ];
 
     public function orders(){

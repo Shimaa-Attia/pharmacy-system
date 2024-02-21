@@ -102,6 +102,20 @@ class InventoryProductController extends Controller
         ]);
     }
 
-    
+    public function forceDelete($id)
+    {
+        $inventoryProduct = InventoryProduct::find($id);
+        if ($inventoryProduct == null) {
+            return response()->json([
+                "message" => "منتج غير موجود"
+            ], 404);
+        }
+        $inventoryProduct->forceDelete();
+        return response()->json([
+            "message" => "تم الحذف"
+        ], 200);
+    }
+
+
 
 }
