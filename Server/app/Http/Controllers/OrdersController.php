@@ -116,7 +116,6 @@ class OrdersController extends Controller
             "user_id" => $user->id,
             "sale_point_id" => $request->sale_point_id,
             "area_id"=>$area_id,
-            "isAccepted"=>true
         ]);
 
 
@@ -149,7 +148,7 @@ class OrdersController extends Controller
         }else{
             $validator = Validator::make($request->all(), [
                 'cost' => 'numeric|nullable|gt:0',
-                'total_ammount' => 'numeric|nullable|gte:cost',
+                // 'total_ammount' => 'numeric|nullable|gte:cost',
                 'paid' => 'numeric|nullable|lte:total_ammount',
                 'customer_code' => 'nullable',
                 'user_code' => 'nullable|exists:users,code',
@@ -274,6 +273,13 @@ class OrdersController extends Controller
                 "message" => "هذا الأوردر غير موجود"
             ], 404);
         }
+        if($order->user_id !=null){
+
+                return response()->json([
+                    "message" => "هذا الأوردر تابع لأحد الطيارين بالفعل"
+                ], 404);
+        }
+
         $validator = Validator::make($request->all(), [
             'cost' => 'numeric|required|gt:0',
         ]);

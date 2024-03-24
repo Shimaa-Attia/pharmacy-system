@@ -116,7 +116,14 @@ Route::middleware(['auth:api'])->group(function(){
 
         //popUp
         //popUp order
-        Route::post('/popUpOrder',[OrdersController::class,'popUpOrder']);
+        Route::post('/AddPopUpOrder',[OrdersController::class,'popUpOrder']);
+        //accept popUp order
+        Route::put('/acceptPopUpOrder/{id}',[OrdersController::class,'acceptOrder']);
+        //cancel accepting popUp order
+        Route::put('/cancelPopUpOrder/{id}',[OrdersController::class,'cancelOrder']);
+        //select uaccepted orders
+        Route::get('/unAcceptedOrders',[OrdersController::class,'unAcceptedOrders']);
+
 
     });
 
