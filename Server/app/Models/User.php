@@ -44,6 +44,13 @@ class User extends Authenticatable
     public function shortcoming(){
         return $this->hasMany(Shortcoming::class,'creator_userId','id');
     }
+    public function notification(){
+        return $this->hasMany(Shortcoming::class,'creator_userId','id');
+    }
+    public function inventory_product(){
+        return $this->hasMany(Shortcoming::class,'creator_userId','id');
+    }
+
     public function updatedShortcoming(){
         return $this->hasMany(Shortcoming::class,'lastUpdater_userId','id');
     }

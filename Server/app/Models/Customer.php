@@ -17,7 +17,8 @@ class Customer extends Model
         'notes',
         'onHim',
         'forHim',
-        'checkBox'
+        'checkBox',
+        'defualtArea_id'
         ];
 
     public function orders(){
@@ -28,5 +29,8 @@ class Customer extends Model
     }
     public function areas(){
         return $this->belongsToMany(Area::class);
+    }
+    public function defualtArea(){
+        return $this->belongsTo(Area::class,'defualtArea_id','id');
     }
 }

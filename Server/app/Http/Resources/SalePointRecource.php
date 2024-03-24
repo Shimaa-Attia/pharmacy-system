@@ -21,8 +21,10 @@ class SalePointRecource extends JsonResource
 
           $unpaid_balance=0;
           foreach ($orders as $order){
-           $unpaid = $order->totalAmmount - $order->paid;
-           $unpaid_balance +=$unpaid;
+        //    $unpaid = $order->totalAmmount - $order->paid;
+        //    $unpaid_balance +=$unpaid;
+           $unpaid_balance +=$order->totalAmmount - $order->cost;
+
           }
 
 

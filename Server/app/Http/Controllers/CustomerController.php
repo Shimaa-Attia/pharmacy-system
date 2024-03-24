@@ -74,6 +74,7 @@ class CustomerController extends Controller
             'onHim'=>'numeric|nullable|gte:0',
             'forHim'=>'numeric|nullable|gte:0',
             'customer_area'=>'nullable|string|min:5',
+            'defaultArea_id'=>'required|exists:areas,id',
             'areas'=>'nullable|array',
             'areas.*'=>'nullable|exists:areas,id'
 
@@ -142,7 +143,8 @@ class CustomerController extends Controller
             'forHim'=>'numeric|nullable|gte:0',
             // 'customer_area'=>'nullable|string|min:5',
             'areas'=>'nullable|array',
-            'areas.*'=>'nullable|exists:areas,id'
+            'areas.*'=>'nullable|exists:areas,id',
+            'defualtArea_id'=>'nullable|exists:areas,id',
 
         ]);
         if ($validator->fails()) {

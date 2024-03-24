@@ -1,9 +1,9 @@
 <?php
 
-use App\Http\Controllers\AreaController;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AreaController;
 use App\Http\Controllers\RuleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CustomCotroller;
@@ -13,6 +13,7 @@ use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\SalePointController;
 use App\Http\Controllers\ShortcomingController;
+use App\Http\Controllers\WorkPolicieController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\CustomPropertiesController;
 use App\Http\Controllers\InventoryProductController;
@@ -304,6 +305,25 @@ Route::middleware(['auth:api'])->group(function(){
 
     });
 
+    Route::group(['prefix'=>'workPolicies','as'=>'workPolicies'],function(){
+        //select all
+        Route::get('/{type}',[WorkPolicieController::class,'all']);
+        //select one
+        Route::get('/show/{id}',[WorkPolicieController::class,'show']);
+        //create
+        Route::post('/',[WorkPolicieController::class,'create']);
+        //update
+        Route::put('/{id}',[WorkPolicieController::class,'update']);
+        //soft delete
+        Route::delete('/delete/{id}',[WorkPolicieController::class,'destroy']);
+        Route::get('/archive',[WorkPolicieController::class,'archive']);
+        Route::post('/restore/{id}',[WorkPolicieController::class,'restore']);
+        Route::delete('/deleteArchive/{id}',[WorkPolicieController::class,'deleteArchive']);
+        //search
+        Route::get('/search/{key}',[WorkPolicieController::class,'search']);
+
+
+    });
 
 });
 

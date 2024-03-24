@@ -39,7 +39,6 @@ class OrdersController extends Controller
 
     public function store(Request $request)
     {
-
         if ((Auth::user()->role == 'delivery' || Auth::user()->role == 'doctor') && Auth::check()) {
             $request->request->add(['user_code' => Auth::user()->code]);
         }
@@ -56,8 +55,8 @@ class OrdersController extends Controller
             ]);
         }else{
             $validator = Validator::make($request->all(), [
-                'cost' => 'numeric|nullable|gt:0',
-                'total_ammount' => 'numeric|required|gte:cost',
+                'cost' => 'numeric|required|gt:0',
+                // 'total_ammount' => 'numeric|required|gte:cost',
                 'customer_code' => 'required',
                 //    'customer_phone'=>'required|regex:/^01[0125][0-9]{8}$/|exists:custom_fields,value',
                 //    'customer_address'=>'required|exists:custom_fields,value',
@@ -75,35 +74,46 @@ class OrdersController extends Controller
 
 
         $user = User::where('code', $request->user_code)->first('id');
-        $customer = Customer::where('code', $request->customer_code)->first('id');
+        $customer = Customer::where('code', $request->customer_code)->first();
         // create customer if not exist
         if (!$customer) {
-            $customer = Customer::create([
-                "code" => $request->customer_code,
-                "name" => 'غير محدد',
-            ]);
+                if($request->area_id==null){
+                    return response()->json([
+                        "message" => "اختر منطقة افتراضية للعميل الجديد"], 409);
+                }
+                $customer = Customer::create([
+                    "code" => $request->customer_code,
+                    "name" => 'غير محدد',
+                    "defualtArea_id"=>$request->area_id,
+                ]);
+                $area_id= $customer->defualtArea_id;
+        }else{
+                $area_id= $customer->defualtArea_id;
+                if($request->area_id){
+                $customer->areas()->syncWithoutDetaching($request->area_id);
+                $area_id = $request->area_id;
+            }
         }
-        if($request->area_id){
-          $customer->areas()->syncWithoutDetaching($request->area_id);
-        }
-
 
         //create
+        // Find the nearest even hundreds greater than the given number
+        $totalAmmount = ceil($request->cost / 200) * 200;
+
+
 
         $order = Order::create([
             "cost" => $request->cost,
-            "totalAmmount" => $request->total_ammount,
+            "totalAmmount" => $totalAmmount,
             "notes" => $request->notes,
             "customer_id" => $customer->id,
             "user_id" => $user->id,
             "sale_point_id" => $request->sale_point_id,
-            "area_id"=>$request->area_id
+            "area_id"=>$area_id
         ]);
 
 
         return response()->json([
-            "message" => "تم إضافة الطلب",
-            'order' => $order
+            "message" => "تمت إضافة الطلب",
         ]);
 
     }
@@ -151,18 +161,33 @@ class OrdersController extends Controller
         }
         $customer = $order->customer;
         if($request->customer_code){
-            $customer = Customer::where('code', $request->customer_code)->first('id');
+            $customer = Customer::where('code', $request->customer_code)->first();
             // create customer if not exist
             if (!$customer) {
+                if(empty($request->area_id)){
+                    return response()->json([
+                        "message" => "اختر منطقة افتراضية للعميل الجديد"], 409);
+                }
                 $customer = Customer::create([
                     "code" => $request->customer_code,
                     "name" => 'غير محدد',
+                    "defualtArea_id"=>$request->area_id,
                 ]);
+                // $area_id= $customer->defualtArea_id;
+            }else{
+                if($request->area_id){
+                    $customer->areas()->syncWithoutDetaching($request->area_id);
+                }else{
+
+                  $request->request->add(['area_id'=>$customer->defualtArea_id]);
+                }
             }
             $request->request->add(['customer_id'=>$customer->id]);
         }
-        if($request->area_id){
-            $customer->areas()->syncWithoutDetaching($request->area_id);
+        if($request->cost){
+            $totalAmmount = ceil($request->cost / 200) * 200;
+            $request->request->add(['totalAmmount'=>$totalAmmount]);
+
         }
         //update
 

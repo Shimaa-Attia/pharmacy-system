@@ -2,46 +2,46 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\RuleResource;
-use App\Models\CustomProperties;
-use App\Models\Rule;
+use App\Models\WorkPolicie;
 use Illuminate\Http\Request;
+use App\Models\CustomProperties;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Resources\WorkPolicieResource;
 
-class RuleController extends Controller
+class WorkPolicieController extends Controller
 {
     public function all($type)
     {
          $name = '';
-        if($type == "management"){
-            $name = "الإدارة";
+        if($type == "sales"){
+            $name = "المبيعات";
         } elseif($type == "clients"){
-            $name = "العملاء";
-        }elseif($type == "colleagues"){
-            $name = "الزملاء";
-        }elseif($type == "delivery"){
-            $name = "الطيارين";
+            $name = "التعامل مع العملاء";
+        }elseif($type == "returns"){
+            $name = "المرتجعات";
+        }elseif($type == "pharmacists"){
+            $name = "الصيادلة";
         }
         if($name !=null){
             $type = CustomProperties::where('name',$name)->first();
-            $rules= $type->rules;
-            return RuleResource::collection($rules);
+            $policies= $type->workPolicies;
+            return WorkPolicieResource::collection($policies);
         }else{
             return response()->json([
-                "message" => "نوع تعليمات غير موجودد",
+                "message" => "نوع غير موجود",
         ],404);
         }
     }
 
     public function show($id)
     {
-        $rule = Rule::find($id);
-        if ($rule == null) {
+        $policie = WorkPolicie::find($id);
+        if ($policie == null) {
             return response()->json([
                 "message" => "غير موجود"
             ], 404);
         }
-        return new  RuleResource($rule);
+        return new  WorkPolicieResource($policie);
 
     }
     public function create(Request $request)
@@ -58,14 +58,14 @@ class RuleController extends Controller
         }
 
         // return $request;
-            $ruleType = CustomProperties::where('id',$request->type_id)->first();
-            if($ruleType->type != 'ruleType'){
+            $policieType = CustomProperties::where('id',$request->type_id)->first();
+            if($policieType->type != 'policieType'){
                 return response()->json([
-                    "message" => "نوع تعليمات غير موجودد",
+                    "message" => "نوع غير موجود",
                 ],404);
 
             }
-    Rule::create($request->all());
+    WorkPolicie::create($request->all());
         return response()->json([
             "message"=>"تمت الإضافة"
         ]);
@@ -74,8 +74,8 @@ class RuleController extends Controller
     public function update(Request $request, $id)
     {
         //check
-        $rule = Rule::find($id);
-        if ($rule == null) {
+        $policie = WorkPolicie::find($id);
+        if ($policie == null) {
             return response()->json([
                 "message" => "غير موجود"
             ], 404);
@@ -91,8 +91,8 @@ class RuleController extends Controller
                 ],409);
         }
         if($request->type_id){
-            $ruleType = CustomProperties::where('id',$request->type_id)->first();
-            if($ruleType->type != 'ruleType'){
+            $policieType = CustomProperties::where('id',$request->type_id)->first();
+            if($policieType->type != 'policieType'){
                 return response()->json([
                     "message" => "نوع تعليمات غير موجودد",
                 ],404);
@@ -100,7 +100,7 @@ class RuleController extends Controller
         }
 
         //update
-        $rule->update($request->all());
+        $policie->update($request->all());
         //response
         return response()->json([
             "message" => "تم التعديل",
@@ -110,13 +110,13 @@ class RuleController extends Controller
 
     public function destroy($id)
     {
-        $rule = Rule::find($id);
-        if ($rule == null) {
+        $policie = WorkPolicie::find($id);
+        if ($policie == null) {
             return response()->json([
                 "message" => "غير موجود"
             ], 404);
         }
-        $rule->delete();
+        $policie->delete();
         return response()->json([
             "message" => "تمت الأرشفة"], 200);
     }
@@ -124,19 +124,19 @@ class RuleController extends Controller
 
     public function archive()
     {
-        $rules = Rule::onlyTrashed()->orderBy('deleted_at', 'DESC')->get();
-        return  Rule::collection($rules);
+        $policies = WorkPolicie::onlyTrashed()->orderBy('deleted_at', 'DESC')->get();
+        return  WorkPolicie::collection($policies);
     }
 
     public function restore($id)
     {
-        $rule = Rule::onlyTrashed()->find($id);
-        if ($rule == null) {
+        $policie = WorkPolicie::onlyTrashed()->find($id);
+        if ($policie == null) {
             return response()->json([
                 "message" => "غير موجود بالأرشيف"
             ], 404);
         }
-        $rule->restore();
+        $policie->restore();
         return response()->json([
                 "message" => "تمت الإستعادة",
         ], 200);
@@ -144,22 +144,21 @@ class RuleController extends Controller
 
     public function deleteArchive($id)
     {
-        $rule = Rule::onlyTrashed()->find($id);
-        if ($rule == null) {
+        $policie = WorkPolicie::onlyTrashed()->find($id);
+        if ($policie == null) {
             return response()->json([
                 "message" => "غير موجود بالأرشيف"
             ], 404);
         }
-        $rule->forceDelete();
+        $policie->forceDelete();
         return response()->json([
             "message" => "تم الحذف"], 200);
     }
 
     public function search($key)
     {
-        $rules = Rule::where('body', 'like', "%$key%")
+        $policies = WorkPolicie::where('body', 'like', "%$key%")
         ->orderBy('type_id')->get();
-        return RuleResource::collection($rules);
+        return WorkPolicieResource::collection($policies);
     }
-
 }

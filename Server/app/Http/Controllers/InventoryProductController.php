@@ -7,6 +7,7 @@ use App\Models\CustomProperties;
 use App\Models\InventoryProduct;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Resources\InventoryProductResource;
 
 class InventoryProductController extends Controller
 {
@@ -21,7 +22,7 @@ class InventoryProductController extends Controller
             "message"=>"incorrect route"
             ],404);
         }
-        $inventoryProducts = InventoryProduct::with(['status','branch'])
+        $inventoryProducts = InventoryProduct::with(['status','branch','creatorUser'])
         ->where('branch_id',Auth::user()->branch_id)
         ->WhereHas('status', function ($query) use ($status) {
             $query->where('name', $status);
@@ -29,7 +30,7 @@ class InventoryProductController extends Controller
         })->orderBy('created_at', 'DESC')->get();
 
 
-        return $inventoryProducts;
+        return InventoryProductResource::collection($inventoryProducts);
     }
 
     public function show($id)
@@ -40,7 +41,7 @@ class InventoryProductController extends Controller
                 "message" => "غير موجود"
             ], 404);
         }
-        return $inventoryProduct;
+        return new InventoryProductResource($inventoryProduct);
 
     }
     public function create(Request $request){

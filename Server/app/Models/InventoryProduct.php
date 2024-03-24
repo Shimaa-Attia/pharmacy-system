@@ -12,7 +12,8 @@ class InventoryProduct extends Model
     protected $fillable=[
       'productName',
       'status_id',
-      'branch_id'
+      'branch_id',
+      'creator_userId'
     ];
 
     public function status(){
@@ -20,5 +21,8 @@ class InventoryProduct extends Model
     }
     public function branch(){
         return $this->belongsTo(CustomProperties::class,'branch_id','id');
+    }
+    public function creatorUser(){
+        return $this->belongsTo(User::class,'creator_userId','id');
     }
 }

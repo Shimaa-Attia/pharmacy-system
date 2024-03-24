@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\NotificationResource;
 use App\Models\CustomProperties;
 use App\Models\Notification;
 use Illuminate\Http\Request;
@@ -22,7 +23,7 @@ class NotificationController extends Controller
             ],404);
         }
         if(Auth::user()->role == 'admin'){
-            $notifications = Notification::with(['status','branch'])
+            $notifications = Notification::with(['status','branch','creatorUser'])
             ->WhereHas('status', function ($query) use ($status) {
                 $query->where('name', $status);
 
@@ -38,7 +39,7 @@ class NotificationController extends Controller
         }
 
 
-        return $notifications;
+        return NotificationResource::collection($notifications) ;
     }
 
     public function show($id)
@@ -49,7 +50,7 @@ class NotificationController extends Controller
                 "message" => "غير موجود"
             ], 404);
         }
-        return $notification;
+        return new NotificationResource($notification);
 
     }
     public function create(Request $request){
@@ -133,11 +134,12 @@ class NotificationController extends Controller
             $notificationQuery->where('body','like' ,"%$request->key%");
         }
         $notifications =$notificationQuery->orderBy('created_at', 'DESC')->get();
-        return $notifications;
+        return NotificationResource::collection($notifications) ;
+        ;
     }
 
     public function forceDelete($id)
-    {   
+    {
         $notification = Notification::find($id);
         if ($notification == null) {
             return response()->json([

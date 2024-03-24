@@ -41,4 +41,8 @@ class CustomProperties extends Model
         return $this->hasMany(Notification::class,'branch_id','id');
     }
 
+    public function workPolicies(){
+        return $this->hasMany(WorkPolicie::class,'type_id','id');
+    }
+
 }

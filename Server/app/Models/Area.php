@@ -21,4 +21,7 @@ class Area extends Model
     public function orders(){
         return $this->hasMany(Order::class,'area_id');
     }
+    public function customer(){
+        return $this->hasMany(Order::class,'defualtArea_id');
+    }
 }
