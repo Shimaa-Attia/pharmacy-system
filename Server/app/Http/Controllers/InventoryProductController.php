@@ -58,7 +58,7 @@ class InventoryProductController extends Controller
         $request->request->add(['status_id' =>$status->id]);
         $branch_id = Auth::user()->branch_id;
         $request->request->add(['branch_id' =>$branch_id]);
-
+        $request->request->add(['creator_userId' =>Auth::user()->id]);
         InventoryProduct::create($request->all());
 
         return response()->json([

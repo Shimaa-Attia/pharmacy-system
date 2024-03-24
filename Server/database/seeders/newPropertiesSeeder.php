@@ -25,7 +25,6 @@ class newPropertiesSeeder extends Seeder
 
             ['type'=>'policieType', 'name'=>'المبيعات'],
             ['type'=>'policieType', 'name'=>'المرتجعات'],
-            ['type'=>'policieType', 'name'=>'الصيادلة'],
             ['type'=>'policieType', 'name'=>'التعامل مع العملاء'],
         ];
 
