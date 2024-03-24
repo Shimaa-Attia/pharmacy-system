@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::table('orders', function (Blueprint $table) {
             $table->bigInteger('user_id',false,true)->nullable()->change();
             $table->decimal("totalAmmount", 6, 2)->nullable()->change();
-            $table->boolean('isAccepted')->default(false)->after('sale_point_id');
 
 
 

@@ -114,6 +114,10 @@ Route::middleware(['auth:api'])->group(function(){
         //deliveryOrderPay
         Route::put('/deliveryOrderPay/{id}',[OrdersController::class,'deliveryOrderPay']);
 
+        //popUp
+        //popUp order
+        Route::post('/popUpOrder',[OrdersController::class,'popUpOrder']);
+
     });
 
     Route::group(['prefix'=>'points','as'=>'points.'],function(){

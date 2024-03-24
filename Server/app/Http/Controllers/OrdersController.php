@@ -20,7 +20,14 @@ class OrdersController extends Controller
 {
     public function all()
     {
-        $orders = Order::orderBy("created_at","DESC")->paginate(20);
+        $orders = Order::where('user_id','!=' , null)
+        ->orderBy("created_at","DESC")->paginate(20);
+        return
+            OrderResource::collection($orders);
+    }
+    public function unAcceptedOrders(){
+        $orders = Order::where('user_id', null)
+        ->orderBy("created_at","DESC")->paginate(20);
         return
             OrderResource::collection($orders);
     }
@@ -30,7 +37,7 @@ class OrdersController extends Controller
         $order = order::find($id);
         if ($order == null) {
             return response()->json([
-                "message" => "هذا الطلب غير موجود", 404
+                "message" => "هذا الأوردر غير موجود", 404
             ]);
         }
         return new OrderResource($order);
@@ -108,12 +115,13 @@ class OrdersController extends Controller
             "customer_id" => $customer->id,
             "user_id" => $user->id,
             "sale_point_id" => $request->sale_point_id,
-            "area_id"=>$area_id
+            "area_id"=>$area_id,
+            "isAccepted"=>true
         ]);
 
 
         return response()->json([
-            "message" => "تمت إضافة الطلب",
+            "message" => "تمت إضافة الأوردر",
         ]);
 
     }
@@ -124,7 +132,7 @@ class OrdersController extends Controller
         $order = Order::find($id);
         if ($order == null) {
             return response()->json([
-                "message" => "هذا الطلب غير موجود"
+                "message" => "هذا الأوردر غير موجود"
             ], 404);
         }
         //validation
@@ -206,24 +214,130 @@ class OrdersController extends Controller
         $order->update($request->all());
         //response
         return response()->json([
-            "message" => "تم تعديل  الطلب بنجاح", "order " => new OrderResource($order)
+            "message" => "تم تعديل  الأوردر بنجاح", "order " => new OrderResource($order)
         ], 200);
 
 
     }
 
+    public function popUpOrder(Request $request){
+
+        $validator = Validator::make($request->all(), [
+            'customer_code' => 'required',
+            'sale_point_id' => 'required|exists:sale_points,id',
+            "area_id"=>'nullable|exists:areas,id'
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                "message" => $validator->errors()], 409);
+        }
+
+
+        $customer = Customer::where('code', $request->customer_code)->first();
+        // create customer if not exist
+        if (!$customer) {
+                if($request->area_id==null){
+                    return response()->json([
+                        "message" => "اختر منطقة افتراضية للعميل الجديد"], 409);
+                }
+                $customer = Customer::create([
+                    "code" => $request->customer_code,
+                    "name" => 'غير محدد',
+                    "defualtArea_id"=>$request->area_id,
+                ]);
+                $area_id= $customer->defualtArea_id;
+        }else{
+                $area_id= $customer->defualtArea_id;
+                if($request->area_id){
+                $customer->areas()->syncWithoutDetaching($request->area_id);
+                $area_id = $request->area_id;
+            }
+        }
+
+        $order = Order::create([
+            "customer_id" => $customer->id,
+            "sale_point_id" => $request->sale_point_id,
+            "area_id"=>$area_id,
+            "notes" => $request->notes,
+        ]);
+
+
+        return response()->json([
+            "message" => "تمت إضافة الأوردر، في إنتظار قبوله من أحد الطيارين",
+        ]);
+    }
+
+    public function acceptOrder(Request $request, $id){
+        $order = Order::find($id);
+        if ($order == null) {
+            return response()->json([
+                "message" => "هذا الأوردر غير موجود"
+            ], 404);
+        }
+        $validator = Validator::make($request->all(), [
+            'cost' => 'numeric|required|gt:0',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                "message" => $validator->errors()], 409);
+        }
+        $totalAmmount = ceil($request->cost / 200) * 200;
+        // $request->request->add(['totalAmmount'=>$totalAmmount]);
+
+
+        $update =   $order->update([
+            "user_id"=>Auth::user()->id,
+            "cost"=>$request->cost,
+            "totalAmmount"=>$totalAmmount
+        ]);
+        if($update){
+            return response()->json([
+                "message" => "تم قبول الأوردر",
+            ]);
+        }else{
+            return response()->json([
+                "message" => "حدث خطأ ما..",
+            ]);
+        }
+
+    }
+
+    public function cancelOrder($id){
+        $order = Order::find($id);
+        if ($order == null) {
+            return response()->json([
+                "message" => "هذا الأوردر غير موجود"
+            ], 404);
+        }
+
+        $update =   $order->update([
+            "user_id"=>null,
+            "cost"=>null,
+            "totalAmmount"=>null
+        ]);
+        if($update){
+            return response()->json([
+                "message" => "تم التراجع عن  قبول هذا الأوردر",
+            ]);
+        }else{
+            return response()->json([
+                "message" => "حدث خطأ ما..",
+            ]);
+        }
+
+    }
 
     public function destroy($id)
     {
         $order = Order::find($id);
         if ($order == null) {
             return response()->json([
-                "message" => "هذا الطلب غير موجود"
+                "message" => "هذا الأوردر غير موجود"
             ], 404);
         }
         $order->delete();
         return response()->json([
-            "message" => "تم أرشفة الطلب"], 200);
+            "message" => "تم أرشفة الأوردر"], 200);
     }
 
 
@@ -244,12 +358,12 @@ class OrdersController extends Controller
         $order = Order::onlyTrashed()->find($id);
         if ($order == null) {
             return response()->json([
-                "message" => "هذا الطلب غير موجود بالأرشيف"
+                "message" => "هذا الأوردر غير موجود بالأرشيف"
             ], 404);
         }
         $order->restore();
         return response()->json([
-                "message" => "تم إستعادة الطلب",
+                "message" => "تم إستعادة الأوردر",
                 "order" => new OrderResource($order)]
             , 200);
     }
@@ -259,7 +373,7 @@ class OrdersController extends Controller
         $order = Order::onlyTrashed()->find($id);
         if ($order == null) {
             return response()->json([
-                "message" => " هذا الطلب غير موجود بالأرشيف"
+                "message" => " هذا الأوردر غير موجود بالأرشيف"
             ], 404);
         }
         $order->forceDelete();
@@ -311,7 +425,7 @@ class OrdersController extends Controller
         $order = Order::find($id);
         if ($order == null) {
             return response()->json([
-                "message" => "هذا الطلب غير موجود"
+                "message" => "هذا الأوردر غير موجود"
             ], 404);
         }
         $validator = Validator::make($request->all(), [
@@ -456,7 +570,7 @@ class OrdersController extends Controller
                 ->where('user_id',$user_id)->first();
                 if($order==null){
                     return response()->json([
-                        "message" => "هذا الطلب غير موجود"
+                        "message" => "هذا الأوردر غير موجود"
                     ], 404);
                 }
                 if($order->paid == $order->totalAmmount){
@@ -487,7 +601,7 @@ class OrdersController extends Controller
         $order = Order::find($id);
         if ($order == null) {
             return response()->json([
-                "message" => "هذا الطلب غير موجود"
+                "message" => "هذا الأوردر غير موجود"
             ], 404);
         }
 
@@ -497,7 +611,7 @@ class OrdersController extends Controller
         ]);
         if ($update) {
             return response()->json([
-                "message" => "تم تغيير حالة الطلب"
+                "message" => "تم تغيير حالة الأوردر"
             ]);
         } else {
             return response()->json([
