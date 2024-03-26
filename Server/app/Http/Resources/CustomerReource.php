@@ -26,7 +26,8 @@ class CustomerReource extends JsonResource
             'created_at'=>$this->created_at->format('Y/m/d h:i A'),
             'contactInfo'=>$this->customFields,
             'areas'=>$this->areas,
-            'checkBox'=>$this->checkBox
+            'checkBox'=>$this->checkBox,
+            'defaultArea'=>$this->defualtArea,
 
 
         ];

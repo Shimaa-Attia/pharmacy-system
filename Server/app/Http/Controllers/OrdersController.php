@@ -472,7 +472,7 @@ class OrdersController extends Controller
 
     public function filter(Request $request)
     {
-        $order_query = Order::with(['user', 'customer', 'sale_point']);
+        $order_query = Order::where('user_id','!=' , null);
         if ($request->is_paid == "paid") {
             $order_query->whereColumn('paid', 'totalAmmount');
         } elseif ($request->is_paid == "unpaid") {
