@@ -86,7 +86,7 @@ class OrdersController extends Controller
         if (!$customer) {
                 if($request->area_id==null){
                     return response()->json([
-                        "message" => "اختر منطقة افتراضية للعميل الجديد"], 409);
+                        "message" => "اختر منطقة إفتراضية للعميل الجديد"], 409);
                 }
                 $customer = Customer::create([
                     "code" => $request->customer_code,
@@ -95,11 +95,16 @@ class OrdersController extends Controller
                 ]);
                 $area_id= $customer->defualtArea_id;
         }else{
-                $area_id= $customer->defualtArea_id;
                 if($request->area_id){
-                $customer->areas()->syncWithoutDetaching($request->area_id);
-                $area_id = $request->area_id;
-            }
+                    $customer->areas()->syncWithoutDetaching($request->area_id);
+                    $area_id = $request->area_id;
+               }else{
+                    $area_id= $customer->defualtArea_id;
+                    if($area_id == null){
+                        return response()->json([
+                            "message" => "ليس لدى هذا العميل منطقة إفتراضية، قم بإضافة منطقة إفتراضية له أولًا"], 409);
+                    }
+               }
         }
 
         //create
