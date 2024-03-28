@@ -142,8 +142,8 @@ class OrdersController extends Controller
         //validation
         if($order->user->role =='delivery' && $order->cost == null){
             $validator = Validator::make($request->all(), [
-                'total_ammount' => 'numeric|nullable|gt:0',
-                'paid' => 'numeric|nullable|lte:total_ammount',
+                // 'total_ammount' => 'numeric|nullable|gt:0',
+                'paid' => 'numeric|nullable|gte:0',
                 'customer_code' => 'nullable',
                 'user_code' => 'nullable|exists:users,code',
                 'customer_area'=>'nullable|string|min:5',
@@ -154,7 +154,7 @@ class OrdersController extends Controller
             $validator = Validator::make($request->all(), [
                 'cost' => 'numeric|nullable|gt:0',
                 // 'total_ammount' => 'numeric|nullable|gte:cost',
-                'paid' => 'numeric|nullable|lte:total_ammount',
+                'paid' => 'numeric|nullable|gte:0',
                 'customer_code' => 'nullable',
                 'user_code' => 'nullable|exists:users,code',
                 'customer_area'=>'nullable|string|min:5',
