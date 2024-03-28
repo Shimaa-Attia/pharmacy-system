@@ -87,9 +87,7 @@ export default function OrderDetails() {
       </div>
 
 
-      <div className="col-md-3 d-flex m-auto mt-3 ">
-        <NavLink to='../orders' className='btn  btn-secondary form-control mx-2 '>رجوع</NavLink>
-      </div>
+
     </>
   )
 }

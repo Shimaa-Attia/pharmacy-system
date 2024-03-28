@@ -30,7 +30,8 @@ export default function Notifications() {
                 "Authorization": `Bearer ${accessToken}`
             }
         })
-        setNotDoneNotifications(notDoneResult.data);
+       
+        setNotDoneNotifications(notDoneResult.data.data);
     };
     useEffect(() => {
         getNotDoneNotificationsData()
@@ -67,13 +68,15 @@ export default function Notifications() {
     let showNotDoneNotifications = () => {
         if (notDoneNotifications.length > 0) {
             return (
-                <div className="shadow rounded rounded-4 bg-white m-2 p-3 table-responsive">
+                <div className="shadow rounded rounded-4 bg-white me-1 p-3 table-responsive">
                     <table dir="rtl" responsive='md' className='table  table-hover  align-middle table-responsive-list  '>
 
                         <tbody>
                             {notDoneNotifications.map((noti) => <tr key={noti.id}>
                                 <td >{noti?.body}</td>
                                 <td >{noti?.branch?.name}</td>
+                                <td  >{noti?.creatorUser?.name}</td>
+                                <td >{noti?.created_at}</td>
                                 <td style={{ width: '20px' }} >
                                     <div className='text-center' >
                                         <i className='bi bi-arrow-left-circle-fill text-success fs-4'
@@ -109,7 +112,7 @@ export default function Notifications() {
                 "Authorization": `Bearer ${accessToken}`
             }
         })
-        setDoneNotifications(doneResult.data)
+        setDoneNotifications(doneResult.data.data)
     };
     useEffect(() => {
         getDoneNotificationsData()
@@ -134,7 +137,7 @@ export default function Notifications() {
     let showDoneNotifications = () => {
         if (doneNotifications.length > 0) {
             return (
-                <div className="shadow rounded rounded-4 bg-white m-2 p-3 table-responsive">
+                <div className="shadow rounded rounded-4 bg-white ms-1 p-3 table-responsive">
                     <table dir="rtl" responsive='md' className='table  table-hover  align-middle table-responsive-list  '>
 
                         <tbody>
@@ -147,6 +150,8 @@ export default function Notifications() {
                                     </div>
                                 </td>
                                 <td>{noti?.body}</td>
+                                <td  >{noti?.creatorUser?.name}</td>
+                                <td >{noti?.created_at}</td>
                                 <td >{noti?.branch?.name}</td>
                                 <td >
                                     <i className='bi bi-trash text-danger fs-5' onClick={() => deleteNotifaction(noti.id)}></i>

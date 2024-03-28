@@ -56,7 +56,6 @@ export default function AddShortComings() {
       document.getElementById("isAvailable_inOtherBranch").selectedIndex = "0";
 
     }).catch((errors) => {
-      console.log(errors);
       setIsLoading(false);
       const errorList = errors?.response?.data?.message;
       if (errorList !== undefined) {

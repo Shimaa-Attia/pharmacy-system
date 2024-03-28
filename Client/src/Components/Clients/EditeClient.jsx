@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Joi from 'joi';
 import React, { useContext, useEffect, useState } from 'react'
-import { NavLink, useNavigate, useParams } from 'react-router-dom';
+import {  useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Field, Form, Formik } from "formik";
 import { Helmet } from 'react-helmet';
@@ -11,12 +11,13 @@ import Select from 'react-select';
 export default function EditeClient() {
   let { accessToken } = useContext(AuthContext);
   let [isLoading, setIsLoading] = useState(false);
-  let navigate = useNavigate();
+
   let { id } = useParams();
   let [clients, setClients] = useState({
     code: '',
     name: '',
     areas: [],
+    defualtArea_id: '',
     phones: [],
     addresses: [],
     onHim: '',
@@ -31,12 +32,12 @@ export default function EditeClient() {
           "Authorization": `Bearer ${accessToken}`
         }
       });
-
       let phones = data?.data?.contactInfo.filter((item) => item.name === 'phone');
       let addresses = data?.data?.contactInfo.filter((item) => item.name === 'address');
       setClients({
         code: data?.data?.code,
         name: data?.data?.name,
+        defualtArea_id:data?.data?.defaultArea?.id ||'',
         phones: phones,
         addresses: addresses,
         onHim: data?.data?.onHim || '',
@@ -80,6 +81,12 @@ export default function EditeClient() {
     }));
     setAreasOptions(mapAreas);
   }, [areasData]);
+  let handleDefaultAreaChange = (selectedOption) => {
+    setClients((prevProject) => ({
+      ...prevProject,
+      defualtArea_id: selectedOption.value,
+    }));
+  };
   let handleAreaChange = (selectedOption) => {
     let selectedValues = selectedOption.map((opt) => opt.value)
     setClients((prevProject) => ({
@@ -87,7 +94,6 @@ export default function EditeClient() {
       areas: selectedValues,
     }));
   };
-
 
   let sendEditedDataToApi = async (values) => {
     await axios.put(`${process.env.REACT_APP_API_URL}/api/customers/${id}`, values, {
@@ -99,11 +105,8 @@ export default function EditeClient() {
         position: 'top-center'
       });
       setIsLoading(false);
-      // navigate('../clients');
-
-
+  
     }).catch((errors) => {
-
       setIsLoading(false);
       try {
         const errorList = errors?.response?.data?.message;
@@ -126,6 +129,7 @@ export default function EditeClient() {
       phones: Joi.any().empty(null),
       addresses: Joi.any().empty(null),
       areas: Joi.any().empty(''),
+      defualtArea_id: Joi.number().empty(''),
       onHim: Joi.any().empty(null),
       forHim: Joi.any().empty(null),
       notes: Joi.any().empty(''),
@@ -183,7 +187,18 @@ export default function EditeClient() {
                     <Field type="text" className='form-control' name="name" id="name" />
                   </div>
                   <div className="col-md-6">
-                    <label htmlFor="areas" className='form-label'>المنطقة</label>
+                    <label htmlFor="defualtArea_id" className='form-label'>المنطقة الإفتراضية </label>
+                    <Select
+                      name="defualtArea_id"
+                      options={areasOptions}
+                      onChange={handleDefaultAreaChange}
+                      isSearchable={true}
+                      placeholder="بحث عن منطقة..."
+
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <label htmlFor="areas" className='form-label'>المناطق الأخرى</label>
                     <Select
                       name="areas"
                       options={areasOptions}
@@ -199,20 +214,20 @@ export default function EditeClient() {
                     <Field type="text" id="phone1" className='form-control' name="phones[0].value" />
                   </div>
 
-                  <div className="col-md-6">
+                  {/* <div className="col-md-6">
                     <label htmlFor="addresses1" className='form-label'> عنوان</label>
 
                     <Field type="text" id="addresses1" className='form-control' name="addresses[0].value" />
-                  </div>
+                  </div> */}
                   {showInput && <div className="col-md-6">
                     <label htmlFor="phone2" className='form-label'> رقم هاتف آخر </label>
                     <Field type="text" id="phone2" className='form-control' name="phones[1].value" />
                   </div>}
-                  {showInput && <div className="col-md-6">
+                  {/* {showInput && <div className="col-md-6">
                     <label htmlFor="addresses2" className='form-label'> عنوان آخر</label>
 
                     <Field type="text" id="addresses2" className='form-control' name="addresses[1].value" />
-                  </div>}
+                  </div>} */}
                   <div className="col-md-12 ">
                     <button type='button' className='btn btn-success' onClick={toggleInput} >
                       {showInput === false ? 'إضافة المزيد' : 'إخفاء'}

@@ -21,6 +21,7 @@ export default function AddClient() {
         code: '',
         name: '',
         areas: [],
+        defualtArea_id: '',
         phones: [],
         addresses: [],
         onHim: '',
@@ -54,17 +55,23 @@ export default function AddClient() {
         }));
         setAreasOptions(mapAreas);
     }, [areasData]);
-    let handleSelectChange = (selectedOption ,fieldName) => {
+    let handleAreasAndPhonessChange = (selectedOption, fieldName) => {
         let selectedValues = selectedOption.map((opt) => opt.value)
         setClientData(prevData => ({
             ...prevData,
             [fieldName.name]: selectedValues
         }));
-      };
-      let getInputValue = (event) => {
+    };
+    let handleDefualtAreaChange = (selectedOption) => {
+        setClientData(prevData => ({
+            ...prevData,
+            defualtArea_id: selectedOption.value
+        }));
+    };
+    let getInputValue = (event) => {
         let { name, value } = event.target;
         setClientData(prevState => ({ ...prevState, [name]: value }));
-      };
+    };
 
     let sendClientDataToApi = async () => {
         await axios.post(`${process.env.REACT_APP_API_URL}/api/customers`, clientData, {
@@ -78,7 +85,7 @@ export default function AddClient() {
             setIsLoading(false);
             setClientData({ ...initialValues });
         }).catch((errors) => {
-    
+            console.log(errors);
             setIsLoading(false);
             try {
                 const errorList = errors?.response?.data?.message;
@@ -97,11 +104,14 @@ export default function AddClient() {
     };
     let validateClientForm = () => {
         const schema = Joi.object({
-            name: Joi.string().empty(''),
+            name: Joi.string().required(),
             code: Joi.string().required(),
             phones: Joi.any().empty(''),
             addresses: Joi.any().empty(''),
-            areas:Joi.any().empty(''),
+            areas: Joi.any().empty(''),
+            defualtArea_id: Joi.string().required().messages({
+                'string.empty': 'يجب إدخال المنطقة الإفتراضية',
+            }),
             onHim: Joi.number().empty(''),
             forHim: Joi.number().empty(''),
             notes: Joi.string().empty(''),
@@ -118,8 +128,6 @@ export default function AddClient() {
         let validation = validateClientForm();
         if (!validation.error) {
             sendClientDataToApi();
-
-
         } else {
             setIsLoading(false);
             try {
@@ -133,7 +141,7 @@ export default function AddClient() {
         }
 
     };
-  
+
 
     return (
         <>
@@ -144,30 +152,42 @@ export default function AddClient() {
             <h3 className='alert alert-primary text-center mx-5 my-2  fw-bold'>إضافة عميل جديد</h3>
             <div className="mx-5 p-3 rounded rounded-3 bg-white">
 
-          
-                                <form className="row g-3" onSubmit={submitClientForm}>
-                                    <div className="col-md-6">
-                                        <label htmlFor="code" className='form-label'>كود العميل</label>
-                                        <input type="text" className='form-control' name="code" id="code" onChange={getInputValue} />
-                                    </div>
-                                    <div className="col-md-6">
-                                        <label htmlFor="name" className='form-label'>الاسم</label>
-                                        <input type="text" className='form-control' name="name" id="name" onChange={getInputValue} />
-                                    </div>
-                                    <div className="col-md-6">
-                                        <label htmlFor="areas" className='form-label'>المنطقة</label>
-                                        <Select
-                                            // ref={clientSelectRef}
-                                            name="areas"
-                                            options={areasOptions}
-                                            isMulti
-                                            onChange={handleSelectChange}
-                                            isSearchable={true}
-                                            placeholder="بحث عن منطقة..."
 
-                                        />
-                                    </div>
-                                    <div className="col-md-6">
+                <form className="row g-3" onSubmit={submitClientForm}>
+                    <div className="col-md-6">
+                        <label htmlFor="code" className='form-label'>كود العميل</label>
+                        <input type="text" className='form-control' name="code" id="code" onChange={getInputValue} />
+                    </div>
+                    <div className="col-md-6">
+                        <label htmlFor="name" className='form-label'>الاسم</label>
+                        <input type="text" className='form-control' name="name" id="name" onChange={getInputValue} />
+                    </div>
+                    <div className="col-md-6">
+                        <label htmlFor="defualtArea_id" className='form-label'> المنطقة الإفتراضية</label>
+                        <Select
+                            // ref={clientSelectRef}
+                            name="defualtArea_id"
+                            options={areasOptions}
+                            onChange={handleDefualtAreaChange}
+                            isSearchable={true}
+                            placeholder="بحث عن منطقة..."
+
+                        />
+                    </div>
+                    <div className="col-md-6">
+                        <label htmlFor="areas" className='form-label'>المناطق الأخرى</label>
+                        <Select
+                            // ref={clientSelectRef}
+                            name="areas"
+                            options={areasOptions}
+                            isMulti
+                            onChange={handleAreasAndPhonessChange}
+                            isSearchable={true}
+                            placeholder="بحث عن منطقة..."
+
+                        />
+                    </div>
+                    {/* <div className="col-md-6">
                                         <label htmlFor="addresses" className='form-label'>العناوين</label>
                                         <CreatableSelect
                                             name="addresses"
@@ -177,44 +197,41 @@ export default function AddClient() {
                                             placeholder="إضافة عنوان..."
 
                                         />
-                                    </div>
-                                    <div className="col-md-6">
-                                        <label htmlFor="phones" className='form-label'>أرقام الهواتف</label>
-                                        <CreatableSelect 
-                                            name="phones"
-                                            isMulti
-                                            onChange={handleSelectChange}
-                                            isSearchable={true}
-                                            placeholder="إضافة هاتف..."
+                                    </div> */}
+                    <div className="col-md-6">
+                        <label htmlFor="phones" className='form-label'>أرقام الهواتف</label>
+                        <CreatableSelect
+                            name="phones"
+                            isMulti
+                            onChange={handleAreasAndPhonessChange}
+                            isSearchable={true}
+                            placeholder="إضافة هاتف..."
 
-                                        />
-                                    </div>
-                                   
-                                    <div className="col-md-6">
-                                        <label htmlFor="onHim" className='form-label'>عليه</label>
-                                        <input type="text" className='form-control' name="onHim" id="onHim" onChange={getInputValue} />
-                                    </div>
-                                    <div className="col-md-6">
-                                        <label htmlFor="forHim" className='form-label'>له</label>
-                                        <input type="text" className='form-control' name="forHim" id="forHim" onChange={getInputValue} />
-                                    </div>
+                        />
+                    </div>
 
-                                    <div className="col-md-12">
-                                        <label htmlFor="notes" className='form-label'>ملاحظات</label>
-                                        <textarea type="text"  id="notes" className='form-control' name="notes" onChange={getInputValue} />
-                                    </div>
-                                    <div className="col-md-3">
-                                        <button type='submit' className='btn btn-primary form-control fs-5'>
-                                            {isLoading == true ?
-                                                <i className='fa fa-spinner fa-spin'></i> : 'إضافة'}
-                                        </button>
-                                    </div>
-                                    <div className="col-md-3">
-                                        <NavLink to='../clients'
-                                            className='btn  btn-secondary form-control fs-5'>رجوع</NavLink>
-                                    </div>
-                                </form>
-                         
+                    <div className="col-md-6">
+                        <label htmlFor="onHim" className='form-label'>عليه</label>
+                        <input type="text" className='form-control' name="onHim" id="onHim" onChange={getInputValue} />
+                    </div>
+                    <div className="col-md-6">
+                        <label htmlFor="forHim" className='form-label'>له</label>
+                        <input type="text" className='form-control' name="forHim" id="forHim" onChange={getInputValue} />
+                    </div>
+
+                    <div className="col-md-12">
+                        <label htmlFor="notes" className='form-label'>ملاحظات</label>
+                        <textarea type="text" id="notes" className='form-control' name="notes" onChange={getInputValue} />
+                    </div>
+                    <div className="col-md-3">
+                        <button type='submit' className='btn btn-primary form-control fs-5'>
+                            {isLoading == true ?
+                                <i className='fa fa-spinner fa-spin'></i> : 'إضافة'}
+                        </button>
+                    </div>
+                 
+                </form>
+
 
             </div>
         </>

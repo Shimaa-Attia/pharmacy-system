@@ -82,14 +82,14 @@ export default function DoctorOrders() {
   function handleDateChange(event) {
     setFilterDate(event.target.value)
   }
-  let getOrderData = async (page=1) => {
+  let getOrderData = async (page = 1) => {
     let orderResult;
     let urlApi = `${process.env.REACT_APP_API_URL}/api/orders/filter?`;
     if (filterUserId !== undefined && filterUserId.length > 0) {
       urlApi += `user_id=${filterUserId}&`
     }
     if (filterIsPaid !== undefined && filterIsPaid.length > 0) {
-      urlApi += `is_paid=${filterIsPaid}&` 
+      urlApi += `is_paid=${filterIsPaid}&`
     }
     if (filterPointId !== undefined && filterPointId.length > 0) {
       urlApi += `point_id=${filterPointId}&`
@@ -99,9 +99,9 @@ export default function DoctorOrders() {
     }
     if (searchText !== undefined && searchText.trim().length > 0) {
       urlApi += `key=${searchText}&`
-    
+
     }
- 
+
     urlApi += `page=${page}`
     orderResult = await axios.get(urlApi, {
       headers: {
@@ -114,58 +114,10 @@ export default function DoctorOrders() {
       setCurrentPage(page); // Set current page
     }
   };
-  useEffect(() => { getOrderData() }, [filterUserId, filterIsPaid, filterPointId,filterDate , searchText]);
+  useEffect(() => { getOrderData() }, [filterUserId, filterIsPaid, filterPointId, filterDate, searchText]);
   let handlePageChange = (page) => {
     getOrderData(page);
   };
-
-// Render pagination controls
-const renderPaginationControls = () => {
-if (!pagination) return null;
-const totalPages = pagination.last_page;
-const maxVisiblePages = 3;
-
-let startPage = 1;
-let endPage = Math.min(totalPages, maxVisiblePages);
-
-if (currentPage > Math.floor(maxVisiblePages / 2)) {
-  startPage = currentPage - Math.floor(maxVisiblePages / 2);
-  endPage = Math.min(totalPages, currentPage + Math.floor(maxVisiblePages / 2));
-}
-
-const pages = [];
-for (let i = startPage; i <= endPage; i++) {
-  pages.push(
-    <button
-      key={i}
-      className={`btn ${currentPage === i ? 'btn-primary' : 'btn-outline-primary'}`}
-      onClick={() => handlePageChange(i)}
-    >
-      {i}
-    </button>
-  );
-}
-
-return (
-  <div className="btn-group">
-    <button
-      className="btn btn-outline-primary"
-      onClick={() => handlePageChange(currentPage - 1)}
-      disabled={currentPage === 1}
-    >
-      السابق
-    </button>
-    {pages}
-    <button
-      className="btn btn-outline-primary"
-      onClick={() => handlePageChange(currentPage + 1)}
-      disabled={currentPage === totalPages}
-    >
-      التالي
-    </button>
-  </div>
-);
-};
 
   //get total money with the doctor from all orders
   let [unpaidAmount, setUnpaidAmmount] = useState([]);
@@ -186,7 +138,7 @@ return (
     if (orders.length > 0) {
       return (
         <div className="shadow rounded rounded-4 bg-white mx-3 p-3 table-responsive ">
-          <table dir="rtl"  className='table table-bordered table-hover text-center table-responsive-list'>
+          <table dir="rtl" className='table table-bordered table-hover text-center table-responsive-list'>
             <thead className='table-primary no-wrap-heading'>
               <tr>
                 <th>رقم</th>
@@ -195,6 +147,7 @@ return (
                 <th>اسم الموظف</th>
                 <th>هاتف الموظف</th>
                 <th>كود العميل</th>
+                <th>المنطقة </th>
                 <th>قيمة الأوردر</th>
                 <th>الإجمالي</th>
                 <th>المدفوع</th>
@@ -211,7 +164,8 @@ return (
                 <td data-label="نقطة البيع">{order?.sale_point?.name}</td>
                 <td data-label="اسم الموظف">{order?.delivery_man?.name}</td>
                 <td data-label="هاتف الموظف">{order?.delivery_man?.phone}</td>
-                <td data-label="اسم العميل">{order?.customer?.code}</td>
+                <td data-label="كود العميل">{order?.customer?.code}</td>
+                <td data-label=" المنطقة">{order?.area?.name}</td>
                 <td data-label="قيمة الأوردر">{order.cost}</td>
                 <td data-label="الإجمالي">{order.total_ammount}</td>
                 <td data-label="المدفوع">{order.paid}</td>
@@ -220,14 +174,14 @@ return (
                   openModal()
                   setOrderId(order.id)
                 }} style={{ backgroundColor: '#2a55a3' }}></i></td>
-                   <td data-label="خيارات">
+                <td data-label="خيارات">
                   <NavLink to={`/doctorOrders/edite/${order.id}`} >
                     <i className='bi bi-pencil-square text-bg-primary mx-1  p-1 rounded'></i>
                   </NavLink>
                   <NavLink to={`/doctorOrders/details/${order.id}`} >
                     <i className='bi bi-list-ul text-bg-success mx-1  p-1 rounded'></i>
                   </NavLink>
-           
+
                 </td>
               </tr>
               )}
@@ -270,7 +224,7 @@ return (
       }
     }).then((res) => {
       toast.success(res.data.message);
-      setPaid({ paid_value: '' }); 
+      setPaid({ paid_value: '' });
     }).catch((errors) => {
       toast.error(errors?.response?.data?.message);
     })
@@ -347,8 +301,8 @@ return (
             />
           </div>
           <div className="col-md-2 mb-1">
-          <input type="date" className='form-control mt-1' onChange={handleDateChange} />
-        </div>
+            <input type="date" className='form-control mt-1' onChange={handleDateChange} />
+          </div>
           <div className="col-md-3 mb-1">
             <select name="is_paid" defaultValue={0} className='form-control' id="role"
               onChange={handleIsPaidChange}>
@@ -364,24 +318,31 @@ return (
               {salePoints.map((point) => <option key={point.id} value={point.id} >{point.name}</option>)}
             </select>
           </div>
+          <div className="col-md-3 mb-1">
+            <NavLink to='/doctorpoporders/add' className='btn btn-danger ' >إضافة أوردر للطيارين </NavLink>
+          </div>
           <div className="col-md-2">
             <NavLink to={`/doctorOrders/add/${id}`} className='btn btn-primary mb-1' >إضافة أوردر</NavLink>
           </div>
+          <div className="col-md-3 mb-2">
+            <NavLink to='/doctorpoporders' className='btn btn-warning' > الأوردرات المعلقة  </NavLink>
+          </div>
+          <div className="col-md-3  bg-secondary-subtle  rounded mt-1 ">
+              <span className='text-bg-danger rounded p-1 fw-bolder d-block' >إجمالي المبلغ المطلوب سداده</span>
+              <span className='fw-bolder '>{unpaidAmount?.unpaidAmount}</span>
+            </div>
           <div className="col-md-12 row m-auto d-flex " >
             <div className="col-md-4 mt-1">
               {showSalePoints()}
             </div>
-            <div className="col-md-3 m-auto bg-secondary-subtle mt-1 rounded">
-              <div className=' text-bg-danger rounded p-1 fw-bolder ' >إجمالي المبلغ المطلوب سداده</div>
-              <div className='fw-bolder p-1 '>{unpaidAmount?.unpaidAmount}</div>
-            </div>
-            <div className="col-md-5">
+            <div className="col-md-6 mx-auto">
               <input type="text" className='form-control text-end mt-1' placeholder='بحث عن أوردر...' onChange={handleSearchChange} />
             </div>
+          
           </div>
         </div>
       </div>
-      {openPaidModal &&       <div id="paidModal" className={`${styles.modal}`}>
+      {openPaidModal && <div id="paidModal" className={`${styles.modal}`}>
         <div className={`${styles.modal_content}`}>
           <span className={`${styles.close} fs-3`} onClick={closeModal} >&times;</span>
           <form onSubmit={submitUnpaidAmountToApi} >
@@ -393,10 +354,10 @@ return (
 
           </form>
         </div>
-      </div> }
+      </div>}
 
       <div className="text-center mb-3">
-      <Pagination pagination={pagination} currentPage={currentPage} handlePageChange={handlePageChange}/>
+        <Pagination pagination={pagination} currentPage={currentPage} handlePageChange={handlePageChange} />
 
       </div>
       {showOrders()}

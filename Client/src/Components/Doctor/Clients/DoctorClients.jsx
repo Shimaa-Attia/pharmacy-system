@@ -19,7 +19,7 @@ export default function DoctorClients() {
 
     };
 
-    let getClientData = async (page =1) => {
+    let getClientData = async (page = 1) => {
         let searchResult;
         if (searchText !== undefined && searchText.trim().length > 0) {
             searchResult = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers/search/${searchText.trim()}?page=${page}`, {
@@ -36,7 +36,7 @@ export default function DoctorClients() {
                     "Authorization": `Bearer ${accessToken}`
                 }
             });
-            
+
             setClients(searchResult.data.data);
             setPagination(searchResult.data.meta); // Set pagination data
             setCurrentPage(page); // Set current page
@@ -47,52 +47,53 @@ export default function DoctorClients() {
     useEffect(() => {
         getClientData()
     }, [searchText])
-      //for handle page change
-      let handlePageChange = (page) => {
+    //for handle page change
+    let handlePageChange = (page) => {
         getClientData(page);
-      };
-   //for making checkBox for every one
-   let sendUpdateCheckBoxToApi = async (custId) => {
-    await axios.put(`${process.env.REACT_APP_API_URL}/api/customers/updateCheckBox/${custId}`, {}, {
-        headers: {
-            "Authorization": `Bearer ${accessToken}`
-        }
-    }).then((res) => {
-        toast.success(res.data.message);
-        getClientData()
-    }).catch((errors) => {
-        toast.error('حدث خطأ ما');
-        toast.error(errors?.response?.data?.message);
-    })
-}
-//for making reset all checkBox
-let sendResetCheckBoxToApi = async () => {
-    await axios.put(`${process.env.REACT_APP_API_URL}/api/customers/updateCheckBox/all`, {}, {
-        headers: {
-            "Authorization": `Bearer ${accessToken}`
-        }
-    }).then((res) => {
-        toast.success(res.data.message);
-        getClientData()
-    }).catch((errors) => {
-        toast.error('حدث خطأ ما');
-        toast.error(errors?.response?.data?.message);
-    })
-}
+    };
+    //for making checkBox for every one
+    let sendUpdateCheckBoxToApi = async (custId) => {
+        await axios.put(`${process.env.REACT_APP_API_URL}/api/customers/updateCheckBox/${custId}`, {}, {
+            headers: {
+                "Authorization": `Bearer ${accessToken}`
+            }
+        }).then((res) => {
+            toast.success(res.data.message);
+            getClientData()
+        }).catch((errors) => {
+            toast.error('حدث خطأ ما');
+            toast.error(errors?.response?.data?.message);
+        })
+    }
+    //for making reset all checkBox
+    let sendResetCheckBoxToApi = async () => {
+        await axios.put(`${process.env.REACT_APP_API_URL}/api/customers/updateCheckBox/all`, {}, {
+            headers: {
+                "Authorization": `Bearer ${accessToken}`
+            }
+        }).then((res) => {
+            toast.success(res.data.message);
+            getClientData()
+        }).catch((errors) => {
+            toast.error('حدث خطأ ما');
+            toast.error(errors?.response?.data?.message);
+        })
+    }
     let showClients = () => {
         if (clients.length > 0) {
             return (
                 <div className="shadow rounded rounded-4 bg-white mx-3 p-3 table-responsive ">
-                        <div  style={{ cursor: 'pointer' }} onClick={sendResetCheckBoxToApi} className='bg-danger text-white w-75 text-center m-auto d-block d-sm-none p-1 rounded'>عدم تحديد الكل</div>
+                    <div style={{ cursor: 'pointer' }} onClick={sendResetCheckBoxToApi} className='bg-danger text-white w-75 text-center m-auto d-block d-sm-none p-1 rounded'>عدم تحديد الكل</div>
                     <table dir="rtl" responsive='md' className='table table-hover align-middle text-center table-responsive-list  '>
                         <thead className='table-primary'>
                             <tr>
                                 <th>رقم</th>
                                 <th>كود العميل</th>
                                 <th>الاسم</th>
-                                <th>المنطقة</th>
+                                <th>المنطقة الإفتراضية</th>
+                                <th>المناطق الأخرى </th>
                                 <th>أرقام الهواتف</th>
-                                <th>العناوين</th>
+                                {/* <th>العناوين</th> */}
                                 <th>له</th>
                                 <th>عليه</th>
                                 <th>خيارات</th>
@@ -107,22 +108,23 @@ let sendResetCheckBoxToApi = async () => {
                                 <td data-label="#">{++index}</td>
                                 <td data-label="كود العميل">{client.code}</td>
                                 <td data-label="اسم العميل">{client.name}</td>
-                                <td data-label="المنطقة">
-                                    {client?.areas?.map((area) => ( <div key={area.id}>
+                                <td data-label=" المنطقة الإفتراضية">{client?.defaultArea?.name}</td>
+                                <td data-label="المناطق الأخرى">
+                                    {client?.areas?.map((area) => (<div key={area.id}>
 
                                         <p >{area.name}</p>
                                     </div>
-                                    )  
+                                    )
                                     )}
                                 </td>
-                                  <td data-label="أرقام الهواتف">
+                                <td data-label="أرقام الهواتف">
                                     {client?.contactInfo?.map((contactInfo) => {
                                         if (contactInfo.name === "phone") {
                                             return <p key={contactInfo.id}>{contactInfo.value}</p>
                                         }
                                     })}
                                 </td>
-                                   <td data-label="العناوين">
+                                <td data-label="العناوين">
                                     {client?.contactInfo?.map((contactInfo) => {
                                         if (contactInfo.name === "address") {
                                             return <p key={contactInfo.id}>{contactInfo.value}</p>
@@ -141,15 +143,15 @@ let sendResetCheckBoxToApi = async () => {
                                     {/* <NavLink to={`/clients/details/${client.id}`}>
                                         <i className='bi bi-list-ul text-bg-success mx-1 p-1 rounded'></i>
                                     </NavLink> */}
-                                </td> 
+                                </td>
                                 <td >
                                     {client.checkBox ? <i className='bi bi-check-circle-fill text-success fs-5'
                                         onClick={() => sendUpdateCheckBoxToApi(client.id)} ></i>
                                         : <i className='bi bi-x-circle-fill text-danger fs-5 '
                                             onClick={() => sendUpdateCheckBoxToApi(client.id)} ></i>}
-                                </td> 
-                             
-                              
+                                </td>
+
+
 
 
                             </tr>
@@ -160,9 +162,13 @@ let sendResetCheckBoxToApi = async () => {
             )
         } else {
             return (
-                <div className=' d-flex justify-content-center height-calc-70 align-items-center'>
-                    <i className='fa fa-spinner fa-spin fa-5x'></i>
-                </div>)
+                <div className=' d-flex justify-content-center  height-calc-70 align-items-center' >
+                    {clients.length <= 0 && searchText.length <= 0  ?
+                        <i className='fa fa-spinner fa-spin  fa-5x'></i>
+                        : <div className='alert alert-danger w-50 text-center'>لا يوجد تطابق لهذا البحث</div>
+                    }
+                </div> 
+                )
         }
     };
 
@@ -183,8 +189,8 @@ let sendResetCheckBoxToApi = async () => {
             </div>
 
             <div className="text-center mb-2">
-        <Pagination pagination={pagination} currentPage={currentPage} handlePageChange={handlePageChange}/>
-      </div>
+                <Pagination pagination={pagination} currentPage={currentPage} handlePageChange={handlePageChange} />
+            </div>
             {showClients()}
         </>)
 }

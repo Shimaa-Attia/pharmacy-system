@@ -16,7 +16,7 @@ export default function DoctorNotifications() {
                 "Authorization": `Bearer ${accessToken}`
             }
         });
-        setNotDoneNotifications(data);
+        setNotDoneNotifications(data.data);
     };
     useEffect(() => {
         getNotDoneNotificationsData()
@@ -48,6 +48,7 @@ export default function DoctorNotifications() {
                         <tbody>
                             {notDoneNotifications.map((noti) => <tr key={noti.id}>
                                 <td >{noti?.body}</td>
+                                <td >{noti?.created_at}</td>
                                 <td style={{ width: '20px' }} >
                                     <div className='text-center' >
                                         <i className='bi bi-arrow-left-circle-fill text-success fs-4'
@@ -65,8 +66,8 @@ export default function DoctorNotifications() {
         } else {
             return (
                 <div className=' d-flex justify-content-center  height-calc-70 align-items-center' >
-                <div className='alert alert-danger w-50 text-center'>لا يوجد </div>
-           </div>
+                    <div className='alert alert-danger w-50 text-center'>لا يوجد </div>
+                </div>
             )
         }
     };
@@ -78,13 +79,13 @@ export default function DoctorNotifications() {
                 "Authorization": `Bearer ${accessToken}`
             }
         });
-        setDoneNotifications(data);
+        setDoneNotifications(data.data);
     };
     useEffect(() => {
         getDoneNotificationsData()
     }, []);
-     //delete notifaction
-     let deleteNotifaction = async (notifyId) => {
+    //delete notifaction
+    let deleteNotifaction = async (notifyId) => {
         try {
             let { data } = await axios.delete(`${process.env.REACT_APP_API_URL}/api/notifications/forceDelete/${notifyId}`, {
                 headers: {
@@ -115,6 +116,8 @@ export default function DoctorNotifications() {
                                     </div>
                                 </td>
                                 <td>{noti?.body}</td>
+                                <td >{noti?.created_at}</td>
+
                                 <td >
                                     <i className='bi bi-trash text-danger fs-5' onClick={() => deleteNotifaction(noti.id)}></i>
                                 </td>
@@ -128,8 +131,8 @@ export default function DoctorNotifications() {
         } else {
             return (
                 <div className=' d-flex justify-content-center  height-calc-70 align-items-center' >
-                <div className='alert alert-danger w-50 text-center'>لا يوجد </div>
-           </div>
+                    <div className='alert alert-danger w-50 text-center'>لا يوجد </div>
+                </div>
             )
         }
     };

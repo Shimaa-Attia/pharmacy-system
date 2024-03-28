@@ -86,6 +86,24 @@ export default function DeliveryOrders() {
       toast.error(errors?.response?.data?.message);
     })
   }
+ //for delivery cancel order 
+  let cancelOrder =async(orderId)=>{
+    await axios.put(`${process.env.REACT_APP_API_URL}/api/orders/cancelPopUpOrder/${orderId}`, {}, {
+      headers: {
+          "Authorization": `Bearer ${accessToken}`
+      }
+  }).then((res) => {
+      toast.success(res.data.message);
+      getOrderData()
+  }).catch((errors) => {
+      try {
+       toast.error(errors?.response?.data?.message)
+      } catch (error) {
+          toast.error('حدث خطأ ما')
+      }
+  });
+    
+  }
   let showOrders = () => {
     if (orders.length > 0) {
       return (
@@ -100,7 +118,7 @@ export default function DeliveryOrders() {
                 <th>إجمالي المبلغ</th>
                 <th>نقطة البيع</th>
                 <th>المطلوب سداده</th>
-                <th>تاريخ السداد</th>
+                <th>إلغاء الأوردر</th>
                 <th>سداد</th>
                 <th>خيارات</th>  
               </tr>
@@ -114,7 +132,10 @@ export default function DeliveryOrders() {
                 <td data-label=" إجمالي المبلغ">{order?.total_ammount}</td>
                 <td data-label="نقطة البيع">{order?.sale_point?.name}</td>
                 <td data-label="المطلوب سداده">{order?.unpaid}</td>
-                <td data-label="تاريخ السداد">{order?.payed_at}</td>
+                <td data-label="إلغاء الأوردر">
+                  <span className='btn btn-danger' onClick={()=>{cancelOrder(order.id)}}>إلغاء</span>
+                </td>
+                
                 <td data-label="سداد" >
                 {order.unpaid ? <i className='bi bi-x-circle-fill text-danger fs-4' 
                   onClick={ () => sendDelavaryPaidsToApi(order.id)} ></i>
@@ -151,16 +172,18 @@ export default function DeliveryOrders() {
       </Helmet>
       <div className='container'>
         <div className=" my-3 text-center row   ">
-          <div className="col-md-4 ">
-            <NavLink to={`/deliveryOrders/add/${id}`} className='btn btn-primary mb-1' >إضافة أوردر</NavLink>
-          </div>
+     
           <div className="col-md-4">
             <input type="text" className='form-control text-end mt-1 ' placeholder=' ...بحث عن أوردر ' onChange={handleSearchChange} />
           </div>
-          <div className="col-3 m-auto bg-secondary-subtle mt-1 rounded w-auto">
-            <p className=' text-bg-danger rounded p-1 fw-bolder ' >إجمالي المبلغ المطلوب سداده</p>
-            <p className='fw-bolder '>{unpaidAmount?.unpaidAmount}</p>
+          <div className="col-md-4 mb-2">
+            <NavLink to='/deliverypoporders' className='btn btn-warning' > الأوردرات المعلقة  </NavLink>
           </div>
+          <div className="col-md-3  bg-secondary-subtle  rounded w-auto">
+            <span className='text-bg-danger rounded p-1 fw-bolder d-block ' >إجمالي المبلغ المطلوب سداده</span>
+            <span className='fw-bolder'>{unpaidAmount?.unpaidAmount}</span>
+          </div>
+         
         </div>
       </div>
       <div className="text-center mb-3">

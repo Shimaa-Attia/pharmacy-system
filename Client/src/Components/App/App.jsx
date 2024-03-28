@@ -1,16 +1,10 @@
-import { BrowserRouter,  Route, Router, Routes } from 'react-router-dom';
+import { BrowserRouter,  Route, Routes } from 'react-router-dom';
 import '../../../src/App.css';
 import MasterLayout from '../Layouts/MasterLayout';
 import NotFound from '../NotFound/NotFound';
-import Home from '../Home/Home';
-import Users from '../Users/Users';
 import Login from '../Login/Login';
 import Clients from '../Clients/Clients';
 import Settings from '../Settings/Settings'
-import AddUser from '../Users/AddUser';
-import DeleteUser from '../Users/DeleteUser';
-import EditeUser from '../Users/EditeUser';
-import UserDetails from '../Users/UserDetails';
 import { useContext } from 'react';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 import AddClient from '../Clients/AddClient';
@@ -23,7 +17,7 @@ import EditeOrder from '../Orders/EditeOrder';
 import OrderDetails from '../Orders/OrderDetails';
 import { ToastContainer } from 'react-toastify';
 import DeleteClient from '../Clients/DeleteClient';
-import { Offline, Online } from 'react-detect-offline';
+import { Offline } from 'react-detect-offline';
 import { AuthContext } from '../../Context/AuthStore';
 import DeliveryLayout from '../Layouts/DeliveryLayout';
 import AddOrderDelivery from '../Delivery/AddOrderDelivery'
@@ -45,8 +39,6 @@ import DoctorPurchases from '../Purchases/DoctorPurchases';
 import DoctorPurchasesDeatils from '../Purchases/DoctorPurchasesDeatils';
 import DeleteOrderDelivery from '../Delivery/DeleteOrderDelivery';
 import EditePurchasesDoctor from '../Doctor/EditePurchasesDoctor';
-import DoctorEditeOrder from '../Doctor/DoctorEditeOrder';
-import DoctorOrderDetails from '../Doctor/DoctorOrderDetails';
 import Offers from '../Offers/Offers';
 import AddOffer from '../Offers/AddOffer';
 import DeleteOffer from '../Offers/DeleteOffer';
@@ -93,7 +85,22 @@ import Areas from '../Areas/Areas';
 import PurchasesNotifications from '../PurchasesUser.jsx/Notifications/PurchasesNotifications';
 import AddPurchasesNotifications from '../PurchasesUser.jsx/Notifications/AddPurchasesNotifications';
 import DoctorClients from '../Doctor/Clients/DoctorClients';
-import EditeDoctorClients from '../Doctor/Clients/EditeDoctorClients';
+import Home from '../Admin/Home/Home';
+import Users from '../Admin/Users/Users';
+import AddUser from '../Admin/Users/AddUser';
+import DeleteUser from '../Admin/Users/DeleteUser';
+import EditeUser from '../Admin/Users/EditeUser';
+import UserDetails from '../Admin/Users/UserDetails';
+import WorkPolicies from '../WorkPolicies/WorkPolicies';
+import AddWorkPolicies from '../WorkPolicies/AddWorkPolicies';
+import EditeWorkPolicies from '../WorkPolicies/EditeWorkPolicies';
+import DoctorWorkPolicies from '../Doctor/WorkPolicies/DoctorWorkPolicies';
+import DeliveryWorkPolicies from '../Delivery/WorkPolicies/DeliveryWorkPolicies';
+import AddPopUpOrders from '../Orders/AddPopUpOrders';
+import AddPopUpOrdersDoctor from '../Doctor/AddPopUpOrdersDoctor';
+import PopUpOrders from '../Orders/PopUpOrders';
+import DoctorPopUpOrders from '../Doctor/DoctorPopUpOrders';
+import DeliveryPopUpOrders from '../Delivery/DeliveryPopUpOrders';
 
 
 
@@ -110,19 +117,19 @@ function App() {
         <Routes>
           <Route index element={<Login saveUserData={saveUserData} />} ></Route>
           <Route path='/' element={< MasterLayout />}>
-            <Route path='home' element={<ProtectedRoute ><Home /></ProtectedRoute>} ></Route>
-            <Route path='users' element={<ProtectedRoute ><Users /></ProtectedRoute>} ></Route>
-            <Route path='users/add' element={<ProtectedRoute ><AddUser /></ProtectedRoute>} ></Route>
-            <Route path='users/delete/:id' element={<ProtectedRoute ><DeleteUser /></ProtectedRoute>} ></Route>
-            <Route path='users/edite/:id' element={<ProtectedRoute ><EditeUser /></ProtectedRoute>} ></Route>
-            <Route path='users/details/:id' element={<ProtectedRoute ><UserDetails /></ProtectedRoute>} ></Route>
+            <Route path='/home' element={<ProtectedRoute ><Home /></ProtectedRoute>} ></Route>
+            <Route path='/users' element={<ProtectedRoute ><Users /></ProtectedRoute>} ></Route>
+            <Route path='/users/add' element={<ProtectedRoute ><AddUser /></ProtectedRoute>} ></Route>
+            <Route path='/users/delete/:id' element={<ProtectedRoute ><DeleteUser /></ProtectedRoute>} ></Route>
+            <Route path='/users/edite/:id' element={<ProtectedRoute ><EditeUser /></ProtectedRoute>} ></Route>
+            <Route path='/users/details/:id' element={<ProtectedRoute ><UserDetails /></ProtectedRoute>} ></Route>
             <Route path='clients' element={<ProtectedRoute ><Clients /></ProtectedRoute>} ></Route>
             <Route path='clients/add' element={<ProtectedRoute ><AddClient /></ProtectedRoute>} ></Route>
             <Route path='clients/delete/:id' element={<ProtectedRoute ><DeleteClient /></ProtectedRoute>} ></Route>
             <Route path='clients/edite/:id' element={<ProtectedRoute ><EditeClient /></ProtectedRoute>} ></Route>
             <Route path='clients/details/:id' element={<ProtectedRoute ><ClientDetails /></ProtectedRoute>} ></Route>
-            <Route path='orders' element={<ProtectedRoute ><Orders /></ProtectedRoute>} ></Route>
-            <Route path='orders/add' element={<ProtectedRoute ><AddOrder /></ProtectedRoute>} ></Route>
+            <Route path='/orders' element={<ProtectedRoute ><Orders /></ProtectedRoute>} ></Route>
+            <Route path='/orders/add' element={<ProtectedRoute ><AddOrder /></ProtectedRoute>} ></Route>
             <Route path='orders/delete/:id' element={<ProtectedRoute ><DeleteOrder /></ProtectedRoute>} ></Route>
             <Route path='orders/edite/:id' element={<ProtectedRoute ><EditeOrder /></ProtectedRoute>} ></Route>
             <Route path='orders/details/:id' element={<ProtectedRoute ><OrderDetails /></ProtectedRoute>} ></Route>
@@ -156,6 +163,11 @@ function App() {
             <Route path='sellingincentives/edite/:id' element={<ProtectedRoute ><EditeSellingIncentives /></ProtectedRoute>} ></Route>
             <Route path='reasonsofincentives' element={<ProtectedRoute ><ReasonsOfIncentives /></ProtectedRoute>} ></Route>
             <Route path='/areas' element={<ProtectedRoute ><Areas /></ProtectedRoute>} ></Route>
+            <Route path='/workpolicies' element={<ProtectedRoute ><WorkPolicies /></ProtectedRoute>} ></Route>
+            <Route path='/workpolicies/add' element={<ProtectedRoute ><AddWorkPolicies /></ProtectedRoute>} ></Route>
+            <Route path='/workpolicies/edite/:id' element={<ProtectedRoute ><EditeWorkPolicies /></ProtectedRoute>} ></Route>
+            <Route path='/poporder' element={<ProtectedRoute ><PopUpOrders/></ProtectedRoute>} ></Route>
+            <Route path='/poporder/add' element={<ProtectedRoute ><AddPopUpOrders /></ProtectedRoute>} ></Route>
 
   
           </Route>
@@ -164,6 +176,8 @@ function App() {
             <Route path='/deliveryOrders/add/:id' element={<ProtectedRoute><AddOrderDelivery /></ProtectedRoute>}></Route>
             <Route path='/deliveryOrders/delete/:id' element={<ProtectedRoute><DeleteOrderDelivery /></ProtectedRoute>}></Route>
             <Route path='/deliveryrules' element={<ProtectedRoute><DeliveryRules /></ProtectedRoute>}></Route>
+            <Route path='/deliveryworkpolicies' element={<ProtectedRoute><DeliveryWorkPolicies /></ProtectedRoute>}></Route>
+            <Route path='/deliverypoporders' element={<ProtectedRoute><DeliveryPopUpOrders /></ProtectedRoute>}></Route>
    
           </Route>
           <Route path='/' element={<ProtectedRoute><PurchasesLayout /></ProtectedRoute>}>
@@ -189,8 +203,8 @@ function App() {
             <Route path='/doctorpurchases/edite/:id' element={<ProtectedRoute><EditePurchasesDoctor /></ProtectedRoute>} ></Route>
             <Route  path='/doctorOrders/:id' element={<ProtectedRoute><DoctorOrders /></ProtectedRoute>}></Route>
             <Route path='/doctorOrders/add/:id' element={<ProtectedRoute><AddOrderDoctor /></ProtectedRoute>}></Route>
-            <Route path='/doctorOrders/edite/:id' element={<ProtectedRoute><DoctorEditeOrder /></ProtectedRoute>}></Route>
-            <Route path='/doctorOrders/details/:id' element={<ProtectedRoute><DoctorOrderDetails /></ProtectedRoute>}></Route>
+            <Route path='/doctorOrders/edite/:id' element={<ProtectedRoute><EditeOrder /></ProtectedRoute>}></Route>
+            <Route path='/doctorOrders/details/:id' element={<ProtectedRoute><OrderDetails /></ProtectedRoute>}></Route>
             <Route path='/doctoroffers' element={<ProtectedRoute><DoctorOffers /></ProtectedRoute>}></Route>
             <Route path='/doctoroffers/add' element={<ProtectedRoute><AddOfferDoctor /></ProtectedRoute>}></Route>
             <Route path='/doctoroffers/edite/:id' element={<ProtectedRoute><EditeOffersDoctor /></ProtectedRoute>}></Route>
@@ -202,7 +216,10 @@ function App() {
             <Route path='/doctorsellingincentives' element={<ProtectedRoute><DoctorSellingIncentives /></ProtectedRoute>}></Route>
             <Route path='/doctorcustomerservice' element={<ProtectedRoute><DoctorCustomerService /></ProtectedRoute>}></Route>
             <Route path='/doctorclients' element={<ProtectedRoute><DoctorClients /></ProtectedRoute>}></Route>
-            <Route path='/doctorclients/edite/:id' element={<ProtectedRoute><EditeDoctorClients /></ProtectedRoute>}></Route>
+            <Route path='/doctorclients/edite/:id' element={<ProtectedRoute><EditeClient/></ProtectedRoute>}></Route>
+            <Route path='/doctorworkpolicies' element={<ProtectedRoute><DoctorWorkPolicies/></ProtectedRoute>}></Route>
+            <Route path='/doctorpoporders' element={<ProtectedRoute><DoctorPopUpOrders/></ProtectedRoute>}></Route>
+            <Route path='/doctorpoporders/add' element={<ProtectedRoute><AddPopUpOrdersDoctor/></ProtectedRoute>}></Route>
 
           </Route>
           <Route path='*' element={<ProtectedRoute ><NotFound /></ProtectedRoute>}></Route>

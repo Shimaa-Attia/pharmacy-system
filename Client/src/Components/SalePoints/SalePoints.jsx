@@ -11,22 +11,23 @@ export default function SalePoints() {
   const [pointId, setPointId] = useState('');
   const [editing, setEditing] = useState(false);
 
-  useEffect(() => {
-    getSalePointsData();
-  }, []);
-
-  const getSalePointsData = async () => {
+  
+  let getSalePointsData = async () => {
     try {
-      const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/points`, {
+      let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/points`, {
         headers: {
           "Authorization": `Bearer ${accessToken}`
         }
       });
-      setSalePoints(data.data);
+
+      setSalePoints(data?.data);
     } catch (error) {
       toast.error('حدث خطأ أثناء جلب البيانات');
     }
   };
+  useEffect(() => {
+    getSalePointsData();
+  }, []);
 
   const getInputValue = (event) => {
     const { name, value } = event.target;

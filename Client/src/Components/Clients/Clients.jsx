@@ -26,6 +26,7 @@ export default function Clients() {
                     "Authorization": `Bearer ${accessToken}`
                 }
             });
+          
             setClients(searchResult.data.data);
             setPagination(searchResult.data.meta); // Set pagination data
             setCurrentPage(page); // Set current page
@@ -34,13 +35,10 @@ export default function Clients() {
                 headers: {
                     "Authorization": `Bearer ${accessToken}`
                 }
-            });
-
+            });     
             setClients(searchResult.data.data);
             setPagination(searchResult.data.meta); // Set pagination data
             setCurrentPage(page); // Set current page
-
-
         }
     };
     useEffect(() => {
@@ -92,9 +90,10 @@ export default function Clients() {
                                 <th>رقم</th>
                                 <th>كود العميل</th>
                                 <th>الاسم</th>
-                                <th>المنطقة</th>
+                                <th>المنطقة الإفتراضية</th>
+                                <th>المناطق الأخرى </th>
                                 <th>أرقام الهواتف</th>
-                                <th>العناوين</th>
+                                {/* <th>العناوين</th> */}
                                 <th>له</th>
                                 <th>عليه</th>
                                 <th>خيارات</th>
@@ -107,9 +106,10 @@ export default function Clients() {
                         <tbody>
                             {clients.map((client, index) => <tr key={client.id}>
                                 <td data-label="#">{++index}</td>
-                                <td data-label="كود العميل">{client.code}</td>
-                                <td data-label="اسم العميل">{client.name}</td>
-                                <td data-label="المنطقة">
+                                <td data-label="كود العميل">{client?.code}</td>
+                                <td data-label="اسم العميل">{client?.name}</td>
+                                <td data-label=" المنطقة الإفتراضية">{client?.defaultArea?.name}</td>
+                                <td data-label="المناطق الأخرى">
                                     {client?.areas?.map((area) => (<div key={area.id}>
 
                                         <p >{area.name}</p>
@@ -124,13 +124,13 @@ export default function Clients() {
                                         }
                                     })}
                                 </td>
-                                <td data-label="العناوين">
+                                {/* <td data-label="العناوين">
                                     {client?.contactInfo?.map((contactInfo) => {
                                         if (contactInfo.name === "address") {
                                             return <p key={contactInfo.id}>{contactInfo.value}</p>
                                         }
                                     })}
-                                </td>
+                                </td> */}
                                 <td data-label="له">{client?.forHim}</td>
                                 <td data-label="عليه">{client?.onHim}</td>
                                 <td data-label="خيارات" >
@@ -158,9 +158,13 @@ export default function Clients() {
             )
         } else {
             return (
-                <div className=' d-flex justify-content-center height-calc-70 align-items-center'>
-                    <i className='fa fa-spinner fa-spin fa-5x'></i>
-                </div>)
+                <div className=' d-flex justify-content-center  height-calc-70 align-items-center' >
+                    {clients.length <= 0 && searchText.length <= 0  ?
+                        <i className='fa fa-spinner fa-spin  fa-5x'></i>
+                        : <div className='alert alert-danger w-50 text-center'>لا يوجد تطابق لهذا البحث</div>
+                    }
+                </div> 
+                )
         }
     };
 

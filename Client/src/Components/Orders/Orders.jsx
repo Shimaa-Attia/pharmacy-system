@@ -98,6 +98,7 @@ export default function Orders() {
         "Authorization": `Bearer ${accessToken}`
       }
     })
+  
     if (orderResult) {
       setOrders(orderResult.data.data);
       setPagination(orderResult.data.meta); // Set pagination data
@@ -106,11 +107,11 @@ export default function Orders() {
   };
   useEffect(() => { getOrderData() },
     [filterUserId, filterIsPaid, filterPointId, filterDate, searchText]);
-    //for handle page change
-    let handlePageChange = (page) => {
-      getOrderData(page);
-    };
-  
+  //for handle page change
+  let handlePageChange = (page) => {
+    getOrderData(page);
+  };
+
   let [orderId, setOrderId] = useState(''); // for making orders paids on the same system
   let sendIsPaidOnThOtherSystemToApi = async (ordId) => {
     await axios.post(`${process.env.REACT_APP_API_URL}/api/orders/isPaid_theOtherSystem/${ordId}`, {}, {
@@ -139,6 +140,7 @@ export default function Orders() {
                 <th>اسم الموظف</th>
                 <th>هاتف الموظف</th>
                 <th>كود العميل</th>
+                <th>المنطقة </th>
                 <th>قيمة الأوردر</th>
                 <th>الإجمالي</th>
                 <th>المدفوع</th>
@@ -148,12 +150,13 @@ export default function Orders() {
               </tr>
             </thead>
             <tbody>
-              {orders.map((order, index) => <tr key={order.id}>
+              {orders.map((order) => <tr key={order.id}>
                 <td data-label="تاريخ الإنشاء"  >{order.created_at}</td>
                 <td data-label="نقطة البيع">{order?.sale_point?.name}</td>
                 <td data-label="اسم الموظف">{order?.delivery_man?.name}</td>
                 <td data-label="هاتف الموظف">{order?.delivery_man?.phone}</td>
                 <td data-label="كود العميل">{order?.customer?.code}</td>
+                <td data-label=" المنطقة">{order?.area?.name}</td>
                 <td data-label="قيمة الأوردر">{order.cost}</td>
                 <td data-label="الإجمالي">{order.total_ammount}</td>
                 <td data-label="المدفوع">{order.paid}</td>
@@ -259,7 +262,16 @@ export default function Orders() {
         <meta charSet="utf-8" />
         <title>Orders</title>
       </Helmet>
-      <div className=" my-3 text-center row mx-2  " dir='rtl'>
+      <div className=" my-3  row mx-2  " dir='rtl'>
+        <div className="col-md-3 mb-2">
+          <NavLink to='/orders/add' className='btn btn-primary' >إضافة أوردر</NavLink>
+        </div>
+        <div className="col-md-3 mb-2">
+          <NavLink to='/poporder' className='btn btn-warning' > الأوردرات المعلقة  </NavLink>
+        </div>
+        <div className="col-md-6 mb-2">
+          <NavLink to='/poporder/add' className='btn btn-danger' >إضافة أوردر للطيارين </NavLink>
+        </div>
         <div className="col-md-3 mb-1">
           <Select
             options={userOptions}
@@ -283,14 +295,11 @@ export default function Orders() {
             {salePoints.map((point) => <option key={point.id} value={point.id} >{point.name}</option>)}
           </select>
         </div>
-        <div className="col-md-3">
-          <NavLink to='/orders/add' className='btn btn-primary mb-1' >إضافة أوردر</NavLink>
-        </div>
-        <div className="col-md-6" >
-          <input type="text" className='form-control text-end mt-1 ' placeholder='بحث عن أوردر...' onChange={handleSearchChange} />
-        </div>
-        <div className="col-md-4 mb-1">
+        <div className="col-md-3 mb-1">
           <input type="date" className='form-control mt-1' onChange={handleDateChange} />
+        </div>
+        <div className="col-md-6 m-auto" >
+          <input type="text" className='form-control text-end mt-1 ' placeholder='بحث عن أوردر...' onChange={handleSearchChange} />
         </div>
       </div>
       {/* paid modal */}
@@ -308,7 +317,7 @@ export default function Orders() {
       </div>}
 
       <div className="text-center mb-2">
-        <Pagination pagination={pagination} currentPage={currentPage} handlePageChange={handlePageChange}/>
+        <Pagination pagination={pagination} currentPage={currentPage} handlePageChange={handlePageChange} />
       </div>
       {showOrders()}
     </>

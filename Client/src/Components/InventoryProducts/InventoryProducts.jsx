@@ -16,7 +16,8 @@ export default function InventoryProducts() {
         "Authorization": `Bearer ${accessToken}`
       }
     });
-    setNotDoneInventoryProducts(data);
+
+    setNotDoneInventoryProducts(data.data);
   };
   useEffect(() => {
     getNotDoneInventoryProductsData()
@@ -48,6 +49,8 @@ export default function InventoryProducts() {
             <tbody>
               {notDoneInventoryProducts.map((prod) => <tr key={prod.id}>
                 <td >{prod?.productName}</td>
+                <td >{prod?.created_at}</td>
+                <td >{prod?.creatorUser?.name}</td>
                 <td style={{ width: '20px' }} >
                   <div className='text-center' >
                     <i className='bi bi-arrow-left-circle-fill text-success fs-4'
@@ -79,7 +82,7 @@ export default function InventoryProducts() {
       }
     });
 
-    setDoneInventoryProducts(data);
+    setDoneInventoryProducts(data.data);
   };
   useEffect(() => {
     getDoneInventoryProductsData()
@@ -117,6 +120,8 @@ export default function InventoryProducts() {
                   </div>
                 </td>
                 <td>{prod?.productName}</td>
+                <td >{prod?.created_at}</td>
+                <td >{prod?.creatorUser?.name}</td>
                 <td >
                   <i className='bi bi-trash text-danger fs-5' onClick={() => deleteInventoryProducts(prod.id)}></i>
                 </td>

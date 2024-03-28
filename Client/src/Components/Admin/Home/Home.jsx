@@ -1,10 +1,9 @@
 import axios from 'axios';
 import React, { useContext, useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet'
-import { AuthContext } from '../../Context/AuthStore';
+import { AuthContext } from '../../../Context/AuthStore';
 import { toast } from 'react-toastify';
 import Joi from 'joi';
-
 
 export default function Home() {
   let { accessToken } = useContext(AuthContext);
@@ -30,13 +29,13 @@ export default function Home() {
     }).catch((errors) => {
       const errorList = errors?.response?.data?.message;
       if (errorList !== undefined) {
-          Object.keys(errorList)?.map((err) => {
-              errorList[err]?.map((err) => {
-                  toast.error(err);
-              })
-          });
+        Object.keys(errorList)?.map((err) => {
+          errorList[err]?.map((err) => {
+            toast.error(err);
+          })
+        });
       } else {
-          toast.error("حدث خطأ ما");
+        toast.error("حدث خطأ ما");
       }
     })
   }
@@ -74,7 +73,7 @@ export default function Home() {
         <title>Home</title>
       </Helmet>
       <div className='container my-4' >
-     
+      
         <div className='alert text-center fs-4 text-white ' style={{ backgroundColor: 'rgb(100, 100, 128)' }} > أعداد الأوردرات </div>
         <form onSubmit={submitDateForm}>
           <div className=' row' dir='rtl' >
@@ -103,15 +102,15 @@ export default function Home() {
           {users.map((user) => <div key={user.user_id} className='col-md-3 my-2  text-center '>
             <div className=' card p-1'>
               <div className='bg-secondary-subtle rounded' >{user?.user_name}</div>
-                <div className='bg-secondary-subtle rounded my-1 ' >{user?.user_code}</div>
-                <div className='bg-secondary-subtle rounded' >{user?.user_role}</div>
-                <div className='fs-2' >{user?.numOfOrders}</div>
-                <div className=" lead">عدد الأوردرات</div>
-              </div>
-
-
-              </div>)}
+              <div className='bg-secondary-subtle rounded my-1 ' >{user?.user_code}</div>
+              <div className='bg-secondary-subtle rounded' >{user?.user_role}</div>
+              <div className='fs-2' >{user?.numOfOrders}</div>
+              <div className=" lead">عدد الأوردرات</div>
             </div>
-          </div>
+
+
+          </div>)}
+        </div>
+      </div>
     </>)
 }

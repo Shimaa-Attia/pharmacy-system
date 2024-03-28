@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 export let AuthContext = createContext(null);
 export default function AuthContextProvider(props) {
     let accessToken = localStorage.getItem('userToken');
-   
+
     // for handle Reload
     useEffect(() => {
         if (localStorage.getItem('userToken') !== null) {
@@ -31,15 +31,16 @@ export default function AuthContextProvider(props) {
             }
         });
         localStorage.removeItem('userToken');
+        sessionStorage.clear()
         setUserData(null);
         toast.success(res.data.message, {
             position: 'top-center'
         });
-      return <Navigate to='/'/>;
+        return <Navigate to='/' />;    
     };
 
 
-    return <AuthContext.Provider value={{ userData, saveUserData, logout, accessToken , userName }} >
+    return <AuthContext.Provider value={{ userData, saveUserData, logout, accessToken, userName }} >
         {props.children}
     </AuthContext.Provider>
 

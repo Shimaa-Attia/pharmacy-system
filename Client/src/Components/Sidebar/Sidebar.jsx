@@ -101,40 +101,44 @@ export default function Sidebar() {
 
                             <div>
                                 <ul className="nav flex-column mt-2">
-                                    <li className="nav-item  ">
-                                    <div onClick={toggleSellingIncentivesSubmenu} className="nav-link fw-bolder">
-                                                <span className='me-3 d-none d-sm-inline'>حوافز البيع</span>
-                                                <i className="bi bi-cash-coin "></i>
-                                            </div>
-                                            {sellingIncentivesSubmenuOpen &&
-                                                <div>
-                                                    <NavLink to='/reasonsofincentives' className="nav-link me-4 fw-bolder" >
-                                                        <span className='me-3 d-none d-sm-inline'>الأسباب</span>
-                                                        <i className="bi bi-card-list"></i>
-                                                    </NavLink>
-
-                                                    <NavLink to='/sellingincentives' className="nav-link me-4 fw-bolder" >
-                                                        <span className='me-3 d-none d-sm-inline '>المنتجات</span>
-                                                        <i className="bi bi-capsule-pill"></i>
-                                                    </NavLink>
-                                                </div>
-                                            }
-                                       
-                                    </li>
                                     <li className="nav-item">
-                                        <NavLink to='/branches' className="nav-link  fw-bolder">
-                                            <span className='me-3 d-none d-sm-inline'> الفروع</span>
-                                            <i className="bi bi-geo-alt-fill"></i>
+                                        <NavLink to='/notifications' className="nav-link  fw-bolder" >
+                                            <span className='me-3 d-none d-sm-inline '>الإشعارات</span>
+                                            <i className="bi bi-bell-fill"></i>
                                         </NavLink>
                                     </li>
                                     <li className="nav-item  ">
-                                        <NavLink to='salepoints' className="nav-link  fw-bolder" >
-                                            <span className='me-3 d-none d-sm-inline'>نقاط البيع</span>
-                                            <i className="bi bi-person-fill-add"></i>                                            </NavLink>
+                                        <div onClick={toggleSellingIncentivesSubmenu} className="nav-link fw-bolder">
+                                            <span className='me-3 d-none d-sm-inline'>حوافز البيع</span>
+                                            <i className="bi bi-cash-coin "></i>
+                                        </div>
+                                        {sellingIncentivesSubmenuOpen &&
+                                            <div>
+                                                <NavLink to='/reasonsofincentives' className="nav-link me-4 fw-bolder" >
+                                                    <span className='me-3 d-none d-sm-inline'>الأسباب</span>
+                                                    <i className="bi bi-card-list"></i>
+                                                </NavLink>
+
+                                                <NavLink to='/sellingincentives' className="nav-link me-4 fw-bolder" >
+                                                    <span className='me-3 d-none d-sm-inline '>المنتجات</span>
+                                                    <i className="bi bi-capsule-pill"></i>
+                                                </NavLink>
+                                            </div>
+                                        }
+
+                                    </li>
+
+
+                                    <li className="nav-item">
+                                        <NavLink to='/purchases' className="nav-link  fw-bolder">
+                                            <span className='me-3 d-none d-sm-inline'> المشتريات</span>
+                                            <i className="bi bi-bag-fill"></i>
+
+                                        </NavLink>
                                     </li>
                                     <li className="nav-item">
-                                        <NavLink to='purchases' className="nav-link  fw-bolder">
-                                            <span className='me-3 d-none d-sm-inline'> المشتريات</span>
+                                        <NavLink to='/workpolicies' className="nav-link  fw-bolder">
+                                            <span className='me-3 d-none d-sm-inline'> سياسية العمل</span>
                                             <i className="bi bi-bag-fill"></i>
 
                                         </NavLink>
@@ -147,10 +151,7 @@ export default function Sidebar() {
                                         </div>
                                         {managementSubmenuOpen &&
                                             <div>
-                                                <NavLink to='/notifications' className="nav-link me-4 fw-bolder" >
-                                                    <span className='me-3 d-none d-sm-inline '>الإشعارات</span>
-                                                    <i className="bi bi-bell-fill"></i>
-                                                </NavLink>
+
                                                 <NavLink to='/rules' className="nav-link me-4 fw-bolder" >
                                                     <span className='me-3 d-none d-sm-inline '>قواعد العمل</span>
                                                     <i className="bi bi-book-fill "></i>
@@ -159,6 +160,16 @@ export default function Sidebar() {
                                                     <span className='me-3 d-none d-sm-inline'> المستخدمون</span>
                                                     <i className="bi bi-file-earmark-person-fill"></i>
 
+                                                </NavLink>
+
+                                                <NavLink to='/branches' className="nav-link me-4  fw-bolder">
+                                                    <span className='me-3 d-none d-sm-inline'> الفروع</span>
+                                                    <i className="bi bi-geo-alt-fill"></i>
+                                                </NavLink>
+
+                                                <NavLink to='salepoints' className="nav-link me-4  fw-bolder" >
+                                                    <span className='me-3 d-none d-sm-inline'>نقاط البيع</span>
+                                                    <i className="bi bi-person-fill-add"></i>
                                                 </NavLink>
                                             </div>
                                         }

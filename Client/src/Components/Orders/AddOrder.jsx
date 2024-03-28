@@ -19,7 +19,6 @@ export default function AddOrder() {
     let [orders, setOrders] = useState({
         user_code: '',
         customer_code: '',
-        total_ammount: '',
         cost: '',
         notes: '',
         sale_point_id: '',
@@ -37,8 +36,6 @@ export default function AddOrder() {
         } catch (error) {
             toast.error('حدث خطأ ما.')
         }
-
-
     };
     useEffect(() => {
         getUserData()
@@ -109,40 +106,12 @@ export default function AddOrder() {
             onHim: `${client.onHim}`,
             forHim: `${client.forHim}`,
             notes: `${client.notes}`,
-            customer_area: `${client.areas.map(area => area.name)}`
+            customer_area: `${client.areas.map(area => area.name)}`,
+            defaultArea:`${client?.defaultArea?.name}`
         }));
         setClientOptions(mapClient);
 
     }, [clients]);
-
-    // useEffect(() => {
-    //     if (orders.customer_code === '') {
-    //         return;
-    //     } else {
-    //         getContactValue(orders.customer_code);
-    //     }
-    // }, [orders.customer_code]);
-
-
-    // get contac info (phones and adresess)
-    // let [contacts, setContacts] = useState([]);
-    // let getContactValue = async (id) => {
-    //     let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers/contact/${id}`, {
-    //         headers: {
-    //             "Authorization": `Bearer ${accessToken}`
-    //         }
-    //     });
-    //     // console.log(data);
-    //     setContacts(data);
-    // };
-    // useEffect(() => {
-    //     if (orders.customer_code === '') {
-    //         return;
-    //     } else {
-    //         getContactValue(orders.customer_code);
-    //     }
-    // }, [orders.customer_code]);
-
 
     let [customerData, setCustomerData] = useState([]);
     let getSelectedUser = (selectedOption) => {
@@ -184,7 +153,6 @@ export default function AddOrder() {
             setOrders({
                 user_code: '',
                 customer_code: '',
-                total_ammount: '',
                 customer_area: '',
                 cost: '',
                 notes: '',
@@ -229,10 +197,6 @@ export default function AddOrder() {
             cost: Joi.string().required().messages({
                 'string.empty': 'قيمة الأوردر مطلوبة',
                 'any.required': 'قيمة الأوردر مطلوبة',
-            }),
-            total_ammount: Joi.string().required().messages({
-                'string.empty': 'إجمالي المبلغ مطلوب',
-                'any.required': 'إجمالي المبلغ مطلوب',
             }),
             sale_point_id: Joi.string().required().messages({
                 'string.empty': 'نقطة البيع مطلوبة',
@@ -317,10 +281,11 @@ export default function AddOrder() {
                             />
                         </div>
                         {customerCodeChanged && <div className="col-md-4  ">
-                            {customerData?.onHim ? (
+                            {customerData ? (
                                 <>
                                     <div className='bg-danger-subtle p-2 rounded'>
-                                        <div>المنطقة: {customerData?.customer_area ? customerData?.customer_area : 'لا يوجد'}</div>
+                                    <div> المنطقة الإفتراضية: {customerData?.defaultArea ? customerData?.defaultArea : 'لا يوجد'}</div>
+                                    <div>المناطق الأخرى: {customerData?.customer_area ? customerData?.customer_area : 'لا يوجد'}</div>
                                         <div>عليه: {customerData?.onHim !== 'null' ? customerData?.onHim : 'لا يوجد'}</div>
                                         <div>له: {customerData?.forHim !== 'null' ? customerData?.forHim : 'لا يوجد'}</div>
                                         <div>ملاحظة: {customerData?.notes !== 'null' ? customerData?.notes : 'لا يوجد'}</div>
@@ -342,26 +307,6 @@ export default function AddOrder() {
 
                             />
                         </div>
-
-                        {/* {contacts.addresses &&
-                            <div className="col-md-4">
-                                { contacts.addresses.map((address) => <div className='bg-danger text-white p-2 rounded mt-4' key={address.id}>
-                                    {address.value}
-                                </div> )}
-                            </div>} */}
-                        {/* <div className="col-md-4">
-                            <label htmlFor="customer_area" className='form-label'>منطقة العميل</label>
-                            <input type="text" className='form-control' name="customer_area" id="customer_area" onChange={getInputValue} />
-                        </div> */}
-                        {/* <div className="col-md-4">
-                            <label htmlFor="customer_phone" className='form-label'>أرقام الهواتف للعميل</label>
-                            <select name="customer_phone" defaultValue={0} className='form-control ' id="customer_phone"
-                                onChange={getInputValue}>
-                                <option value={0} hidden disabled>اختار</option>
-                                {contacts?.phones ? contacts?.phones.map((phone) => <option key={phone.id} value={phone.value} > {phone.value}</option>) : null}
-                            </select>
-                        </div> */}
-
                         <div className="col-md-4">
                             <label htmlFor="sale_point_id" className='form-label'>نقطة البيع </label>
                             <select name="sale_point_id" defaultValue={0} className='form-control' id="sale_point_id"
@@ -374,10 +319,7 @@ export default function AddOrder() {
                             <label htmlFor="cost" className='form-label'>قيمة الأوردر </label>
                             <input type="text" className='form-control' name="cost" id="cost" onChange={getInputValue} />
                         </div>
-                        <div className="col-md-4">
-                            <label htmlFor="totalAmmount" className='form-label'> إجمالي المبلغ مع الطيار </label>
-                            <input type="text" className='form-control' name="total_ammount" id="totalAmmount" onChange={getInputValue} />
-                        </div>
+            
                         <div className="col-md-12">
                             <label htmlFor="notes" className='form-label'>ملاحظات</label>
                             <textarea name="notes" id="notes" className='form-control' onChange={getInputValue} />
@@ -386,10 +328,6 @@ export default function AddOrder() {
                             <button type='submit' className='btn btn-primary form-control fs-5'>
                                 {isLoading == true ? <i className='fa fa-spinner fa-spin'></i> : 'إضافة'}
                             </button>
-                        </div>
-                        <div className="col-md-3">
-                            <NavLink to='/orders' className='btn  btn-secondary form-control fs-5'>رجوع</NavLink>
-
                         </div>
                     </div>
                 </form >

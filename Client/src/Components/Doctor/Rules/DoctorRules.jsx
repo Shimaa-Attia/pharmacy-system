@@ -13,7 +13,7 @@ export default function DoctorRules() {
   let [searchText, setSearchText] = useState('');
   function handleSearchChange(event) {
     setSearchText(event.target.value);
-  
+
     if (event.target.value.length === 0) {
       setSearchRuslet([])
     }
@@ -71,21 +71,11 @@ export default function DoctorRules() {
     <>
       <div className="container-fluid p-3 ">
 
-        
-          <div className=" w-75 m-auto mb-3">
-            <input type="text" className='form-control text-end ' onChange={handleSearchChange} placeholder=' ...بحث   ' />
-          </div>
-        {searchRuslet.length > 0 ? (
-          <div>
-            {searchRuslet.map((res) => (
-              <div key={res.id} className='card p-2 mb-4'>
-                 <div className='fw-bolder'>{res?.type?.name}:</div>
-                <div>{res?.body}</div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <>
+
+        <div className=" text-center  mb-4">              
+            <NavLink to='/doctorworkpolicies' className='btn  btn-secondary mt-1' >سياسة العمل </NavLink>  
+        </div>
+   
             <div className="card pb-3 ">
               <p className='text-center fw-bold bg-primary-subtle  m-auto rounded py-1 px-4 fs-5'>ما يخص الإدارة</p>
               {managmentRules.map((mangRule) => (
@@ -116,8 +106,6 @@ export default function DoctorRules() {
                 </div>
               ))}
             </div>
-          </>
-        )}
       </div>
     </>
   )

@@ -1,14 +1,12 @@
 import axios from 'axios';
 import Joi from 'joi';
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { AuthContext } from '../../Context/AuthStore';
 import logo from '../../imgs/logo.jpg'
 
 export default function Login({ saveUserData}) {
-
 
     let navigate = useNavigate();
     let [isLoading, setIsLoading] = useState(false);
@@ -111,6 +109,7 @@ export default function Login({ saveUserData}) {
                             <input type="password" className='form-control' name="password" id="password"
                                 onChange={getInputValue} />
                         </div>
+                      
                         <div className=' text-center'>
 
                             <button className='btn btn-primary mt-4'>

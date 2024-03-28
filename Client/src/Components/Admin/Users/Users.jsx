@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useContext, useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { AuthContext } from '../../Context/AuthStore';
+import { AuthContext } from '../../../Context/AuthStore';
 import { toast } from 'react-toastify';
 
 export default function Users() {

@@ -17,7 +17,7 @@ export default function DoctorInventoryProducts() {
         "Authorization": `Bearer ${accessToken}`
       }
     });
-    setNotDoneInventoryProducts(data);
+    setNotDoneInventoryProducts(data.data);
   };
   useEffect(() => {
     getNotDoneInventoryProductsData()
@@ -49,6 +49,7 @@ export default function DoctorInventoryProducts() {
             <tbody>
               {notDoneInventoryProducts.map((prod) => <tr key={prod.id}>
                 <td >{prod?.productName}</td>
+                <td >{prod?.created_at}</td>
                 <td style={{ width: '20px' }} >
                   <div className='text-center' >
                     <i className='bi bi-arrow-left-circle-fill text-success fs-4'
@@ -80,7 +81,7 @@ export default function DoctorInventoryProducts() {
       }
     });
 
-    setDoneInventoryProducts(data);
+    setDoneInventoryProducts(data.data);
   };
   useEffect(() => {
     getDoneInventoryProductsData()
@@ -117,6 +118,7 @@ export default function DoctorInventoryProducts() {
                   </div>
                 </td>
                 <td>{prod?.productName}</td>
+                <td >{prod?.created_at}</td>
                 <td >
                   <i className='bi bi-trash text-danger fs-5' onClick={() => deleteInventoryProducts(prod.id)}></i>
                 </td>

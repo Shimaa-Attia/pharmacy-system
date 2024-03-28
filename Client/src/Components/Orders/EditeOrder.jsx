@@ -5,22 +5,19 @@ import { Helmet } from 'react-helmet';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../../Context/AuthStore';
-import CreatableSelect from 'react-select/creatable';
+
 
 
 export default function EditeOrder() {
   let { accessToken } = useContext(AuthContext);
   let { id } = useParams();
-  let navigate = useNavigate();
   let [isLoading, setIsLoading] = useState(false);
   let [orderData, setOrderData] = useState([])
 
-  let [users, setUsers] = useState([]);
-  let [clients, setClients] = useState([]);
+
   let [orders, setOrders] = useState({
     user_code: '',
     customer_code: '',
-    total_ammount: '',
     cost: '',
     notes: '',
     sale_point_id: '',
@@ -32,7 +29,6 @@ export default function EditeOrder() {
     let myOrders = { ...orders };
     myOrders[event?.target?.name] = event?.target?.value;
     setOrders(myOrders);
-
   };
 
   let getOrder = async () => {
@@ -45,7 +41,6 @@ export default function EditeOrder() {
     setOrders({
       user_code: data.data?.delivery_man?.code,
       customer_code: data.data?.customer?.code,
-      total_ammount: data.data?.total_ammount,
       cost: data.data?.cost,
       notes: data.data?.notes,
       sale_point_id: data.data?.sale_point?.id,
@@ -58,30 +53,6 @@ export default function EditeOrder() {
     getOrder()
   }, []);
 
-
-  let getUserData = async () => {
-    let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/users`, {
-      headers: {
-        "Authorization": `Bearer ${accessToken}`
-      }
-    });
-    setUsers(data.data)
-
-  };
-  useEffect(() => {
-    getUserData()
-  }, []);
-  let getClientData = async () => {
-    let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/customers?noPaginate=1`, {
-      headers: {
-        "Authorization": `Bearer ${accessToken}`
-      }
-    });
-    setClients([...data.data]);
-  };
-  useEffect(() => {
-    getClientData()
-  }, []);
   //getting areas data to display in select 
   let [areasData, setAreasData] = useState([]);
   let getAreasData = async () => {
@@ -110,19 +81,23 @@ export default function EditeOrder() {
         position: 'top-center'
       });
       setIsLoading(false);
-      navigate('/orders')
     }).catch((errors) => {
       setIsLoading(false);
-      const errorList = errors?.response?.data?.message;
-      if (errorList !== undefined) {
-        Object.keys(errorList)?.map((err) => {
-          errorList[err]?.map((err) => {
-            toast.error(err);
-          })
-        });
-      } else {
+      try {
+        const errorList = errors?.response?.data?.message;
+        if (errorList !== undefined) {
+          Object.keys(errorList)?.map((err) => {
+            errorList[err]?.map((err) => {
+              toast.error(err);
+            })
+          });
+        } else {
+          toast.error("حدث خطأ ما");
+        }
+      } catch (error) {
         toast.error("حدث خطأ ما");
       }
+   
     });
   };
 
@@ -130,8 +105,7 @@ export default function EditeOrder() {
     const schema = Joi.object({
       user_code: Joi.string().required(),
       customer_code: Joi.string().required(),
-      total_ammount: Joi.number().required(),
-      cost: Joi.any().empty(''),
+      cost: Joi.number().required(),
       sale_point_id: Joi.number().required(),
       paid: Joi.any().empty(''),
       area_id: Joi.any().empty(''),
@@ -218,18 +192,12 @@ export default function EditeOrder() {
             <div className="col-md-4">
               <label htmlFor="cost" className='form-label'>قيمة الأوردر </label>
               <input type="text" className='form-control ' name="cost" id="cost"
-                onFocus={getInputValue}
+                onChange={getInputValue}
                 defaultValue={orderData?.cost}
 
               />
             </div>
-            <div className="col-md-4">
-              <label htmlFor="total_ammount" className='form-label'> إجمالي المبلغ مع الطيار </label>
-              <input type="text" className='form-control ' name="total_ammount" id="total_ammount"
-                onChange={getInputValue}
-                defaultValue={orderData?.total_ammount}
-              />
-            </div>
+         
             <div className="col-md-4">
               <label htmlFor="paid" className='form-label'>القيمة المسددة </label>
               <input type="text" className='form-control ' name="paid" id="paid"
@@ -250,10 +218,6 @@ export default function EditeOrder() {
               <button type='submit' className='btn btn-primary form-control fs-5'>
                 {isLoading == true ? <i className='fa fa-spinner fa-spin'></i> : 'تعديل'}
               </button>
-            </div>
-            <div className="col-md-3">
-              <NavLink to='/orders' className='btn  btn-secondary form-control fs-5'>رجوع</NavLink>
-
             </div>
           </div>
         </form >

@@ -111,6 +111,22 @@ export default function AddOrderDelivery() {
             area_id: selectedOption?.value,
         });
     };
+    let [salePoints, setSalePoints] = useState([]);
+    let getSalePointsData = async () => {
+        try {
+            let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/points`, {
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`
+                }
+            });
+            setSalePoints(data.data);
+        } catch (error) {
+            toast.error('حدث خطأ ما')
+        }
+    };
+    useEffect(() => {
+        getSalePointsData()
+    }, []);
       //making map on the areas data to display the name in the option
       let [areasOptions, setAreasOptions] = useState([])
       useEffect(() => {
@@ -207,22 +223,7 @@ export default function AddOrderDelivery() {
             }
         }
     };
-    let [salePoints, setSalePoints] = useState([]);
-    let getSalePointsData = async () => {
-        try {
-            let { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/points`, {
-                headers: {
-                    "Authorization": `Bearer ${accessToken}`
-                }
-            });
-            setSalePoints(data.data);
-        } catch (error) {
-            toast.error('حدث خطأ ما')
-        }
-    };
-    useEffect(() => {
-        getSalePointsData()
-    }, []);
+ 
 
     return (
         <>
@@ -279,7 +280,7 @@ export default function AddOrderDelivery() {
                             <label htmlFor="sale_point_id" className='form-label'>نقطة البيع </label>
                             <select name="sale_point_id" defaultValue={0} className='form-control' id="sale_point_id"
                                 onChange={getInputValue}>
-                                <option value={0} hidden disabled>اختار</option>
+                                <option value={0} hidden disabled>اختر...</option>
                                 {salePoints.map((point) => <option key={point.id} value={point.id}>{point.name}</option>)}
                             </select>
                         </div>
